@@ -1,0 +1,24 @@
+{
+    "updated_at": "2017-09-02T15:48:52Z",
+    "sections": [
+        {
+            "section_name": "PINNED",
+            "section_desc": "*|PINNED|* Attention needed",
+            "section_rank": ""
+        }
+    ],
+    "articles": [
+        {
+            "id": "ID_0",
+            "title": "Problem loading articles",
+            "summary": "There was a problem loading articles",
+            "search": " ",
+            "label_names": [],
+            "section_names": ["PINNED"],
+            "created_at": "2017-08-30T15:48:52Z",
+            "updated_at": "2017-08-30T15:48:52Z",
+            "body": "<p>There was an issue loading your help articles.  Ensure that you have a good data connection via WiFi or cellular data, quit and restart the app.</p>",
+            "author": ""
+        }
+    ]
+}

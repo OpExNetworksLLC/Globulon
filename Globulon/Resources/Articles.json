@@ -1,0 +1,99 @@
+{
+    "updated_at": "2017-09-02T15:48:52Z",
+    "sections": [
+        {
+            "section_name": "PINNED",
+            "section_desc": "*|PINNED|* Helpful Articles (local)",
+            "section_rank": ""
+        },
+        {
+            "section_name": "SECURITY",
+            "section_desc": "Security",
+            "section_rank": ""
+        },
+        {
+            "section_name": "OTHER",
+            "section_desc": "Other",
+            "section_rank": ""
+        }
+    ],
+    "articles": [
+        {
+            "id": "ID_1",
+            "title": "Expanded FAQs",
+            "summary": "Expand the FAQs to show help summary.",
+            "search": "all, help, expand, list, summary, faq",
+            "label_names": [],
+            "section_names": ["PINNED"],
+            "created_at": "2017-08-30T15:48:52Z",
+            "updated_at": "2017-08-30T15:48:52Z",
+            "body": "<p>You can expand the the Articles list to include showing summaries.</p><p>To expand the list just tap on the &quot;more&quot; button on the upper right corner of the Search FAQs screen.  To compress the list just press on the &quot;less&quot; button on the upper right of the screen.  The app will remember you last setting on expanding or compressing the list.</p>",
+            "author": ""
+        },
+        {
+            "id": "ID_2",
+            "title": "Login options",
+            "summary": "Options to access the app.",
+            "search": "all, auto, login, iPhones, Touch ID, Face ID, password",
+            "label_names": [],
+            "section_names": ["PINNED", "SECURITY"],
+            "created_at": "2017-07-14T20:54:51Z",
+            "updated_at": "2017-08-30T15:48:03Z",
+            "body": "<p>You have several options to access the app depending on your desired access method.  You can enter your password or you can clickthe TouchID or FaceID icon to access the app using biometrics</p>",
+            "author": ""
+        },
+        {
+            "id": "ID_3",
+            "created_at": "2017-07-14T20:54:51Z",
+            "updated_at": "2017-08-30T15:48:03Z",
+            "title": "Face ID",
+            "summary": "Enable or disable Face ID.",
+            "search": "Biometric, Face ID, iPhone, iOS, login",
+            "label_names": [],
+            "section_names": ["SECURITY"],
+            "body": "<p>Face ID is offered on later iPhones.</p><p>If enabled, iOS will use this feature to automatically log you into the app.  You can enable or disable the use of this feature as you plesase. To enable you can toggle it on or off within the app under Settings.  If you don't allow Face ID by declining it when first asked on login to accept it you must go to the iOS settings for the app and enable it there.  If you wish to disable it you can just go the the app settings off there.</p>",
+            "author": ""
+        },
+        {
+            "id": "ID_4",
+            "created_at": "2017-07-14T20:54:51Z",
+            "updated_at": "2017-08-30T15:48:03Z",
+            "title": "Password",
+            "summary": "Secure your account.",
+            "search": "Password, access, Face ID, Touch ID, secure",
+            "label_names": [],
+            "section_names": ["SECURITY"],
+            "body": "<p>The app requires you to enter a traditional password as a backup for access to the app when Face ID or Touch ID is disabled to keep the application secure.</p>",
+            "author": ""
+        },
+        {
+            "id": "ID_5",
+            "created_at": "2017-08-30T15:48:52Z",
+            "updated_at": "2017-08-30T15:48:52Z",
+            "title": "Trips",
+            "summary": "Your trip history.",
+            "search": "trips, history, summary, score, scoring, gps",
+            "label_names": [],
+            "section_names": ["OTHER"],
+            "body": "<p>Clicking on the trips tab will take you to your trip history summary.  To process your latest trips click on the update button on the upper right of your screen.</p>",
+            "author": ""
+        },
+        {
+            "id": "ID_6",
+            "created_at": "2017-08-30T15:48:52Z",
+            "updated_at": "2017-08-30T15:48:52Z",
+            "title": "Landing page",
+            "summary": "Set your default landing page.",
+            "search": "all, landing, tab, first, default, access",
+            "label_names": [],
+            "section_names": ["OTHER"],
+            "body": "<p>You can select the tab you wish to land on when they access the app.  You can select the tab you prefer by accessing Settings under the Settings Menu and choosing the option you prefer.</p>",
+            "author": ""
+        }
+    ]
+}
+
+
+
+
+
