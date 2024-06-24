@@ -12,6 +12,7 @@ import Network
 struct MasterView: View {
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var userStatus: UserStatus
+    @EnvironmentObject var appStatus: AppStatus
     
     @State private var isShowLaunchView = true
     @State var isLoggedIn = false
@@ -79,7 +80,8 @@ struct MasterView: View {
             //appStatus.isLoggedIn = false
             isLoggedIn = false
             //appStatus.currentPageView = .onboardStartView
-            //LogEvent.print(module: "MasterView.onReceive isReset", message: "User declined terms, appStatus.isLoggedIn = \(appStatus.isLoggedIn)")
+            appStatus.currentIntroPageView = .introStartView
+            LogEvent.print(module: "MasterView.onReceive isReset", message: "User declined terms, appStatus.isLoggedIn = \(isLoggedIn)")
         })
         
 //        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isInternetAvailable")), perform: { _ in
