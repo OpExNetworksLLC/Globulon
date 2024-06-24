@@ -1,6 +1,6 @@
 //
-//  ViDriveApp.swift
-//  ViDrive
+//  GlobulonApp.swift
+//  Globulon
 //
 //  Created by David Holeman on 2/13/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
