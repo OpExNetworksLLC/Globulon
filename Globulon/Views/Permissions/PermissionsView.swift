@@ -17,6 +17,7 @@ struct PermissionsView: View {
     
     /// Singlton access to LocationManager
     @EnvironmentObject var locationManager: LocationManager
+    
     @EnvironmentObject var userSettings: UserSettings
     
     @State var isTrackingAllowed: Bool = false

@@ -110,6 +110,10 @@
 		6E983A702B84272B002F2251 /* TermsClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E983A6F2B84272B002F2251 /* TermsClass.swift */; };
 		6E983A762B8427FB002F2251 /* encodeJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E983A752B8427FB002F2251 /* encodeJSON.swift */; };
 		6E983A782B842C56002F2251 /* Terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E983A772B842C56002F2251 /* Terms.json */; };
+		6E9AEEB12C2CDBC100522E71 /* MotionStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB02C2CDBC100522E71 /* MotionStatusView.swift */; };
+		6E9AEEB32C2CDC6D00522E71 /* ActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */; };
+		6E9AEEB62C2CDD0300522E71 /* LocationsHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB52C2CDD0300522E71 /* LocationsHandlerClass.swift */; };
+		6E9AEEB82C2CF03400522E71 /* LocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */; };
 		6E9C448C2BAE8E9E002FABDB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448B2BAE8E9E002FABDB /* FirebaseAnalytics */; };
 		6E9C448E2BAE8E9E002FABDB /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448D2BAE8E9E002FABDB /* FirebaseAnalyticsOnDeviceConversion */; };
 		6E9C44902BAE8E9E002FABDB /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448F2BAE8E9E002FABDB /* FirebaseAnalyticsSwift */; };
@@ -201,7 +205,7 @@
 		6EDCC1B92BA75B12003B7BA7 /* ReachabilityClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */; };
 		6EDCC1BB2BA76078003B7BA7 /* xReachabilityManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */; };
 		6EE4CE232C2786CA002D1076 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */; };
-		6EF93FF22BCAFA990023CB7E /* LocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF93FF12BCAFA990023CB7E /* LocationManagerClass.swift */; };
+		6EF93FF22BCAFA990023CB7E /* xLocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -311,6 +315,10 @@
 		6E983A752B8427FB002F2251 /* encodeJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = encodeJSON.swift; sourceTree = "<group>"; };
 		6E983A772B842C56002F2251 /* Terms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Terms.json; sourceTree = "<group>"; };
 		6E9A19D42BAFE67F000E5128 /* Globulon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globulon.entitlements; sourceTree = "<group>"; };
+		6E9AEEB02C2CDBC100522E71 /* MotionStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionStatusView.swift; sourceTree = "<group>"; };
+		6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandlerClass.swift; sourceTree = "<group>"; };
+		6E9AEEB52C2CDD0300522E71 /* LocationsHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsHandlerClass.swift; sourceTree = "<group>"; };
+		6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerClass.swift; sourceTree = "<group>"; };
 		6EA242452B86E07800C02D88 /* UserStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatus.swift; sourceTree = "<group>"; };
 		6EA242482B86E3B400C02D88 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		6EA2424C2B86E42000C02D88 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
@@ -375,7 +383,7 @@
 		6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityClass.swift; sourceTree = "<group>"; };
 		6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xReachabilityManagerClass.swift; sourceTree = "<group>"; };
 		6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		6EF93FF12BCAFA990023CB7E /* LocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerClass.swift; sourceTree = "<group>"; };
+		6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xLocationManagerClass.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -514,9 +522,10 @@
 				6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */,
 				6EB56D2C2B855F5700C106F0 /* AppDelegate.swift */,
 				6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */,
-				6E94F7042B7C567B00AFA97F /* Views */,
 				6E94F7072B7C570800AFA97F /* Models */,
+				6E94F7042B7C567B00AFA97F /* Views */,
 				6E94F7062B7C56BC00AFA97F /* Classes */,
+				6E9AEEB42C2CDCC300522E71 /* Retire */,
 				6E94F70E2B7C68F400AFA97F /* Enums */,
 				6E94F70F2B7C692C00AFA97F /* Functions */,
 				6E94F7112B7C697A00AFA97F /* Representables */,
@@ -578,15 +587,13 @@
 		6E94F7062B7C56BC00AFA97F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */,
 				6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */,
 				6EB56D1F2B855BA800C106F0 /* ArticlesClass.swift */,
 				6EB56D2A2B855EA400C106F0 /* AuthenticationClass.swift */,
-				6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */,
 				6E94F7142B7C701B00AFA97F /* LogEventClass.swift */,
-				6E94F7292B7C7EF400AFA97F /* xLocationManagerClassV1.swift */,
-				6EF93FF12BCAFA990023CB7E /* LocationManagerClass.swift */,
-				6E2993B42BC1DFD500CA14AE /* xLocationManagerClassV2.swift */,
-				6E769CA72BC88DE0008CA601 /* LocationManagerClassVref.swift */,
+				6E9AEEB52C2CDD0300522E71 /* LocationsHandlerClass.swift */,
+				6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */,
 				6E94F7312B7C944100AFA97F /* DateInfoClass.swift */,
 				6E983A6F2B84272B002F2251 /* TermsClass.swift */,
 				6E08F52A2BA8FC4F004E6329 /* InternetReachability.swift */,
@@ -714,6 +721,18 @@
 			path = Documents;
 			sourceTree = "<group>";
 		};
+		6E9AEEB42C2CDCC300522E71 /* Retire */ = {
+			isa = PBXGroup;
+			children = (
+				6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */,
+				6E94F7292B7C7EF400AFA97F /* xLocationManagerClassV1.swift */,
+				6E769CA72BC88DE0008CA601 /* LocationManagerClassVref.swift */,
+				6E2993B42BC1DFD500CA14AE /* xLocationManagerClassV2.swift */,
+				6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */,
+			);
+			path = Retire;
+			sourceTree = "<group>";
+		};
 		6EA242442B86DD5400C02D88 /* Permissions */ = {
 			isa = PBXGroup;
 			children = (
@@ -772,6 +791,7 @@
 				6E2A88EA2BE7F47100DFC163 /* Home */,
 				6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */,
 				6E89635D2B7D8C62003ABB4F /* FeedView.swift */,
+				6E9AEEB02C2CDBC100522E71 /* MotionStatusView.swift */,
 				6E35DF602BE9EB710093286F /* History */,
 				6ED869EA2B7EF205004528DD /* Trips */,
 			);
@@ -909,6 +929,7 @@
 				6E8537962BCB24DE00C4511B /* MapTripLocationView.swift in Sources */,
 				6EB56D082B8533F900C106F0 /* FormatPhoneNumbers.swift in Sources */,
 				6EB56D0E2B85577900C106F0 /* SettingsInfoView.swift in Sources */,
+				6E9AEEB12C2CDBC100522E71 /* MotionStatusView.swift in Sources */,
 				6EB56D022B85331000C106F0 /* TextFieldEx.swift in Sources */,
 				6E94F7322B7C944100AFA97F /* DateInfoClass.swift in Sources */,
 				6EB56D6E2B85695500C106F0 /* OnboardAccountView.swift in Sources */,
@@ -954,7 +975,7 @@
 				6E35DF642BE9F2980093286F /* HistoryMapSnapshotView.swift in Sources */,
 				6EB56D6A2B8568E200C106F0 /* OnboardStartView.swift in Sources */,
 				6E88DC2C2B84746100BBB4DD /* articlesFrom.swift in Sources */,
-				6EF93FF22BCAFA990023CB7E /* LocationManagerClass.swift in Sources */,
+				6EF93FF22BCAFA990023CB7E /* xLocationManagerClass.swift in Sources */,
 				6ED869F22B7F0FEE004528DD /* formatMPH.swift in Sources */,
 				6EB56D102B85588F00C106F0 /* UserSettingsView.swift in Sources */,
 				6E88DC2E2B84753100BBB4DD /* ArticleLocationsEnum.swift in Sources */,
@@ -971,6 +992,7 @@
 				6E88DC222B846FC400BBB4DD /* WelcomePageView.swift in Sources */,
 				6EB56D182B855A6B00C106F0 /* MailView.swift in Sources */,
 				6EB56D722B85699500C106F0 /* OnboardPasswordView.swift in Sources */,
+				6E9AEEB32C2CDC6D00522E71 /* ActivityHandlerClass.swift in Sources */,
 				6E88DC1C2B846D4F00BBB4DD /* xCheckReachability.swift in Sources */,
 				6EB56CF42B8530C600C106F0 /* ImageNavCancel.swift in Sources */,
 				6E94F70D2B7C57D200AFA97F /* ModelSchemaV1.swift in Sources */,
@@ -993,6 +1015,7 @@
 				6E6D9B262B8403B2004325A1 /* AppSettings.swift in Sources */,
 				6E8963642B7D9FCE003ABB4F /* HelpSheetView.swift in Sources */,
 				6ED869E62B7EE22E004528DD /* FormatDates.swift in Sources */,
+				6E9AEEB62C2CDD0300522E71 /* LocationsHandlerClass.swift in Sources */,
 				6EC4D8082BEAE4B100F94548 /* deleteHistoryTrip.swift in Sources */,
 				6E6D9B1E2B83C10E004325A1 /* scoreTripAcceleration.swift in Sources */,
 				6EB56D202B855BA800C106F0 /* ArticlesClass.swift in Sources */,
@@ -1062,6 +1085,7 @@
 				6E94F7132B7C6A4000AFA97F /* AppValues.swift in Sources */,
 				6E2A88EC2BE7F4A300DFC163 /* scoreSummaryView.swift in Sources */,
 				6E94F7302B7C941200AFA97F /* LandingPageEnum.swift in Sources */,
+				6E9AEEB82C2CF03400522E71 /* LocationManagerClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

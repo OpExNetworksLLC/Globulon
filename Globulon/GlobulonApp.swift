@@ -79,7 +79,7 @@ struct GlobulonApp: App {
         WindowGroup {
             MasterView()
                 .environmentObject(UserSettings())
-                .environmentObject(LocationManager.shared)  // Singleton implementation so that we force the use of the one instance.
+                //.environmentObject(LocationManager.shared)  // Singleton implementation so that we force the use of the one instance.
                 .environmentObject(UserStatus())
                 .environmentObject(AppStatus())
                         
