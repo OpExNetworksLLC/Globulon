@@ -18,8 +18,13 @@ struct LocationView: View {
     
     @State var isShowHelp = false
     
-    @State private var userPosition: MapCameraPosition = .userLocation(fallback: .automatic)
-
+//    @State private var userPosition: MapCameraPosition = .userLocation(fallback: .automatic)
+//    @State private var cameraPosition: MapCameraPosition = .automatic
+    
+    @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+        span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
+    ))
 
     var body: some View {
         // Top menu
@@ -36,9 +41,22 @@ struct LocationView: View {
                 Spacer()
                 
                 /// Add stuff here...
-                Map(position: $userPosition) {
-                    UserAnnotation()
+                ///
+
+                Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
+                    Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationsHandler.lastLocation.coordinate.latitude), longitude: (locationsHandler.lastLocation.coordinate.longitude)))
                 }
+                .onAppear {
+                    updateCameraPosition()
+                }
+                .onChange(of: locationsHandler.lastLocation) {
+                    updateCameraPosition()
+                }
+
+                
+//                Map(position: $userPosition) {
+//                    UserAnnotation()
+//                }
                 
 //                Map(coordinateRegion: $locationsHandler.region)
                 
@@ -114,8 +132,15 @@ struct LocationView: View {
             }
         }
     }
+    private func updateCameraPosition() {
+        let location = CLLocationCoordinate2D(latitude: locationsHandler.lastLocation.coordinate.latitude,
+                                              longitude: locationsHandler.lastLocation.coordinate.longitude)
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+        cameraPosition = .region(region)
+    }
 }
 
 #Preview {
     LocationView(isShowSideMenu: .constant(false))
 }
+

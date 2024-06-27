@@ -33,8 +33,8 @@ import MapKit
     @Published var isDriving = false
     
     @Published var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
-        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        center: CLLocationCoordinate2D(latitude: 0.0, longitude: -0.0),
+        span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
     )
 
     @Published
