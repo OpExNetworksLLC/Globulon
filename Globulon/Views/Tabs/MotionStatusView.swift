@@ -32,7 +32,7 @@ struct MotionStatusView: View {
                 /// display stuff here
                 ///
                 VStack {
-                    Spacer()
+                    Spacer().frame(height: 16)
                     VStack() {
                         HStack() {
                             VStack() {
@@ -60,7 +60,6 @@ struct MotionStatusView: View {
                                     Spacer()
                                 }
                             }
-                            Spacer()
                         }
                         
                         Spacer().frame(height: 16)
@@ -126,11 +125,13 @@ struct MotionStatusView: View {
                     Text("activity: \(activityHandler.isActivity)\nstate: \(activityHandler.activityState)")
                     
                     Spacer()
+                    /* On:Off in Navigation Bar
                     Button(self.locationsHandler.updatesStarted ? "Stop Location Updates" : "Start Location Updates") {
                         self.locationsHandler.updatesStarted ? self.locationsHandler.stopLocationUpdates() : self.locationsHandler.startLocationUpdates()
                         self.activityHandler.startActivityUpdates()
                     }
                     .buttonStyle(.bordered)
+                    */
                     Button(self.locationsHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
                         self.locationsHandler.backgroundActivity.toggle()
                     }
@@ -143,6 +144,9 @@ struct MotionStatusView: View {
             }
             .navigationBarTitle("", displayMode: .inline)
             
+            
+            /// Navigation Bar
+            ///
             .navigationBarItems(leading: Button(action: {
                 isShowSideMenu.toggle()
             }) {
@@ -155,9 +159,9 @@ struct MotionStatusView: View {
                 // Do stuff
                 isRecording.toggle()
                 if isRecording {
-                    //locationManager.startUpdatingtLocation()
+                    self.locationsHandler.startLocationUpdates()
                 } else {
-                    //locationManager.stopUpdatingLocation()
+                    self.locationsHandler.stopLocationUpdates()
                 }
             }) {
                 if isRecording {
@@ -190,7 +194,8 @@ struct MotionStatusView: View {
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                    .foregroundColor(AppValues.pallet.primaryLight)                }
+                        .foregroundColor(AppValues.pallet.primaryLight)
+                }
             }
         }
         

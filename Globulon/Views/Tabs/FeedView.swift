@@ -103,8 +103,6 @@ struct FeedView: View {
                     .foregroundColor(AppValues.pallet.primaryLight)                }
             }
         }
-        
-        
     }
     
 }

@@ -9,6 +9,8 @@
 import Foundation
 import SwiftUI
 import CoreLocation
+import MapKit
+
 
 @MainActor class LocationsHandler: ObservableObject {
     
@@ -30,6 +32,10 @@ import CoreLocation
     @Published var isWalking = false
     @Published var isDriving = false
     
+    @Published var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 37.7749, longitude: -122.4194),
+        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+    )
 
     @Published
     var updatesStarted: Bool = UserDefaults.standard.bool(forKey: "liveUpdatesStarted") {
@@ -130,6 +136,14 @@ import CoreLocation
                         //LogEvent.print(module: "**", message: "\(self.count): isActivity: \(self.activityHandler.isActivity), activityState: \(self.activityHandler.activityState), moving: \(self.isMoving), walking: \(self.isWalking), driving: \(self.isDriving)")
                         
                         //LogEvent.print(module: "LocationsHandler", message: "Location \(self.count): \(self.lastLocation)")
+                        
+                        /// Update region
+                        DispatchQueue.main.async {
+                            self.region = MKCoordinateRegion(
+                                center: self.lastLocation.coordinate,
+                                span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                            )
+                        }
                     }
                 }
             } catch {

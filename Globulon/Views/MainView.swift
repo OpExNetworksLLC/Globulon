@@ -26,7 +26,7 @@ struct MainView: View {
                         Text("Home")
                     }
                     .tag(LandingPageEnum.home)
-                CurrentLocationView(isShowSideMenu: $appStatus.isShowSideMenu)
+                LocationView(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "location")
                         Text("Location")
