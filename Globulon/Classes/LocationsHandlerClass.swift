@@ -25,7 +25,10 @@ import MapKit
     @Published var priorCount = 0
     
     @Published var lastLocation = CLLocation()
-    @Published var count = 0
+    @Published var lastCount = 0
+    
+    @Published var realLocation = CLLocation()
+    @Published var realCount = 0
     
     @Published var isStationary = false
     @Published var isMoving = false
@@ -114,11 +117,11 @@ import MapKit
                     if let loc = update.location {
                         
                         self.priorLocation = self.lastLocation
-                        self.priorCount = self.count
+                        self.priorCount = self.lastCount
                         
                         self.lastLocation = loc
                         //self.isStationary = update.isStationary
-                        self.count += 1
+                        self.lastCount += 1
                         
                         /// Set what defines moving
                         self.isMoving = loc.speed > 0.0

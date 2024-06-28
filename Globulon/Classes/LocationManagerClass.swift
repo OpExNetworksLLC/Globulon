@@ -40,9 +40,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         LogEvent.print(module: "LocationManager.init()", message: "init finished")
     }
-    
-    // TODO:  added main actor to support LocationHandler.  This may be ok but maybe not???
-    
+
     @MainActor func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         
         switch manager.authorizationStatus {

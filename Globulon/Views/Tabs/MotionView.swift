@@ -73,7 +73,7 @@ struct MotionView: View {
                         HStack() {
                             VStack() {
                                 HStack() {
-                                    Text("\(self.locationsHandler.count)")
+                                    Text("\(self.locationsHandler.lastCount)")
                                         .frame(width: 30, alignment: .trailing)
                                     Text("Date:")
                                         .frame(width: 75, alignment: .leading)
