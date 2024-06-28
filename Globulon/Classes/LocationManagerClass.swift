@@ -56,6 +56,7 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         case .authorizedAlways:
             LogEvent.print(module: "LocationManager.locationManagerDidChangeAuthorization", message: "Location permission: .athorizedAlways")
             LocationsHandler.shared.startLocationUpdates()
+            LocationsHandler.shared.backgroundActivity = true
         default:
             print("** Location permission: Unknown")
         }

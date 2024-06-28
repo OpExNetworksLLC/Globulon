@@ -16,7 +16,7 @@ struct PermissionsView: View {
     @Environment(\.colorScheme) var colorScheme
     
     /// Singlton access to LocationManager
-    @EnvironmentObject var locationManager: LocationManager
+    let locationManager = LocationManager.shared
     
     @EnvironmentObject var userSettings: UserSettings
     

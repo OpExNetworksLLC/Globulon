@@ -102,7 +102,7 @@ import MapKit
             self.manager.requestWhenInUseAuthorization()
         }
         
-        LogEvent.print(module: "LocationsHandler", message: "started location updates")
+        LogEvent.print(module: "LocationsHandler", message: "Starting location updates...")
         
         Task() {
             do {

@@ -160,10 +160,8 @@ struct MotionView: View {
                 // Do stuff
                 isRecording.toggle()
                 if isRecording {
-                    //locationManager.startUpdatingtLocation()
                     locationsHandler.startLocationUpdates()
                 } else {
-                    //locationManager.stopUpdatingLocation()
                     locationsHandler.stopLocationUpdates()
                 }
             }) {
@@ -173,7 +171,7 @@ struct MotionView: View {
                         .foregroundColor(Color.red)
                         .frame(width: 35, height: 35)
                     Text("recording")
-                        .foregroundColor(AppValues.pallet.primaryLight)
+                        .foregroundColor(Color.red)
 
                 } else {
                     Image(systemName: "record.circle")
