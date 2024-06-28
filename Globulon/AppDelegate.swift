@@ -30,19 +30,19 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        /// Check saved status in the app and adjust as appropriate for the LocationsHandler()
+        /// Check saved status in the app and adjust as appropriate for the locationHandler()
         ///
-        let locationsHandler = LocationsHandler.shared
+        let locationHandler = LocationHandler.shared
         
         /// If location updates were previously active, restart them after the background launch.
-        if locationsHandler.updatesStarted {
+        if locationHandler.updatesStarted {
             LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
-            locationsHandler.startLocationUpdates()
+            locationHandler.startLocationUpdates()
         }
         /// If a background activity session was previously active, reinstantiate it after the background launch.
-        if locationsHandler.backgroundActivity {
+        if locationHandler.backgroundActivity {
             LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity session")
-            locationsHandler.backgroundActivity = true
+            locationHandler.backgroundActivity = true
         }
         
         // Start Firebase...

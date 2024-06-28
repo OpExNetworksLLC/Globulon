@@ -50,11 +50,11 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             print("Location permission: .restricted or .denied")
         case .authorizedWhenInUse:
             LogEvent.print(module: "LocationManager.locationManagerDidChangeAuthorization", message: "Location permission: .authorizedWhenInUse")
-            LocationsHandler.shared.startLocationUpdates()
+            LocationHandler.shared.startLocationUpdates()
         case .authorizedAlways:
             LogEvent.print(module: "LocationManager.locationManagerDidChangeAuthorization", message: "Location permission: .athorizedAlways")
-            LocationsHandler.shared.startLocationUpdates()
-            LocationsHandler.shared.backgroundActivity = true
+            LocationHandler.shared.startLocationUpdates()
+            LocationHandler.shared.backgroundActivity = true
         default:
             print("** Location permission: Unknown")
         }

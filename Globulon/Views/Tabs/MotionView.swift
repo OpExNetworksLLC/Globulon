@@ -12,7 +12,7 @@ struct MotionView: View {
     
     @Binding var isShowSideMenu: Bool
     
-    @ObservedObject var locationsHandler = LocationsHandler.shared
+    @ObservedObject var locationHandler = LocationHandler.shared
     @StateObject private var activityHandler = ActivityHandler.shared
 
     @State var isShowHelp = false
@@ -27,7 +27,7 @@ struct MotionView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationsHandler.lastLocation.coordinate.latitude), \(locationsHandler.lastLocation.coordinate.latitude)")
+                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.latitude)")
                     }
                 }
                 .padding()
@@ -42,11 +42,11 @@ struct MotionView: View {
                         HStack() {
                             VStack() {
                                 HStack() {
-                                    Text("\(self.locationsHandler.priorCount)")
+                                    Text("\(self.locationHandler.priorCount)")
                                         .frame(width: 30, alignment: .trailing)
                                     Text("Date:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(formatDateStampM(self.locationsHandler.priorLocation.timestamp))")
+                                    Text("\(formatDateStampM(self.locationHandler.priorLocation.timestamp))")
                                     Spacer()
                                 }
                                 
@@ -54,14 +54,14 @@ struct MotionView: View {
                                     Spacer().frame(width: 40)
                                     Text("Lat/Lng:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationsHandler.priorLocation.coordinate.latitude) / \(self.locationsHandler.priorLocation.coordinate.longitude)")
+                                    Text("\(self.locationHandler.priorLocation.coordinate.latitude) / \(self.locationHandler.priorLocation.coordinate.longitude)")
                                     Spacer()
                                 }
                                 HStack() {
                                     Spacer().frame(width: 40)
                                     Text("Speed:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationsHandler.lastLocation.speed)")
+                                    Text("\(self.locationHandler.lastLocation.speed)")
                                     Spacer()
                                 }
                             }
@@ -73,11 +73,11 @@ struct MotionView: View {
                         HStack() {
                             VStack() {
                                 HStack() {
-                                    Text("\(self.locationsHandler.lastCount)")
+                                    Text("\(self.locationHandler.lastCount)")
                                         .frame(width: 30, alignment: .trailing)
                                     Text("Date:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(formatDateStampM(self.locationsHandler.lastLocation.timestamp))")
+                                    Text("\(formatDateStampM(self.locationHandler.lastLocation.timestamp))")
                                     Spacer()
                                 }
                                 
@@ -85,14 +85,14 @@ struct MotionView: View {
                                     Spacer().frame(width: 40)
                                     Text("Lat/Lng:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationsHandler.lastLocation.coordinate.latitude) / \(self.locationsHandler.lastLocation.coordinate.longitude)")
+                                    Text("\(self.locationHandler.lastLocation.coordinate.latitude) / \(self.locationHandler.lastLocation.coordinate.longitude)")
                                     Spacer()
                                 }
                                 HStack() {
                                     Spacer().frame(width: 40)
                                     Text("Speed:")
                                         .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationsHandler.lastLocation.speed)")
+                                    Text("\(self.locationHandler.lastLocation.speed)")
                                     Spacer()
                                 }
                             }
@@ -108,19 +108,19 @@ struct MotionView: View {
                             VStack() {
                                 Text("moving")
                                 Rectangle()
-                                    .fill(self.locationsHandler.isMoving ? .green : .red)
+                                    .fill(self.locationHandler.isMoving ? .green : .red)
                                     .frame(width: 75, height: 75, alignment: .center)
                             }
                             VStack() {
                                 Text("walking")
                                 Rectangle()
-                                    .fill(self.locationsHandler.isWalking ? .green : .red)
+                                    .fill(self.locationHandler.isWalking ? .green : .red)
                                     .frame(width: 75, height: 75, alignment: .center)
                             }
                             VStack() {
                                 Text("driving")
                                 Rectangle()
-                                    .fill(self.locationsHandler.isDriving ? .green : .red)
+                                    .fill(self.locationHandler.isDriving ? .green : .red)
                                     .frame(width: 75, height: 75, alignment: .center)
                             }
 
@@ -132,14 +132,14 @@ struct MotionView: View {
                     
                     Spacer()
                     /*
-                    Button(self.locationsHandler.updatesStarted ? "Stop Location Updates" : "Start Location Updates") {
-                        self.locationsHandler.updatesStarted ? self.locationsHandler.stopLocationUpdates() : self.locationsHandler.startLocationUpdates()
+                    Button(self.locationHandler.updatesStarted ? "Stop Location Updates" : "Start Location Updates") {
+                        self.locationHandler.updatesStarted ? self.locationHandler.stopLocationUpdates() : self.locationHandler.startLocationUpdates()
                         self.activityHandler.startActivityUpdates()
                     }
                     .buttonStyle(.bordered)
                     */
-                    Button(self.locationsHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
-                        self.locationsHandler.backgroundActivity.toggle()
+                    Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
+                        self.locationHandler.backgroundActivity.toggle()
                     }
                     .buttonStyle(.bordered)
                 }
@@ -160,9 +160,9 @@ struct MotionView: View {
                 // Do stuff
                 isRecording.toggle()
                 if isRecording {
-                    locationsHandler.startLocationUpdates()
+                    locationHandler.startLocationUpdates()
                 } else {
-                    locationsHandler.stopLocationUpdates()
+                    locationHandler.stopLocationUpdates()
                 }
             }) {
                 if isRecording {
@@ -199,10 +199,10 @@ struct MotionView: View {
             }
         }
         .onAppear() {
-            isRecording = locationsHandler.updatesStarted
+            isRecording = locationHandler.updatesStarted
         }
-        .onChange(of: locationsHandler.updatesStarted) {
-            isRecording = locationsHandler.updatesStarted
+        .onChange(of: locationHandler.updatesStarted) {
+            isRecording = locationHandler.updatesStarted
         }
     }
 

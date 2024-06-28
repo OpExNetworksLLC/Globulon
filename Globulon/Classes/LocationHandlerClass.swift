@@ -1,5 +1,5 @@
 //
-//  LocationsHandlerClass.swift
+//  LocationHandlerClass.swift
 //  Globulon
 //
 //  Created by David Holeman on 6/26/24.
@@ -12,9 +12,9 @@ import CoreLocation
 import MapKit
 
 
-@MainActor class LocationsHandler: ObservableObject {
+@MainActor class LocationHandler: ObservableObject {
     
-    static let shared = LocationsHandler()  // Create a single, shared instance of the object.
+    static let shared = LocationHandler()  // Create a single, shared instance of the object.
 
     private let manager: CLLocationManager
     private var background: CLBackgroundActivitySession?
@@ -44,7 +44,7 @@ import MapKit
     var updatesStarted: Bool = UserDefaults.standard.bool(forKey: "liveUpdatesStarted") {
         didSet {
             UserDefaults.standard.set(updatesStarted, forKey: "liveUpdatesStarted")
-            LogEvent.print(module: "LocationsHandler", message: "Live updates \(updatesStarted ? "started" : "stopped")")
+            LogEvent.print(module: "LocationHandler", message: "Live updates \(updatesStarted ? "started" : "stopped")")
         }
     }
     
@@ -53,7 +53,7 @@ import MapKit
         didSet {
             backgroundActivity ? self.background = CLBackgroundActivitySession() : self.background?.invalidate()
             UserDefaults.standard.set(backgroundActivity, forKey: "BGActivitySessionStarted")
-            LogEvent.print(module: "LocationsHandler", message: "Background acitivty changed to: \(backgroundActivity)")
+            LogEvent.print(module: "LocationHandler", message: "Background acitivty changed to: \(backgroundActivity)")
         }
     }
     
@@ -105,7 +105,7 @@ import MapKit
             self.manager.requestWhenInUseAuthorization()
         }
         
-        LogEvent.print(module: "LocationsHandler", message: "Starting location updates...")
+        LogEvent.print(module: "LocationHandler", message: "Starting location updates...")
         
         Task() {
             do {
@@ -138,7 +138,7 @@ import MapKit
                         
                         //LogEvent.print(module: "**", message: "\(self.count): isActivity: \(self.activityHandler.isActivity), activityState: \(self.activityHandler.activityState), moving: \(self.isMoving), walking: \(self.isWalking), driving: \(self.isDriving)")
                         
-                        //LogEvent.print(module: "LocationsHandler", message: "Location \(self.count): \(self.lastLocation)")
+                        //LogEvent.print(module: "LocationHandler", message: "Location \(self.count): \(self.lastLocation)")
                         
                         /// Update region
                         DispatchQueue.main.async {
@@ -150,14 +150,14 @@ import MapKit
                     }
                 }
             } catch {
-                LogEvent.print(module: "LocationsHandler", message: "Could not start location updates")
+                LogEvent.print(module: "LocationHandler", message: "Could not start location updates")
             }
             return
         }
     }
     
     func stopLocationUpdates() {
-        LogEvent.print(module: "LocationsHandler", message: "Stopping location updates")
+        LogEvent.print(module: "LocationHandler", message: "Stopping location updates")
         self.updatesStarted = false
     }
 }

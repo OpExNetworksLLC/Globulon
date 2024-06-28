@@ -12,7 +12,7 @@ import MapKit
 struct LocationView: View {
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var locationsHandler = LocationsHandler.shared
+    @StateObject var locationHandler = LocationHandler.shared
     @StateObject private var activityHandler = ActivityHandler.shared
     @StateObject var networkManager = NetworkStatus.shared
     
@@ -34,7 +34,7 @@ struct LocationView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationsHandler.lastLocation.coordinate.latitude), \(locationsHandler.lastLocation.coordinate.longitude)")
+                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
                     }
                 }
                 .padding()
@@ -45,12 +45,12 @@ struct LocationView: View {
                 ///
 
                 Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                    Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationsHandler.lastLocation.coordinate.latitude), longitude: (locationsHandler.lastLocation.coordinate.longitude)))
+                    Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.lastLocation.coordinate.latitude), longitude: (locationHandler.lastLocation.coordinate.longitude)))
                 }
                 .onAppear {
                     updateCameraPosition()
                 }
-                .onChange(of: locationsHandler.lastLocation) {
+                .onChange(of: locationHandler.lastLocation) {
                     updateCameraPosition()
                 }
 
@@ -59,7 +59,7 @@ struct LocationView: View {
 //                    UserAnnotation()
 //                }
                 
-//                Map(coordinateRegion: $locationsHandler.region)
+//                Map(coordinateRegion: $locationHandler.region)
                 
                 ///  This is how/when one could ask for permission
                 .onAppear {
@@ -134,8 +134,8 @@ struct LocationView: View {
         }
     }
     private func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationsHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationsHandler.lastLocation.coordinate.longitude)
+        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
+                                              longitude: locationHandler.lastLocation.coordinate.longitude)
         let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
         cameraPosition = .region(region)
     }
