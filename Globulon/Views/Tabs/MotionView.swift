@@ -45,7 +45,7 @@ struct MotionView: View {
                             VStack() {
                                 HStack() {
                                     Text("\(self.locationHandler.priorCount)")
-                                        .frame(width: 30, alignment: .trailing)
+                                        .frame(width: 40, alignment: .trailing)
                                     Text("Date:")
                                         .frame(width: 75, alignment: .leading)
                                     Text("\(formatDateStampM(self.locationHandler.priorLocation.timestamp))")
@@ -76,7 +76,7 @@ struct MotionView: View {
                             VStack() {
                                 HStack() {
                                     Text("\(self.locationHandler.lastCount)")
-                                        .frame(width: 30, alignment: .trailing)
+                                        .frame(width: 40, alignment: .trailing)
                                     Text("Date:")
                                         .frame(width: 75, alignment: .leading)
                                     Text("\(formatDateStampM(self.locationHandler.lastLocation.timestamp))")
@@ -220,9 +220,9 @@ struct MotionView: View {
         }
     }
     private func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationHandler.lastLocation.coordinate.longitude)
-        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.0002, longitudeDelta: 0.0002))
+        let location = CLLocationCoordinate2D(latitude: locationHandler.siftLocation.coordinate.latitude,
+                                              longitude: locationHandler.siftLocation.coordinate.longitude)
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.00005, longitudeDelta: 0.00005))
         cameraPosition = .region(region)
     }
 }

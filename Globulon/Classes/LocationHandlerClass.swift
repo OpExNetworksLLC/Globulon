@@ -123,7 +123,7 @@ import MapKit
                         self.lastCount += 1
                         
                         
-                        if self.lastLocation != self.priorLocation {
+                        if self.lastLocation != self.priorLocation || loc.speed <= 0 {
                             self.siftLocation = self.lastLocation
                             self.siftCount += 1
                         } else {
