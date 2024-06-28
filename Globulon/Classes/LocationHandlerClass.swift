@@ -122,11 +122,17 @@ import MapKit
                         self.lastLocation = loc
                         self.lastCount += 1
                         
-                        let distance = loc.distance(from: priorLocation)
-                        if distance > 1.0 {
+                        
+                        if self.lastLocation != self.priorLocation {
                             self.siftLocation = self.lastLocation
+                            self.siftCount += 1
+                        } else {
                         }
                         
+//                        let distance = loc.distance(from: priorLocation)
+//                        if distance > 1.0 {
+//                            self.siftLocation = self.lastLocation
+//                        }
                         
                         
                         /// Set what defines moving

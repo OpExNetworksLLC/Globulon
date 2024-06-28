@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct MotionView: View {
     
@@ -17,10 +18,13 @@ struct MotionView: View {
 
     @State var isShowHelp = false
     @State var isRecording = false
+    
+    @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
+        span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
+    ))
 
     var body: some View {
-        
-        
         NavigationStack {
             VStack(spacing: 0) {
                 VStack(alignment: .leading) {
@@ -33,9 +37,7 @@ struct MotionView: View {
                 .padding()
                 Divider()
                 Spacer()
-                
-                /// show stuff
-                
+
                 VStack {
                     Spacer().frame(height: 16)
                     VStack() {
@@ -128,7 +130,19 @@ struct MotionView: View {
                     }
                     .padding(.leading, 16)
                     
-                    Text("activity: \(activityHandler.isActivity)\nstate: \(activityHandler.activityState)")
+                    Text("activity: \(activityHandler.isActivity)  state: \(activityHandler.activityState)")
+                    
+                    Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
+                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.siftLocation.coordinate.latitude), longitude: (locationHandler.siftLocation.coordinate.longitude)))
+                    }
+                    .onAppear {
+                        updateCameraPosition()
+                    }
+                    .onChange(of: locationHandler.lastLocation) {
+                        updateCameraPosition()
+                    }
+                    .padding(.leading,16)
+                    .padding(.trailing, 16)
                     
                     Spacer()
                     /*
@@ -205,7 +219,12 @@ struct MotionView: View {
             isRecording = locationHandler.updatesStarted
         }
     }
-
+    private func updateCameraPosition() {
+        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
+                                              longitude: locationHandler.lastLocation.coordinate.longitude)
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.0002, longitudeDelta: 0.0002))
+        cameraPosition = .region(region)
+    }
 }
 
 
