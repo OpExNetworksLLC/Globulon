@@ -198,6 +198,12 @@ struct MotionStatusView: View {
                 }
             }
         }
+        .onAppear() {
+            isRecording = locationsHandler.updatesStarted
+        }
+        .onChange(of: locationsHandler.updatesStarted) {
+            isRecording = locationsHandler.updatesStarted
+        }
         
     }
 

@@ -32,8 +32,9 @@ struct LocationView: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("info")
+                        Text("Lat/Lng:")
                         Spacer()
+                        Text("\(locationsHandler.lastLocation.coordinate.latitude), \(locationsHandler.lastLocation.coordinate.longitude)")
                     }
                 }
                 .padding()
