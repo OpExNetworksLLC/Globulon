@@ -32,7 +32,7 @@ struct MainView: View {
                         Text("Location")
                     }
                     .tag(LandingPageEnum.location)
-                MotionStatusView(isShowSideMenu: $appStatus.isShowSideMenu)
+                MotionView(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "arrow.triangle.pull")
                         Text("Feed")

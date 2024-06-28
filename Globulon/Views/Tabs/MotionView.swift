@@ -1,36 +1,41 @@
 //
-//  MotionStatusView.swift
+//  MotionView.swift
 //  Globulon
 //
-//  Created by David Holeman on 6/26/24.
+//  Created by David Holeman on 6/28/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
-import Foundation
 import SwiftUI
-import CoreMotion
 
-struct MotionStatusView: View {
+struct MotionView: View {
     
     @Binding var isShowSideMenu: Bool
     
     @ObservedObject var locationsHandler = LocationsHandler.shared
     @StateObject private var activityHandler = ActivityHandler.shared
-    
+
     @State var isShowHelp = false
     @State var isRecording = false
 
     var body: some View {
-
-///
-        // Top menu
+        
+        
         NavigationStack {
             VStack(spacing: 0) {
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Lat/Lng:")
+                        Spacer()
+                        Text("\(locationsHandler.lastLocation.coordinate.latitude), \(locationsHandler.lastLocation.coordinate.latitude)")
+                    }
+                }
+                .padding()
+                Divider()
+                Spacer()
                 
-                // TODO:  list was here from dataset
+                /// show stuff
                 
-                /// display stuff here
-                ///
                 VStack {
                     Spacer().frame(height: 16)
                     VStack() {
@@ -60,6 +65,7 @@ struct MotionStatusView: View {
                                     Spacer()
                                 }
                             }
+                            Spacer()
                         }
                         
                         Spacer().frame(height: 16)
@@ -125,7 +131,7 @@ struct MotionStatusView: View {
                     Text("activity: \(activityHandler.isActivity)\nstate: \(activityHandler.activityState)")
                     
                     Spacer()
-                    /* On:Off in Navigation Bar
+                    /*
                     Button(self.locationsHandler.updatesStarted ? "Stop Location Updates" : "Start Location Updates") {
                         self.locationsHandler.updatesStarted ? self.locationsHandler.stopLocationUpdates() : self.locationsHandler.startLocationUpdates()
                         self.activityHandler.startActivityUpdates()
@@ -138,15 +144,10 @@ struct MotionStatusView: View {
                     .buttonStyle(.bordered)
                 }
                 
-                /// end display stuff
-                
                 Spacer()
             }
             .navigationBarTitle("", displayMode: .inline)
             
-            
-            /// Navigation Bar
-            ///
             .navigationBarItems(leading: Button(action: {
                 isShowSideMenu.toggle()
             }) {
@@ -159,9 +160,11 @@ struct MotionStatusView: View {
                 // Do stuff
                 isRecording.toggle()
                 if isRecording {
-                    self.locationsHandler.startLocationUpdates()
+                    //locationManager.startUpdatingtLocation()
+                    locationsHandler.startLocationUpdates()
                 } else {
-                    self.locationsHandler.stopLocationUpdates()
+                    //locationManager.stopUpdatingLocation()
+                    locationsHandler.stopLocationUpdates()
                 }
             }) {
                 if isRecording {
@@ -194,8 +197,7 @@ struct MotionStatusView: View {
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                        .foregroundColor(AppValues.pallet.primaryLight)
-                }
+                    .foregroundColor(AppValues.pallet.primaryLight)                }
             }
         }
         .onAppear() {
@@ -204,13 +206,11 @@ struct MotionStatusView: View {
         .onChange(of: locationsHandler.updatesStarted) {
             isRecording = locationsHandler.updatesStarted
         }
-        
     }
 
 }
 
+
 #Preview {
-    MotionStatusView(isShowSideMenu: .constant(false))
+    MotionView(isShowSideMenu: .constant(false))
 }
-
-
