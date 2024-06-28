@@ -27,8 +27,8 @@ import MapKit
     @Published var lastLocation = CLLocation()
     @Published var lastCount = 0
     
-    @Published var realLocation = CLLocation()
-    @Published var realCount = 0
+    @Published var siftLocation = CLLocation()
+    @Published var siftCount = 0
     
     @Published var isStationary = false
     @Published var isMoving = false
@@ -44,7 +44,7 @@ import MapKit
     var updatesStarted: Bool = UserDefaults.standard.bool(forKey: "liveUpdatesStarted") {
         didSet {
             UserDefaults.standard.set(updatesStarted, forKey: "liveUpdatesStarted")
-            LogEvent.print(module: "LocationHandler", message: "Live updates \(updatesStarted ? "started" : "stopped")")
+            LogEvent.print(module: "LocationHandler", message: "Live updates \(updatesStarted ? "started..." : "...stopped")")
         }
     }
     
@@ -120,8 +120,14 @@ import MapKit
                         self.priorCount = self.lastCount
                         
                         self.lastLocation = loc
-                        //self.isStationary = update.isStationary
                         self.lastCount += 1
+                        
+                        let distance = loc.distance(from: priorLocation)
+                        if distance > 1.0 {
+                            self.siftLocation = self.lastLocation
+                        }
+                        
+                        
                         
                         /// Set what defines moving
                         self.isMoving = loc.speed > 0.0

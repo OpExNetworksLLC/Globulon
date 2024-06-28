@@ -26,7 +26,13 @@ struct GlobulonApp: App {
         /// Print out the settings in the log
         ///
         LogEvent.print(module: "\(AppValues.appName)App.init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
-           
+         
+        /// Trigger a check to ensure we have location tracking authorization.  If the tracking is set to AlwaysInUse this request will detect that and trigger the proper processing in LocationManager
+        /// 
+        LocationManager.shared.getAuthorizedWhenInUseV2 { result in
+            LogEvent.print(module: "LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
+        }
+        
         /// Start monitoring the netwokr connectivity status
         ///
         NetworkStatus.shared.startMonitoring()
