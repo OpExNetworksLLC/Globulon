@@ -1,8 +1,8 @@
 //
 //  AuthenticationClass.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 6/28/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -121,11 +121,13 @@ class Authentication {
         
         class func deleteUser(username: String, completion: (Bool, Error?) -> Void) {
             
+            let serviceName = AppValues.appName
             let accountData = username.data(using: .utf8)!
             
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: accountData,
+                kSecAttrService: serviceName
             ]
             
             let error = SecItemDelete(query as CFDictionary)
@@ -137,7 +139,7 @@ class Authentication {
                 completion(false, result)
             } else {
                 
-                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(AppValues.appName) removed successfully.")
+                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(username) removed successfully.")
                 completion(true, result)
             }
         }

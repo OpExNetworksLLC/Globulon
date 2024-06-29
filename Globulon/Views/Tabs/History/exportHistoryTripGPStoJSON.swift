@@ -77,7 +77,7 @@ func exportHistoryTripGPStoJSON(tripTimestamp: Date) -> Int {
         /// Since sortedTrip is a full representation of the swift data model with a an inverse relationship to TripSummaries we run into some complexities since we can not straight up encode the structure as is.  So, we copy the data to our working structure then export that which is the goal.  We want to get this data into format compativle with gpsJournalSD.
         
         // Get the URL for the documents directory
-        let exportFilename = "ViDrive Trip - \(formatDateStampFile(tripTimestamp)).json"
+        let exportFilename = AppValues.appName + " Trip - \(formatDateStampFile(tripTimestamp)).json"
         guard let fileURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent(exportFilename) else {
             fatalError("Could not find the document directory.")
         }
