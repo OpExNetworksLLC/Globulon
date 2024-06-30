@@ -48,7 +48,7 @@ import MapKit
     var updatesStarted: Bool = UserDefaults.standard.bool(forKey: "liveUpdatesStarted") {
         didSet {
             UserDefaults.standard.set(updatesStarted, forKey: "liveUpdatesStarted")
-            LogEvent.print(module: "LocationHandler", message: "Live updates \(updatesStarted ? "started..." : "...stopped")")
+            LogEvent.print(module: "LocationHandler.updatesStarted", message: "\(updatesStarted ? "Location updates started ..." : "... stopped location updates")")
         }
     }
     
@@ -57,7 +57,7 @@ import MapKit
         didSet {
             backgroundActivity ? self.background = CLBackgroundActivitySession() : self.background?.invalidate()
             UserDefaults.standard.set(backgroundActivity, forKey: "BGActivitySessionStarted")
-            LogEvent.print(module: "LocationHandler", message: "Background acitivty changed to: \(backgroundActivity)")
+            LogEvent.print(module: "LocationHandler", message: "Background activty changed to: \(backgroundActivity)")
         }
     }
     
@@ -111,7 +111,7 @@ import MapKit
             self.manager.requestWhenInUseAuthorization()
         }
         
-        LogEvent.print(module: "LocationHandler", message: "Starting location updates...")
+        LogEvent.print(module: "LocationHandler.startLocationUpdates", message: "Starting location updates ...")
         
         Task() {
             do {
@@ -214,7 +214,7 @@ import MapKit
 
     
     func stopLocationUpdates() {
-        LogEvent.print(module: "LocationHandler", message: "Stopping location updates")
+        LogEvent.print(module: "LocationHandler.stopLocationUpdates", message: "... Stopping location updates")
         self.updatesStarted = false
     }
 }

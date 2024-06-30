@@ -84,7 +84,6 @@
 		6E88DC372B847A6100BBB4DD /* OnboardPageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88DC362B847A6100BBB4DD /* OnboardPageEnum.swift */; };
 		6E89635C2B7D8BEC003ABB4F /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89635B2B7D8BEC003ABB4F /* HomeView.swift */; };
 		6E89635E2B7D8C62003ABB4F /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89635D2B7D8C62003ABB4F /* FeedView.swift */; };
-		6E8963602B7D8C7D003ABB4F /* TripsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89635F2B7D8C7D003ABB4F /* TripsView.swift */; };
 		6E8963622B7D8E8F003ABB4F /* DummyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963612B7D8E8F003ABB4F /* DummyView.swift */; };
 		6E8963642B7D9FCE003ABB4F /* HelpSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */; };
 		6E94F6F52B7C563C00AFA97F /* GlobulonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */; };
@@ -197,11 +196,9 @@
 		6ED869E42B7ED90E004528DD /* CurrentLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */; };
 		6ED869E62B7EE22E004528DD /* FormatDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869E52B7EE22E004528DD /* FormatDates.swift */; };
 		6ED869E82B7EE26D004528DD /* convertMPStoMPH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */; };
-		6ED869EC2B7EF219004528DD /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869EB2B7EF219004528DD /* TripDetailView.swift */; };
 		6ED869F22B7F0FEE004528DD /* formatMPH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869F12B7F0FEE004528DD /* formatMPH.swift */; };
 		6EDCC1B92BA75B12003B7BA7 /* ReachabilityClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */; };
 		6EE4CE232C2786CA002D1076 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */; };
-		6EF93FF22BCAFA990023CB7E /* xLocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */; };
 		6EFF1A542C2F3A2F0058D9A2 /* MotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -283,7 +280,6 @@
 		6E88DC362B847A6100BBB4DD /* OnboardPageEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardPageEnum.swift; sourceTree = "<group>"; };
 		6E89635B2B7D8BEC003ABB4F /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6E89635D2B7D8C62003ABB4F /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
-		6E89635F2B7D8C7D003ABB4F /* TripsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsView.swift; sourceTree = "<group>"; };
 		6E8963612B7D8E8F003ABB4F /* DummyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyView.swift; sourceTree = "<group>"; };
 		6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSheetView.swift; sourceTree = "<group>"; };
 		6E94F6F12B7C563C00AFA97F /* Globulon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globulon.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -372,11 +368,9 @@
 		6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentLocationView.swift; sourceTree = "<group>"; };
 		6ED869E52B7EE22E004528DD /* FormatDates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDates.swift; sourceTree = "<group>"; };
 		6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = convertMPStoMPH.swift; sourceTree = "<group>"; };
-		6ED869EB2B7EF219004528DD /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		6ED869F12B7F0FEE004528DD /* formatMPH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = formatMPH.swift; sourceTree = "<group>"; };
 		6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityClass.swift; sourceTree = "<group>"; };
 		6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
-		6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xLocationManagerClass.swift; sourceTree = "<group>"; };
 		6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -718,7 +712,6 @@
 		6E9AEEB42C2CDCC300522E71 /* Retire */ = {
 			isa = PBXGroup;
 			children = (
-				6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */,
 			);
 			path = Retire;
 			sourceTree = "<group>";
@@ -792,9 +785,7 @@
 		6ED869EA2B7EF205004528DD /* Trips */ = {
 			isa = PBXGroup;
 			children = (
-				6E89635F2B7D8C7D003ABB4F /* TripsView.swift */,
 				6E02977F2BDD44FA00F3366C /* TripsViewV3.swift */,
-				6ED869EB2B7EF219004528DD /* TripDetailView.swift */,
 				6E0297832BDD459B00F3366C /* TripDetailViewV2.swift */,
 				6E725C442BB2777200C5B61E /* CircularScoreView.swift */,
 				6E769CA92BC8D151008CA601 /* MapTripView.swift */,
@@ -964,7 +955,6 @@
 				6E35DF642BE9F2980093286F /* HistoryMapSnapshotView.swift in Sources */,
 				6EB56D6A2B8568E200C106F0 /* OnboardStartView.swift in Sources */,
 				6E88DC2C2B84746100BBB4DD /* articlesFrom.swift in Sources */,
-				6EF93FF22BCAFA990023CB7E /* xLocationManagerClass.swift in Sources */,
 				6ED869F22B7F0FEE004528DD /* formatMPH.swift in Sources */,
 				6EB56D102B85588F00C106F0 /* UserSettingsView.swift in Sources */,
 				6E88DC2E2B84753100BBB4DD /* ArticleLocationsEnum.swift in Sources */,
@@ -1024,14 +1014,12 @@
 				6E2A22CD2B89649A0030F23E /* IntroStartView.swift in Sources */,
 				6E35DF622BE9F1660093286F /* HistoryMapTripView.swift in Sources */,
 				6EB56D252B855CD400C106F0 /* ArticleView.swift in Sources */,
-				6ED869EC2B7EF219004528DD /* TripDetailView.swift in Sources */,
 				6E94F7172B7C70E000AFA97F /* printUserSettings.swift in Sources */,
 				6ECA47BD2BDF5E4700AD08E0 /* FormatDistance.swift in Sources */,
 				6E48E7E42BA0E8480052B3EB /* PermissionsView.swift in Sources */,
 				6E88DC312B84761200BBB4DD /* ViewExtensions.swift in Sources */,
 				6EB56CEF2B85303E00C106F0 /* UserProfileView.swift in Sources */,
 				6E2A88EE2BE7F4AC00DFC163 /* drivingSummaryView.swift in Sources */,
-				6E8963602B7D8C7D003ABB4F /* TripsView.swift in Sources */,
 				6EB56D6C2B85693600C106F0 /* OnboardTermsView.swift in Sources */,
 				6E983A6E2B8426AC002F2251 /* HTMLStringView.swift in Sources */,
 				6E8963622B7D8E8F003ABB4F /* DummyView.swift in Sources */,

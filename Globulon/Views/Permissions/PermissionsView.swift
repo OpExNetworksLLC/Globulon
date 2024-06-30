@@ -9,9 +9,7 @@
 import SwiftUI
 
 struct PermissionsView: View {
-    
-    //@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    
+
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     

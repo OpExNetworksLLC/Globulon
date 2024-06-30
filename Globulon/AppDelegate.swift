@@ -31,10 +31,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
         /// Check saved status in the app and adjust as appropriate for the locationHandler()
-        ///
         let locationHandler = LocationHandler.shared
         
-        /// If location updates were previously active, restart them after the background launch.
+        /// If location updates were previously active and you stopped them then you'll have to restart them manually after the background launch.
         if locationHandler.updatesStarted {
             LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
             locationHandler.startLocationUpdates()
