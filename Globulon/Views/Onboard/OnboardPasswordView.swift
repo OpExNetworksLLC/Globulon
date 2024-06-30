@@ -208,21 +208,9 @@ struct OnboardPasswordView: View {
                             Authentication.keychain.deleteUser(username: email) { success, error in
                                 if success {
                                     LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
-                                    /// Add the new user
-//                                    Authentication.keychain.addUser(username: newUsername, password: password) { success, userID, error in
-//                                        if success {
-//                                            /// do stuff
-//                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "\(oldUsername) added successfully.")
-//                                            completion(true, error)
-//                                        } else {
-//                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error adding account \(error!)")
-//                                            completion(false, error)
-//                                        }
-//                                    }
                                     
                                 } else {
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
-//                                    completion(false, error)
+                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "xError deleting old account \(error!)")
                                 }
                             }
                             

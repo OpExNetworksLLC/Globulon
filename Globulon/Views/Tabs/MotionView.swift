@@ -16,8 +16,11 @@ struct MotionView: View {
     @ObservedObject var locationHandler = LocationHandler.shared
     @StateObject private var activityHandler = ActivityHandler.shared
 
-    @State var isShowHelp = false
-    @State var isRecording = false
+    @State private var isShowHelp = false
+    @State private var isRecording = false
+    
+    @State private var mapSpan: Double = 0.00005
+    private let mapSpanIncrement: Double = 0.00005
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -31,7 +34,7 @@ struct MotionView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.latitude)")
+                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
                     }
                 }
                 .padding()
@@ -39,70 +42,7 @@ struct MotionView: View {
                 Spacer()
 
                 VStack {
-                    Spacer().frame(height: 16)
-                    VStack() {
-                        HStack() {
-                            VStack() {
-                                HStack() {
-                                    Text("\(self.locationHandler.priorCount)")
-                                        .frame(width: 40, alignment: .trailing)
-                                    Text("Date:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(formatDateStampM(self.locationHandler.priorLocation.timestamp))")
-                                    Spacer()
-                                }
-                                
-                                HStack() {
-                                    Spacer().frame(width: 40)
-                                    Text("Lat/Lng:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationHandler.priorLocation.coordinate.latitude) / \(self.locationHandler.priorLocation.coordinate.longitude)")
-                                    Spacer()
-                                }
-                                HStack() {
-                                    Spacer().frame(width: 40)
-                                    Text("Speed:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationHandler.lastLocation.speed)")
-                                    Spacer()
-                                }
-                            }
-                            Spacer()
-                        }
-                        
-                        Spacer().frame(height: 16)
-                        
-                        HStack() {
-                            VStack() {
-                                HStack() {
-                                    Text("\(self.locationHandler.lastCount)")
-                                        .frame(width: 40, alignment: .trailing)
-                                    Text("Date:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(formatDateStampM(self.locationHandler.lastLocation.timestamp))")
-                                    Spacer()
-                                }
-                                
-                                HStack() {
-                                    Spacer().frame(width: 40)
-                                    Text("Lat/Lng:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationHandler.lastLocation.coordinate.latitude) / \(self.locationHandler.lastLocation.coordinate.longitude)")
-                                    Spacer()
-                                }
-                                HStack() {
-                                    Spacer().frame(width: 40)
-                                    Text("Speed:")
-                                        .frame(width: 75, alignment: .leading)
-                                    Text("\(self.locationHandler.lastLocation.speed)")
-                                    Spacer()
-                                }
-                            }
-                            Spacer()
-                        }
-
-                    }
-                    .padding(.leading, 16)
+                    // (Other UI components)
                     
                     Spacer().frame(height: 16)
                     VStack() {
@@ -125,7 +65,6 @@ struct MotionView: View {
                                     .fill(self.locationHandler.isDriving ? .green : .red)
                                     .frame(width: 75, height: 75, alignment: .center)
                             }
-
                         }
                     }
                     .padding(.leading, 16)
@@ -141,17 +80,33 @@ struct MotionView: View {
                     .onChange(of: locationHandler.lastLocation) {
                         updateCameraPosition()
                     }
-                    .padding(.leading,16)
+                    .padding(.leading, 16)
                     .padding(.trailing, 16)
                     
                     Spacer()
-                    /*
-                    Button(self.locationHandler.updatesStarted ? "Stop Location Updates" : "Start Location Updates") {
-                        self.locationHandler.updatesStarted ? self.locationHandler.stopLocationUpdates() : self.locationHandler.startLocationUpdates()
-                        self.activityHandler.startActivityUpdates()
+                    HStack() {
+                        Button("Zoom Out") {
+                            self.mapSpan += mapSpanIncrement
+                            updateCameraPosition()
+                            print("[glo \(self.mapSpan)]")
+                        }
+                        .buttonStyle(.bordered)
+                        Spacer()
+                        Button("Zoom in") {
+                            /// Ensure mapSpan does not go lower than mapSpanIncrement
+                            if mapSpan > mapSpanIncrement {
+                                mapSpan -= mapSpanIncrement
+                            } else {
+                                mapSpan = mapSpanIncrement
+                            }
+                            updateCameraPosition()
+                        }
+                        .buttonStyle(.bordered)
                     }
-                    .buttonStyle(.bordered)
-                    */
+                    .padding(.leading, 16)
+                    .padding(.trailing, 16)
+                    .padding(.bottom, 16)
+                    
                     Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
                         self.locationHandler.backgroundActivity.toggle()
                     }
@@ -209,7 +164,8 @@ struct MotionView: View {
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                    .foregroundColor(AppValues.pallet.primaryLight)                }
+                    .foregroundColor(AppValues.pallet.primaryLight)
+                }
             }
         }
         .onAppear() {
@@ -219,13 +175,15 @@ struct MotionView: View {
             isRecording = locationHandler.updatesStarted
         }
     }
-    private func updateCameraPosition() {
+    
+    func updateCameraPosition() {
         let location = CLLocationCoordinate2D(latitude: locationHandler.siftLocation.coordinate.latitude,
                                               longitude: locationHandler.siftLocation.coordinate.longitude)
-        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.00005, longitudeDelta: 0.00005))
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }
 }
+
 
 
 #Preview {
