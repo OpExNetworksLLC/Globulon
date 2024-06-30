@@ -27,10 +27,10 @@ struct GlobulonApp: App {
         ///
         LogEvent.print(module: "\(AppValues.appName)App.init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
          
-        /// Trigger a check to ensure we have location tracking authorization.  If the tracking is set to AlwaysInUse this request will detect that and trigger the proper processing in LocationManager
+        /// Trigger a check to ensure we have location tracking authorization.  If the tracking is set to AlwaysInUse this request will detect that and trigger the proper processing in LocationHandler
         /// 
-        LocationManager.shared.getAuthorizedWhenInUseV2 { result in
-            LogEvent.print(module: "LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
+        LocationHandler.shared.getAuthorizedWhenInUse { result in
+            LogEvent.print(module: "LocationHandler.getAuthorizedWhenInUse()", message: "\(result)")
         }
         
         /// Start monitoring the netwokr connectivity status
@@ -85,7 +85,6 @@ struct GlobulonApp: App {
         WindowGroup {
             MasterView()
                 .environmentObject(UserSettings())
-                //.environmentObject(LocationManager.shared)  // Singleton implementation so that we force the use of the one instance.
                 .environmentObject(UserStatus())
                 .environmentObject(AppStatus())
                         

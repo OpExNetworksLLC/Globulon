@@ -16,7 +16,7 @@ struct PermissionsView: View {
     @Environment(\.colorScheme) var colorScheme
     
     /// Singlton access to LocationManager
-    let locationManager = LocationManager.shared
+    let locationHandler = LocationHandler.shared
     
     @EnvironmentObject var userSettings: UserSettings
     
@@ -60,7 +60,7 @@ struct PermissionsView: View {
                                 ///
                                 Button(action: {
                                     if !self.isWhenInUseAuthorization {
-                                        locationManager.requestWhenInUseAuthorization()
+                                        locationHandler.requestWhenInUseAuthorization()
                                         isWhenInUseAuthorization = true
                                         isTrackingAllowed = true
                                     }
@@ -95,7 +95,7 @@ struct PermissionsView: View {
                                 ///
                                 Button(action: {
                                     if !self.isAuthorizedAlways {
-                                        locationManager.requestAuthorizedAlways()
+                                        locationHandler.requestAuthorizedAlways()
                                         isAuthorizedAlways = true
                                     }
                                 }) {
@@ -126,10 +126,10 @@ struct PermissionsView: View {
                             }
                             .fixedSize(horizontal: false, vertical: true)
                             .onAppear {
-                                locationManager.getAuthorizedWhenInUseV2 { result in
+                                locationHandler.getAuthorizedWhenInUse { result in
                                     self.isWhenInUseAuthorization = result
                                 }
-                                locationManager.getAuthorizedAlwaysV2 { result in
+                                locationHandler.getAuthorizedAlways { result in
                                     self.isAuthorizedAlways = result
                                 }
                                 ///  Set to WhenInUseAuthorization to true when AuthorizedAlways is set.
@@ -340,5 +340,5 @@ struct PermissionsView: View {
 
 #Preview {
     PermissionsView()
-        .environmentObject(LocationManager())
+        //.environmentObject(LocationManager())
 }

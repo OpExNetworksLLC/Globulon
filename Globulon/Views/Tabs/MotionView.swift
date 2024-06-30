@@ -20,7 +20,8 @@ struct MotionView: View {
     @State private var isRecording = false
     
     @State private var mapSpan: Double = 0.00005
-    private let mapSpanIncrement: Double = 0.00005
+    private let mapSpanMinimum: Double = 0.00005
+    private let mapSpanIncrement: Double = 0.001
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -36,40 +37,42 @@ struct MotionView: View {
                         Spacer()
                         Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
                     }
+                    HStack {
+                        Text("Speed:")
+                        Spacer()
+                        Text("\(convertMPStoMPH(locationHandler.lastSpeed))")
+                    }
                 }
                 .padding()
                 Divider()
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Activity/State:")
+                        Spacer()
+                        Text("\(activityHandler.isActivity) / \(activityHandler.activityState)")
+                    }
+                    HStack {
+                        Text("Location:")
+                        Spacer()
+                        Text("Moving")
+                            .foregroundColor(self.locationHandler.isMoving ? .green : .red)
+                    }
+                    HStack {
+                        Text("Mode:")
+                        Spacer()
+                        Text(self.locationHandler.isWalking ? "Walking" : "")
+                            .foregroundColor(self.locationHandler.isWalking ? .green : .red)
+                        Text(self.locationHandler.isDriving ? "Driving" : "")
+                            .foregroundColor(self.locationHandler.isDriving ? .green : .red)
+                    }
+                }
+                .padding(.leading, 16)
+                .padding(.trailing, 16)
+                
                 Spacer()
 
                 VStack {
                     // (Other UI components)
-                    
-                    Spacer().frame(height: 16)
-                    VStack() {
-                        HStack(){
-                            VStack() {
-                                Text("moving")
-                                Rectangle()
-                                    .fill(self.locationHandler.isMoving ? .green : .red)
-                                    .frame(width: 75, height: 75, alignment: .center)
-                            }
-                            VStack() {
-                                Text("walking")
-                                Rectangle()
-                                    .fill(self.locationHandler.isWalking ? .green : .red)
-                                    .frame(width: 75, height: 75, alignment: .center)
-                            }
-                            VStack() {
-                                Text("driving")
-                                Rectangle()
-                                    .fill(self.locationHandler.isDriving ? .green : .red)
-                                    .frame(width: 75, height: 75, alignment: .center)
-                            }
-                        }
-                    }
-                    .padding(.leading, 16)
-                    
-                    Text("activity: \(activityHandler.isActivity)  state: \(activityHandler.activityState)")
                     
                     Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
                         Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.siftLocation.coordinate.latitude), longitude: (locationHandler.siftLocation.coordinate.longitude)))
@@ -97,7 +100,7 @@ struct MotionView: View {
                             if mapSpan > mapSpanIncrement {
                                 mapSpan -= mapSpanIncrement
                             } else {
-                                mapSpan = mapSpanIncrement
+                                mapSpan = mapSpanMinimum
                             }
                             updateCameraPosition()
                         }
@@ -107,12 +110,19 @@ struct MotionView: View {
                     .padding(.trailing, 16)
                     .padding(.bottom, 16)
                     
+                    List {
+                        ForEach(locationHandler.locationDataBuffer, id: \.self) { detail in
+                            Text("\(formatDateStampA(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed)))/mph \(detail.note)")
+                        }
+                    }
+                    .listStyle(.plain)
+                    
                     Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
                         self.locationHandler.backgroundActivity.toggle()
                     }
                     .buttonStyle(.bordered)
                 }
-                
+
                 Spacer()
             }
             .navigationBarTitle("", displayMode: .inline)

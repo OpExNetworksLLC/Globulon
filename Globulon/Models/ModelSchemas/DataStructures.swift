@@ -32,7 +32,7 @@ struct GPSJournalJSON: Codable {
 
 }
 
-struct LocationDataBuffer: Codable {
+struct LocationDataBuffer: Codable, Hashable {
     var timestamp: Date
     var latitude: Double
     var longitude: Double

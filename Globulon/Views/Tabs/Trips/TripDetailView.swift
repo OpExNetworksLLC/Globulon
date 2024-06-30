@@ -22,7 +22,7 @@ struct TripDetailView: View {
     @Environment(\.modelContext) private var modelContext
     
     /// Singlton access to LocationManager
-    @EnvironmentObject var locationManager: LocationManager
+//    @EnvironmentObject var locationManager: LocationManager
     
     @State private var address: String = ""
     @State private var addressOrigination: String = "pending ..."

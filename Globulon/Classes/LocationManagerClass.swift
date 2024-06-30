@@ -12,7 +12,7 @@
 //  Privacy - Location Always and When in Use Description = "This app requires access to device location"
 //  Privacy - Location Always Usage Description = "This app always requires access to device location"
 
-
+/*
 import Foundation
 import CoreLocation
 
@@ -102,3 +102,4 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     }
     
 }
+*/

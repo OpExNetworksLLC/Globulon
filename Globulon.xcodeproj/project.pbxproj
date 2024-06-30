@@ -28,7 +28,6 @@
 		6E25809A2BB75E44007A5BB1 /* TripDetailsClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2580992BB75E44007A5BB1 /* TripDetailsClass.swift */; };
 		6E2809DC2B96A8C40027FF3C /* TrackingEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2809DB2B96A8C40027FF3C /* TrackingEnums.swift */; };
 		6E2993B32BC1DF5900CA14AE /* AppAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2993B22BC1DF5900CA14AE /* AppAliases.swift */; };
-		6E2993B52BC1DFD500CA14AE /* xLocationManagerClassV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2993B42BC1DFD500CA14AE /* xLocationManagerClassV2.swift */; };
 		6E2A22CD2B89649A0030F23E /* IntroStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CC2B89649A0030F23E /* IntroStartView.swift */; };
 		6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */; };
 		6E2A22D12B8967260030F23E /* IntroPageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22D02B8967260030F23E /* IntroPageEnum.swift */; };
@@ -59,7 +58,6 @@
 		6E725C452BB2777200C5B61E /* CircularScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E725C442BB2777200C5B61E /* CircularScoreView.swift */; };
 		6E7274962B804A1700B5547C /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274952B804A1700B5547C /* AppEnvironment.swift */; };
 		6E7274982B804A9E00B5547C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274972B804A9E00B5547C /* AppDefaults.swift */; };
-		6E769CA82BC88DE0008CA601 /* LocationManagerClassVref.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E769CA72BC88DE0008CA601 /* LocationManagerClassVref.swift */; };
 		6E769CAA2BC8D151008CA601 /* MapTripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E769CA92BC8D151008CA601 /* MapTripView.swift */; };
 		6E78AB4F2BE8743500D3852A /* HistoryMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E78AB4E2BE8743500D3852A /* HistoryMonthView.swift */; };
 		6E7E78F72BE2C8F200B52A77 /* deprocessGPSJournalSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7E78F62BE2C8F200B52A77 /* deprocessGPSJournalSD.swift */; };
@@ -100,7 +98,6 @@
 		6E94F7192B7C73EA00AFA97F /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F7182B7C73EA00AFA97F /* MasterView.swift */; };
 		6E94F71F2B7C759000AFA97F /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F71E2B7C759000AFA97F /* MainView.swift */; };
 		6E94F7212B7C75BC00AFA97F /* LaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F7202B7C75BC00AFA97F /* LaunchView.swift */; };
-		6E94F72A2B7C7EF400AFA97F /* xLocationManagerClassV1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F7292B7C7EF400AFA97F /* xLocationManagerClassV1.swift */; };
 		6E94F72C2B7C92F100AFA97F /* UserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F72B2B7C92F100AFA97F /* UserSettings.swift */; };
 		6E94F72E2B7C93E200AFA97F /* UserModeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F72D2B7C93E200AFA97F /* UserModeEnum.swift */; };
 		6E94F7302B7C941200AFA97F /* LandingPageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F72F2B7C941200AFA97F /* LandingPageEnum.swift */; };
@@ -203,7 +200,6 @@
 		6ED869EC2B7EF219004528DD /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869EB2B7EF219004528DD /* TripDetailView.swift */; };
 		6ED869F22B7F0FEE004528DD /* formatMPH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869F12B7F0FEE004528DD /* formatMPH.swift */; };
 		6EDCC1B92BA75B12003B7BA7 /* ReachabilityClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */; };
-		6EDCC1BB2BA76078003B7BA7 /* xReachabilityManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */; };
 		6EE4CE232C2786CA002D1076 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */; };
 		6EF93FF22BCAFA990023CB7E /* xLocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */; };
 		6EFF1A542C2F3A2F0058D9A2 /* MotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */; };
@@ -231,7 +227,6 @@
 		6E2580992BB75E44007A5BB1 /* TripDetailsClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailsClass.swift; sourceTree = "<group>"; };
 		6E2809DB2B96A8C40027FF3C /* TrackingEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEnums.swift; sourceTree = "<group>"; };
 		6E2993B22BC1DF5900CA14AE /* AppAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAliases.swift; sourceTree = "<group>"; };
-		6E2993B42BC1DFD500CA14AE /* xLocationManagerClassV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xLocationManagerClassV2.swift; sourceTree = "<group>"; };
 		6E2A22CC2B89649A0030F23E /* IntroStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroStartView.swift; sourceTree = "<group>"; };
 		6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroLaunchView.swift; sourceTree = "<group>"; };
 		6E2A22D02B8967260030F23E /* IntroPageEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroPageEnum.swift; sourceTree = "<group>"; };
@@ -262,7 +257,6 @@
 		6E725C442BB2777200C5B61E /* CircularScoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularScoreView.swift; sourceTree = "<group>"; };
 		6E7274952B804A1700B5547C /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6E7274972B804A9E00B5547C /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
-		6E769CA72BC88DE0008CA601 /* LocationManagerClassVref.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerClassVref.swift; sourceTree = "<group>"; };
 		6E769CA92BC8D151008CA601 /* MapTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTripView.swift; sourceTree = "<group>"; };
 		6E78AB4E2BE8743500D3852A /* HistoryMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryMonthView.swift; sourceTree = "<group>"; };
 		6E7E78F62BE2C8F200B52A77 /* deprocessGPSJournalSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deprocessGPSJournalSD.swift; sourceTree = "<group>"; };
@@ -305,7 +299,6 @@
 		6E94F71E2B7C759000AFA97F /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		6E94F7202B7C75BC00AFA97F /* LaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchView.swift; sourceTree = "<group>"; };
 		6E94F7222B7C787300AFA97F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		6E94F7292B7C7EF400AFA97F /* xLocationManagerClassV1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xLocationManagerClassV1.swift; sourceTree = "<group>"; };
 		6E94F72B2B7C92F100AFA97F /* UserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSettings.swift; sourceTree = "<group>"; };
 		6E94F72D2B7C93E200AFA97F /* UserModeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModeEnum.swift; sourceTree = "<group>"; };
 		6E94F72F2B7C941200AFA97F /* LandingPageEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LandingPageEnum.swift; sourceTree = "<group>"; };
@@ -382,7 +375,6 @@
 		6ED869EB2B7EF219004528DD /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		6ED869F12B7F0FEE004528DD /* formatMPH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = formatMPH.swift; sourceTree = "<group>"; };
 		6EDCC1B82BA75B12003B7BA7 /* ReachabilityClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReachabilityClass.swift; sourceTree = "<group>"; };
-		6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xReachabilityManagerClass.swift; sourceTree = "<group>"; };
 		6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xLocationManagerClass.swift; sourceTree = "<group>"; };
 		6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionView.swift; sourceTree = "<group>"; };
@@ -727,10 +719,6 @@
 			isa = PBXGroup;
 			children = (
 				6EF93FF12BCAFA990023CB7E /* xLocationManagerClass.swift */,
-				6E94F7292B7C7EF400AFA97F /* xLocationManagerClassV1.swift */,
-				6E769CA72BC88DE0008CA601 /* LocationManagerClassVref.swift */,
-				6E2993B42BC1DFD500CA14AE /* xLocationManagerClassV2.swift */,
-				6EDCC1BA2BA76078003B7BA7 /* xReachabilityManagerClass.swift */,
 			);
 			path = Retire;
 			sourceTree = "<group>";
@@ -949,7 +937,6 @@
 				6EB4F21F2BDEAE7D00ED9A71 /* formatMMtoHHMM.swift in Sources */,
 				6EA2424D2B86E42000C02D88 /* ForgotPasswordView.swift in Sources */,
 				6E6D9B222B83FE57004325A1 /* scoreTripSmoothness.swift in Sources */,
-				6E94F72A2B7C7EF400AFA97F /* xLocationManagerClassV1.swift in Sources */,
 				6E08F52F2BA905B7004E6329 /* NetworkStatusClass.swift in Sources */,
 				6E7E78F72BE2C8F200B52A77 /* deprocessGPSJournalSD.swift in Sources */,
 				6EB3A6AD2BEA95F2006028F0 /* exportHistoryTripGPStoJSON.swift in Sources */,
@@ -969,7 +956,6 @@
 				6E725C452BB2777200C5B61E /* CircularScoreView.swift in Sources */,
 				6E88DC202B846E6E00BBB4DD /* AppInfoClass.swift in Sources */,
 				6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */,
-				6EDCC1BB2BA76078003B7BA7 /* xReachabilityManagerClass.swift in Sources */,
 				6E54AD982BA7A03500A502DC /* Extensions.swift in Sources */,
 				6EB56D682B8568D400C106F0 /* OnboardLaunchView.swift in Sources */,
 				6E35DF5F2BE9CEC70093286F /* HistoryTripDetailView.swift in Sources */,
@@ -1077,11 +1063,9 @@
 				6E2809DC2B96A8C40027FF3C /* TrackingEnums.swift in Sources */,
 				6E45BFB42BCC5E5700231F09 /* exportTripData.swift in Sources */,
 				6ECFC8512BCA39A30011FF66 /* MapTripSnapshotView.swift in Sources */,
-				6E769CA82BC88DE0008CA601 /* LocationManagerClassVref.swift in Sources */,
 				6EB56CFE2B85326900C106F0 /* isImageEmpty.swift in Sources */,
 				6E4E18442B8C52150084BC07 /* deleteTripSummariesSD.swift in Sources */,
 				6E19D6E22BA2501B00B2AE8C /* IntroAcceptTermsView.swift in Sources */,
-				6E2993B52BC1DFD500CA14AE /* xLocationManagerClassV2.swift in Sources */,
 				6E94F6F52B7C563C00AFA97F /* GlobulonApp.swift in Sources */,
 				6E78AB4F2BE8743500D3852A /* HistoryMonthView.swift in Sources */,
 				6E2993B32BC1DF5900CA14AE /* AppAliases.swift in Sources */,
@@ -1222,7 +1206,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
@@ -1268,7 +1252,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 46;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
