@@ -10,8 +10,8 @@ import SwiftUI
 
 struct MainView: View {
     
-    //@UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    @StateObject var locationHandler = LocationHandler.shared
+    
     @StateObject var appStatus = AppStatus()
     @StateObject var networkStatus = NetworkStatus.shared
     
@@ -96,6 +96,12 @@ struct MainView: View {
         LogEvent.print(module: "MainView.processOnAppear", message: "starting...")
         
         /// Do stuff...
+        
+        /// Force start location updates if they were manually stopped by the user
+        ///
+        if locationHandler.updatesStarted == false {
+            locationHandler.startLocationUpdates()
+        }
         
         LogEvent.print(module: "MainView.processOnAppear", message: "...finished")
     }

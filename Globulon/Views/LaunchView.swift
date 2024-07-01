@@ -12,8 +12,6 @@ struct LaunchView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
-    @StateObject var locationHandler = LocationHandler.shared
-
     @State private var scale: CGFloat = 1.0
     @State private var isProcessing = true
     
@@ -85,12 +83,6 @@ struct LaunchView: View {
     func processTask() async {
         
         LogEvent.print(module: "LaunchView.processTask", message: "starting...")
-        
-        /// Force start location updates if they were manually stopped by the user
-        /// 
-        if locationHandler.updatesStarted == false {
-            locationHandler.startLocationUpdates()
-        }
         
         /// Load the help articles if needed
         ///

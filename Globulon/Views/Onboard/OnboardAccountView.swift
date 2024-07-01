@@ -10,6 +10,8 @@ import SwiftUI
 
 struct OnboardAccountView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
+
     
     //@ObservedObject var appStatus = AppStatus()
     @EnvironmentObject var appStatus: AppStatus
@@ -62,36 +64,70 @@ struct OnboardAccountView: View {
                     Text("FIRST NAME")
                         //.fontWeight(.light)
                         .font(.caption)
-                    TextFieldEx (
-                        label: "First name",
-                        text: $firstname,
-                        focusable: $fieldFocus,
-                        returnKeyType: .next,
-                        autocapitalizationType: .words,
-                        textContentType: UITextContentType.givenName,
-                        tag: 0
+                    HStack {
+                        TextField("First name", text: $firstname)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color.primary)
+                            .autocapitalization(.words)
+                            .textContentType(.givenName)
+                            //.returnKeyType = UIReturnKeyType.done
+                            .tag(1)
+                        Spacer()
+                    }
+                    .frame(height: 40)
+                    .overlay(
+                        Rectangle() // This creates the underline effect
+                            .frame(height: 0.75)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .padding(.top, 30)
                     )
-                    .frame(height:40)
-                    .padding(.vertical, 0)
-                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
+//                    TextFieldEx (
+//                        label: "First name",
+//                        text: $firstname,
+//                        focusable: $fieldFocus,
+//                        returnKeyType: .next,
+//                        autocapitalizationType: .words,
+//                        textContentType: UITextContentType.givenName,
+//                        tag: 0
+//                    )
+//                    .frame(height:40)
+//                    .padding(.vertical, 0)
+//                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
                     
                     Spacer().frame(height: 30)
                     
                     Text("LAST NAME")
                         //.fontWeight(.light)
                         .font(.caption)
-                    TextFieldEx (
-                        label: "Last name",
-                        text: $lastname,
-                        focusable: $fieldFocus,
-                        returnKeyType: .done,
-                        autocapitalizationType: .words,
-                        textContentType: UITextContentType.familyName,
-                        tag: 1
-                    )
+                    HStack {
+                        TextField("Last name", text: $lastname)
+                            .disableAutocorrection(true)
+                            .foregroundColor(Color.primary)
+                            .autocapitalization(.words)
+                            .textContentType(.givenName)
+                            //.returnKeyType = UIReturnKeyType.done
+                            .tag(1)
+                        Spacer()
+                    }
                     .frame(height: 40)
-                    .padding(.vertical, 0)
-                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
+                    .overlay(
+                        Rectangle() // This creates the underline effect
+                            .frame(height: 0.75)
+                            .foregroundColor(colorScheme == .dark ? .white : .black)
+                            .padding(.top, 30)
+                    )
+//                    TextFieldEx (
+//                        label: "Last name",
+//                        text: $lastname,
+//                        focusable: $fieldFocus,
+//                        returnKeyType: .done,
+//                        autocapitalizationType: .words,
+//                        textContentType: UITextContentType.familyName,
+//                        tag: 1
+//                    )
+//                    .frame(height: 40)
+//                    .padding(.vertical, 0)
+//                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
                     
                 }
                 
