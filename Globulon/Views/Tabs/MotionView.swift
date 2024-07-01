@@ -19,9 +19,9 @@ struct MotionView: View {
     @State private var isShowHelp = false
     @State private var isRecording = false
     
-    @State private var mapSpan: Double = 0.00005
+    @State private var mapSpan: Double = 0.0001
     private let mapSpanMinimum: Double = 0.00005
-    private let mapSpanIncrement: Double = 0.001
+    private let mapSpanIncrement: Double = 0.0005
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),

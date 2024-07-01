@@ -18,8 +18,9 @@ struct LocationView: View {
     
     @State var isShowHelp = false
     
-//    @State private var userPosition: MapCameraPosition = .userLocation(fallback: .automatic)
-//    @State private var cameraPosition: MapCameraPosition = .automatic
+    @State private var mapSpan: Double = 0.004
+    private let mapSpanMinimum: Double = 0.002
+    private let mapSpanIncrement: Double = 0.004
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -32,7 +33,7 @@ struct LocationView: View {
             VStack(spacing: 0) {
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Lat/Lng:")
+                        Text("Lat, Lng:")
                         Spacer()
                         Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
                     }
@@ -53,13 +54,30 @@ struct LocationView: View {
                 .onChange(of: locationHandler.lastLocation) {
                     updateCameraPosition()
                 }
+                .padding()
 
-                
-//                Map(position: $userPosition) {
-//                    UserAnnotation()
-//                }
-                
-//                Map(coordinateRegion: $locationHandler.region)
+                HStack() {
+                    Button("Zoom Out") {
+                        self.mapSpan += mapSpanIncrement
+                        updateCameraPosition()
+                        print("[glo \(self.mapSpan)]")
+                    }
+                    .buttonStyle(.bordered)
+                    Spacer()
+                    Button("Zoom in") {
+                        /// Ensure mapSpan does not go lower than mapSpanIncrement
+                        if mapSpan > mapSpanIncrement {
+                            mapSpan -= mapSpanIncrement
+                        } else {
+                            mapSpan = mapSpanMinimum
+                        }
+                        updateCameraPosition()
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding(.leading, 16)
+                .padding(.trailing, 16)
+                .padding(.bottom, 16)
                 
                 ///  This is how/when one could ask for permission
                 .onAppear {
@@ -133,10 +151,10 @@ struct LocationView: View {
             }
         }
     }
-    private func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationHandler.lastLocation.coordinate.longitude)
-        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: 0.005, longitudeDelta: 0.005))
+    func updateCameraPosition() {
+        let location = CLLocationCoordinate2D(latitude: locationHandler.siftLocation.coordinate.latitude,
+                                              longitude: locationHandler.siftLocation.coordinate.longitude)
+        let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }
 }
