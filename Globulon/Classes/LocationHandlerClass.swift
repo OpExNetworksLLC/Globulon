@@ -139,6 +139,8 @@ import MapKit
                         if loc.speed > 0 {
                             self.isMoving = true
                             self.lastSpeed = loc.speed
+                        } else {
+                            self.isMoving = false
                         }
                         
                         /// Set what defines walking
@@ -153,8 +155,6 @@ import MapKit
                         
                         /// Update the buffer
                         updateLocationDataBuffer(location: self.lastLocation)
-                        
-                        //LogEvent.print(module: "**", message: "\(self.count): isActivity: \(self.activityHandler.isActivity), activityState: \(self.activityHandler.activityState), moving: \(self.isMoving), walking: \(self.isWalking), driving: \(self.isDriving)")
                         
                         LogEvent.print(module: "LocationHandler", message: "Location \(self.lastCount): \(self.lastLocation)")
                         
