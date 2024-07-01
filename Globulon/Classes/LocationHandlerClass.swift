@@ -8,6 +8,7 @@
 
 import Foundation
 import SwiftUI
+import SwiftData
 import CoreLocation
 import MapKit
 
@@ -103,6 +104,12 @@ import MapKit
         }
     }
     
+    
+    var isTripInitiatd = false
+    var isTripActive = false
+    var walkingSpeed = 0.0 // MPS
+    var locationUpdateCounter = 0
+    
     func startLocationUpdates() {
         
         /// Double check here and ensure at least .requestWhenInUseAuthorization() has been asked
@@ -135,7 +142,20 @@ import MapKit
                         } else {
                         }
                         
+                        /// Update the buffer when speed is below the tracking threshold
+                        ///
+                        if loc.speed < UserSettings.init().trackingSpeedThreshold {
+                            updateLocationDataBuffer(location: loc)
+                            self.isTripInitiatd = false
+                            self.isTripActive = false
+                            if (loc.speed) > walkingSpeed {
+                                print("** moving faster than walking: \(loc.speed) \(UserSettings.init().trackingSpeedThreshold)")
+                            }
+                        } else {
+                            if isTripActive == false { self.isTripInitiatd = true }
+                        }
                         
+                        /// Action when speed is greater than 0
                         if loc.speed > 0 {
                             self.isMoving = true
                             self.lastSpeed = loc.speed
@@ -144,19 +164,54 @@ import MapKit
                         }
                         
                         /// Set what defines walking
+                        ///
                         if loc.speed > 0.9 && loc.speed < 1.8 {
                             self.isWalking = true
                         } else {
                             self.isWalking = false
                         }
                         
-                        /// Set what defines driving
-                        self.isDriving = loc.speed > 2.2352  // 5 mph
+                        /// Set what defines driving  > 5 mph
+                        ///
+                        if loc.speed > 2.2352 {
+                            self.isDriving = true
+                        } else {
+                            self.isDriving = false
+                        }
                         
                         /// Update the buffer
-                        updateLocationDataBuffer(location: self.lastLocation)
+                        //updateLocationDataBuffer(location: self.lastLocation)
                         
-                        LogEvent.print(module: "LocationHandler", message: "Location \(self.lastCount): \(self.lastLocation)")
+                        
+                        if loc.speed >= UserSettings.init().trackingSpeedThreshold {
+                            self.isTripActive = true
+                        } else {
+                            self.isTripActive = false
+                        }
+                        
+                        /// Transfer buffer if trip initiated and active
+                        ///
+                        if isTripInitiatd && isTripActive {
+                            LogEvent.print(module: "**LocationHandler.startLocationUpdates", message: "Transfering data from buffer")
+                            saveLocationDataBuffer()
+                            self.isTripInitiatd = false
+                        }
+
+                        /// We are driving at this point so do stuff
+
+                        locationUpdateCounter += 1
+                        if locationUpdateCounter >= UserSettings.init().trackingSampleRate {
+                            
+                            /// Save location only if the trip is active
+                            ///
+                            if isTripActive {
+                                saveLocation(location: loc)
+                            }
+                            
+                            locationUpdateCounter = 0
+                        }
+                        
+                        //LogEvent.print(module: "LocationHandler", message: "Location \(self.lastCount): \(self.lastLocation)")
                         
                         /// Update region
                         DispatchQueue.main.async {
@@ -210,8 +265,86 @@ import MapKit
                 
     }
     
-    
+    func saveLocationDataBuffer() {
+        var index = 0
+        while index < locationDataBuffer.count {
 
+            if locationDataBuffer[index].speed <= 0.0 {
+                
+                guard let container = AppEnvironment.sharedModelContainer else {
+                    LogEvent.print(module: "LocationManager.saveLocation()", message: "shared model container has not been initialized")
+                    return
+                }
+                
+                let context = ModelContext(container)
+                
+                print("**% \(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
+                
+                let entry = GpsJournalSD(
+                    timestamp: locationDataBuffer[index].timestamp,
+                    longitude: locationDataBuffer[index].longitude,
+                    latitude: locationDataBuffer[index].latitude,
+                    speed: locationDataBuffer[index].speed,
+                    processed: false,
+                    code: locationDataBuffer[index].code,
+                    note: locationDataBuffer[index].note
+                )
+                
+                context.insert(entry)
+                
+                var saveIndex = 0
+                while saveIndex < index {
+                    
+                    LogEvent.print(module: "**LocationHandler.saveLocationDataBuffer()", message: "\(locationDataBuffer[saveIndex].timestamp), \(locationDataBuffer[saveIndex].speed), \(locationDataBuffer[saveIndex].latitude) : \(locationDataBuffer[saveIndex].longitude)")
+                    
+                    let entry = GpsJournalSD(
+                        timestamp: locationDataBuffer[saveIndex].timestamp,
+                        longitude: locationDataBuffer[saveIndex].longitude,
+                        latitude: locationDataBuffer[saveIndex].latitude,
+                        speed: locationDataBuffer[saveIndex].speed,
+                        processed: false,
+                        code: locationDataBuffer[saveIndex].code,
+                        note: locationDataBuffer[saveIndex].note
+                    )
+                    
+                    context.insert(entry)
+                    
+                    saveIndex += 1
+                }
+                
+                locationDataBuffer.removeAll()
+                break
+            }
+            
+            index += 1
+        }
+    }
+
+    func saveLocation(location: CLLocation) {
+        do {
+            // Access the sharedModelContainer
+            guard let container = AppEnvironment.sharedModelContainer else {
+                LogEvent.print(module: "LocationManager.saveLocation()", message: "shared model container has not been initialized")
+                return
+            }
+            
+            let context = ModelContext(container)
+            
+            let entry = GpsJournalSD(
+                timestamp: Date(),
+                longitude: location.coordinate.longitude,
+                latitude: location.coordinate.latitude,
+                speed: location.speed,
+                processed: false,
+                code: "",
+                note: "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.activityState)"
+            )
+            
+            context.insert(entry)
+            
+            LogEvent.print(module: "**LocationHandler.saveLocation()", message: "saved: \(entry.timestamp) \(formatMPH(convertMPStoMPH( entry.speed))) mph")
+        }
+    }
     
     func stopLocationUpdates() {
         LogEvent.print(module: "LocationHandler.stopLocationUpdates", message: "... Stopping location updates")

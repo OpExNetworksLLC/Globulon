@@ -108,7 +108,6 @@
 		6E983A782B842C56002F2251 /* Terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E983A772B842C56002F2251 /* Terms.json */; };
 		6E9AEEB32C2CDC6D00522E71 /* ActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */; };
 		6E9AEEB62C2CDD0300522E71 /* LocationHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB52C2CDD0300522E71 /* LocationHandlerClass.swift */; };
-		6E9AEEB82C2CF03400522E71 /* LocationManagerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */; };
 		6E9AEEBA2C2D1EA700522E71 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB92C2D1EA700522E71 /* LocationView.swift */; };
 		6E9C448C2BAE8E9E002FABDB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448B2BAE8E9E002FABDB /* FirebaseAnalytics */; };
 		6E9C448E2BAE8E9E002FABDB /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448D2BAE8E9E002FABDB /* FirebaseAnalyticsOnDeviceConversion */; };
@@ -307,7 +306,6 @@
 		6E9A19D42BAFE67F000E5128 /* Globulon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globulon.entitlements; sourceTree = "<group>"; };
 		6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandlerClass.swift; sourceTree = "<group>"; };
 		6E9AEEB52C2CDD0300522E71 /* LocationHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandlerClass.swift; sourceTree = "<group>"; };
-		6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerClass.swift; sourceTree = "<group>"; };
 		6E9AEEB92C2D1EA700522E71 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		6EA242452B86E07800C02D88 /* UserStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatus.swift; sourceTree = "<group>"; };
 		6EA242482B86E3B400C02D88 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -585,7 +583,6 @@
 				6E08F52A2BA8FC4F004E6329 /* InternetReachability.swift */,
 				6E94F7142B7C701B00AFA97F /* LogEventClass.swift */,
 				6E9AEEB52C2CDD0300522E71 /* LocationHandlerClass.swift */,
-				6E9AEEB72C2CF03400522E71 /* LocationManagerClass.swift */,
 				6E48E7E12BA0E5920052B3EB /* MotionManagerClass.swift */,
 				6E6FC46A2BA10C8A0088500A /* NotificationManagerClass.swift */,
 				6E08F52E2BA905B7004E6329 /* NetworkStatusClass.swift */,
@@ -1061,7 +1058,6 @@
 				6E94F7132B7C6A4000AFA97F /* AppValues.swift in Sources */,
 				6E2A88EC2BE7F4A300DFC163 /* scoreSummaryView.swift in Sources */,
 				6E94F7302B7C941200AFA97F /* LandingPageEnum.swift in Sources */,
-				6E9AEEB82C2CF03400522E71 /* LocationManagerClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
