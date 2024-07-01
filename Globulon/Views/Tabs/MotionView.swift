@@ -52,7 +52,7 @@ struct MotionView: View {
                         Text("\(activityHandler.isActivity) / \(activityHandler.activityState)")
                     }
                     HStack {
-                        Text("Location:")
+                        Text("State:")
                         Spacer()
                         Text("Moving")
                             .foregroundColor(self.locationHandler.isMoving ? .green : .red)
@@ -112,7 +112,7 @@ struct MotionView: View {
                     
                     List {
                         ForEach(locationHandler.locationDataBuffer, id: \.self) { detail in
-                            Text("\(formatDateStampA(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed)))/mph \(detail.note)")
+                            Text("\(formatDateStampM(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed))) mph\n\(detail.note)")
                         }
                     }
                     .listStyle(.plain)

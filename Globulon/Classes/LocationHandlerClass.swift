@@ -204,7 +204,7 @@ import MapKit
             speed: location.speed,
             processed: false,
             code: "",
-            note: "buffer" + " " + "\(isMoving) " + "\(isWalking) " + "\(isDriving) "  + "\(activityHandler.activityState)"
+            note: "note:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.activityState)"
         )
         locationDataBuffer.insert(entry, at: 0)
                 
