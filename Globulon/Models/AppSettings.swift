@@ -19,8 +19,8 @@ class AppSettings: ObservableObject {
     // TODO:  More ?
     
     struct login {
-        static var isKeychainLoginEnabled:  Bool = true
-        static var isFirebaseLoginEnabled:  Bool = false
+        static let isKeychainLoginEnabled:  Bool = true
+        static let isFirebaseLoginEnabled:  Bool = false
     }
     
 }

@@ -13,7 +13,7 @@ import SwiftUI
 /// Instead of scattered about in code we set them here.
 ///
 class AppDefaults {
-    static var alias = "<alias>"
+    static let alias = "<alias>"
     static var avatar = UIImage(imageLiteralResourceName: "imgAvatarDefault")
     
     struct gps {
