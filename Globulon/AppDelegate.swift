@@ -46,6 +46,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         // Start Firebase...
         FirebaseApp.configure()
+        FirebaseConfiguration.shared.setLoggerLevel(.min)
                 
         // Assign UNUserNotificationCenter's delegate
         UNUserNotificationCenter.current().delegate = self
