@@ -1,12 +1,14 @@
 //
 //  OnboardAccountView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 7/3/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
+
+
 
 struct OnboardAccountView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -20,8 +22,12 @@ struct OnboardAccountView: View {
     @State var firstname: String = UserSettings.init().firstname
     @State var lastname: String = UserSettings.init().lastname
     
-    /// An entry to correspond to each field tag for sequenced entry.  Set the field to true if you want it to become first responder
-    @State var fieldFocus = [true, false]
+    enum InputOnboardAccountField: Hashable {
+        case firstName
+        case lastName
+    }
+    
+    @FocusState private var focusedField: InputOnboardAccountField?
     
     init() {
         UITableView.appearance().backgroundColor = .clear
@@ -62,7 +68,6 @@ struct OnboardAccountView: View {
                 
                 Group {
                     Text("FIRST NAME")
-                        //.fontWeight(.light)
                         .font(.caption)
                     HStack {
                         TextField("First name", text: $firstname)
@@ -70,8 +75,14 @@ struct OnboardAccountView: View {
                             .foregroundColor(Color.primary)
                             .autocapitalization(.words)
                             .textContentType(.givenName)
-                            //.returnKeyType = UIReturnKeyType.done
-                            .tag(1)
+                            .focused($focusedField, equals: .firstName)
+                            .submitLabel(.next)
+                            .onSubmit {
+                                focusedField = .lastName
+                            }
+                            .onTapGesture {
+                                focusedField = .firstName
+                            }
                         Spacer()
                     }
                     .frame(height: 40)
@@ -81,18 +92,6 @@ struct OnboardAccountView: View {
                             .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding(.top, 30)
                     )
-//                    TextFieldEx (
-//                        label: "First name",
-//                        text: $firstname,
-//                        focusable: $fieldFocus,
-//                        returnKeyType: .next,
-//                        autocapitalizationType: .words,
-//                        textContentType: UITextContentType.givenName,
-//                        tag: 0
-//                    )
-//                    .frame(height:40)
-//                    .padding(.vertical, 0)
-//                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
                     
                     Spacer().frame(height: 30)
                     
@@ -104,9 +103,15 @@ struct OnboardAccountView: View {
                             .disableAutocorrection(true)
                             .foregroundColor(Color.primary)
                             .autocapitalization(.words)
-                            .textContentType(.givenName)
-                            //.returnKeyType = UIReturnKeyType.done
-                            .tag(1)
+                            .textContentType(.familyName)
+                            .focused($focusedField, equals: .lastName)
+                            .submitLabel(.done)
+                            .onSubmit {
+                                focusedField = nil
+                            }
+                            .onTapGesture {
+                                focusedField = .lastName
+                            }
                         Spacer()
                     }
                     .frame(height: 40)
@@ -116,19 +121,10 @@ struct OnboardAccountView: View {
                             .foregroundColor(colorScheme == .dark ? .white : .black)
                             .padding(.top, 30)
                     )
-//                    TextFieldEx (
-//                        label: "Last name",
-//                        text: $lastname,
-//                        focusable: $fieldFocus,
-//                        returnKeyType: .done,
-//                        autocapitalizationType: .words,
-//                        textContentType: UITextContentType.familyName,
-//                        tag: 1
-//                    )
-//                    .frame(height: 40)
-//                    .padding(.vertical, 0)
-//                    .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
                     
+                }
+                .onAppear {
+                    focusedField = .firstName
                 }
                 
                 Spacer()

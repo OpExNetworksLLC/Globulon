@@ -1,6 +1,6 @@
 //
 //  UserAccountView.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 2/20/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
@@ -56,7 +56,14 @@ struct UserAccountView: View {
     
     @State var showFirebaseChangeEmailSubmittedAlert: Bool = false
     @State var showFirebaseChangeEmailSubmittedMessage: String = ""
-        
+
+    enum InputField: Hashable {
+        case firstName
+        case lastName
+    }
+    @FocusState private var focusedField: InputField?
+
+
     var body: some View {
                 
         NavigationView {
@@ -80,6 +87,7 @@ struct UserAccountView: View {
                         .frame(width: AppValues.screen.width - 36, height: 120, alignment: .leading)
                         
                         Section(header: Text("name")) {
+                            /*
                             TextFieldEx (
                                 label: "First name",
                                 text: $firstname,
@@ -89,10 +97,24 @@ struct UserAccountView: View {
                                 textContentType: UITextContentType.givenName,
                                 tag: 0
                             )
+                            */
+                            TextField("First name", text: $firstname)
+                                .disableAutocorrection(true)
+                                .foregroundColor(Color.primary)
+                                .autocapitalization(.words)
+                                .textContentType(.givenName)
+                                .focused($focusedField, equals: .firstName)
+                                .submitLabel(.next)
+                                .onSubmit {
+                                    focusedField = .lastName
+                                }
+                                .onTapGesture {
+                                    focusedField = .firstName
+                                }
                             .onChange(of: firstname){
                                 userSettings.firstname = firstname.trimmingCharacters(in: .whitespacesAndNewlines)
                             }
-                            
+                            /*
                             TextFieldEx (
                                 label: "Last name",
                                 text: $lastname,
@@ -102,6 +124,20 @@ struct UserAccountView: View {
                                 textContentType: UITextContentType.familyName,
                                 tag: 1
                             )
+                            */
+                            TextField("Last name", text: $lastname)
+                                .disableAutocorrection(true)
+                                .foregroundColor(Color.primary)
+                                .autocapitalization(.words)
+                                .textContentType(.familyName)
+                                .focused($focusedField, equals: .lastName)
+                                .submitLabel(.done)
+                                .onSubmit {
+                                    focusedField = nil
+                                }
+                                .onTapGesture {
+                                    focusedField = .lastName
+                                }
                             .onChange(of: lastname) {
                                 userSettings.lastname = lastname.trimmingCharacters(in: .whitespacesAndNewlines)
                             }
@@ -182,7 +218,6 @@ struct UserAccountView: View {
                             if AppSettings.login.isKeychainLoginEnabled {
                                 HStack {
                                     Button(action: {
-
                                         if AppSettings.login.isKeychainLoginEnabled {
                                             
                                             Authentication.keychain.changeUser(oldUsername: originalEmail, newUsername: email) { success, error in
@@ -196,7 +231,19 @@ struct UserAccountView: View {
                                             }
                                         }
                                     }) {
-                                        Text("zubmit")
+                                        if isEmailChanged {
+                                            HStack {
+                                                Spacer()
+                                                Text("submit")
+                                                    .frame(height: 30)
+                                                    .padding(.leading, 8)
+                                                    .padding(.trailing, 8)
+                                                    .background(RoundedRectangle(cornerRadius: 5)
+                                                        .stroke(Color.blue, lineWidth: 0.5))
+                                            }
+                                        } else {
+                                            Text("n/a")
+                                        }
                                     }
                                     Spacer()
                                 }

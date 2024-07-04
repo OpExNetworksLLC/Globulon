@@ -1,8 +1,8 @@
 //
 //  OnboardEmailView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 7/3/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 import SwiftUI
@@ -17,13 +17,17 @@ struct OnboardEmailView: View {
     @State var email1: String = UserSettings.init().email
     @State var email2: String = UserSettings.init().email
     
-    /// An entry to correspond to each field tag for sequenced entry.  Set the field to true if you want it to become first responder
-    @State var fieldFocus = [true, false]
+    @FocusState private var focusedField: InputOnboardEmailField?
     
     /// email verification
     @State var isEmailVerified: Bool = false
     @State var isEmail1VerifiedImage: String = "imgVerifyOff"
     @State var isEmail2VerifiedImage: String = "imgVerifyOff"
+    
+    enum InputOnboardEmailField: Hashable {
+        case email1
+        case email2
+    }
     
     var body: some View {
         HStack {
@@ -67,41 +71,6 @@ struct OnboardEmailView: View {
                     Text("EMAIL ADDRESS")
                         .font(.caption)
                     
-                    /*
-                    HStack {
-                        /// Email address
-                        
-                        TextFieldEx (
-                            label: "email address",
-                            text: $email1,
-                            focusable: $fieldFocus,
-                            returnKeyType: .done,
-                            autocapitalizationType: Optional.none,
-                            keyboardType: .emailAddress,
-                            textContentType: UITextContentType.emailAddress,
-                            tag: 0
-                        )
-                        .frame(height: 40)
-                        .padding(.vertical, 0)
-                        .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
-                        .onChange(of: email1) {
-                            // check for valid email format
-                            
-                            // force lowercase
-                            email1 = email1.lowercased()
-                            
-                            //isEmailVerified = isValidEmail(string: email1)
-                            if isValidEmail(string: email1) {isEmail1VerifiedImage = "imgVerifyOn" } else { isEmail1VerifiedImage = "imgVerifyOff" }
-                        }
-                        
-                        Image(isEmail1VerifiedImage)
-                            .imageScale(.large)
-                            .frame(width: 32, height: 32, alignment: .center)
-                        
-                        
-                    } // end HStack
-                    */
-                    
                     HStack {
                         TextField(
                             "Email address",
@@ -127,6 +96,14 @@ struct OnboardEmailView: View {
                         .textCase(.lowercase)
                         .textContentType(.emailAddress)
                         .foregroundColor(Color.primary)
+                        .focused($focusedField, equals: .email1)
+                        .submitLabel(.next)
+                        .onSubmit {
+                            focusedField = .email2
+                        }
+                        .onTapGesture {
+                            focusedField = .email1
+                        }
                         .onAppear {
                             
                             // force lowercase
@@ -149,6 +126,14 @@ struct OnboardEmailView: View {
                             //if email != userSettings.email { isChanged = true }
                             
                         }
+                        .frame(height: 40)
+                        .overlay(
+                            Rectangle() // This creates the underline effect
+                                .frame(height: 0.75)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .padding(.top, 30)
+                        )
+                        
                         Image(isEmail1VerifiedImage)
                             .imageScale(.large)
                             .frame(width: 32, height: 32, alignment: .center)
@@ -157,57 +142,11 @@ struct OnboardEmailView: View {
                                 if isEmailVerified {isEmail1VerifiedImage = "imgVerifyOn" } else { isEmail1VerifiedImage = "imgVerifyOff" }
                             }
                     }
-                    .overlay(
-                        Rectangle() // This creates the underline effect
-                            .frame(height: 0.75)
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                            .padding(.top, 35),
-                        alignment: .bottomLeading
-                    )
                     
                     Spacer().frame(height: 32)
                     
                     Text("REENTER EMAIL ADDRESS")
                         .font(.caption)
-                    /*
-                    HStack {
-                        /// Email address
-                        TextFieldEx (
-                            label: "email address",
-                            text: $email2,
-                            focusable: $fieldFocus,
-                            returnKeyType: .done,
-                            autocapitalizationType: Optional.none,
-                            keyboardType: .emailAddress,
-                            textContentType: UITextContentType.emailAddress,
-                            tag: 1
-                        )
-                        .frame(height: 40)
-                        .padding(.vertical, 0)
-                        .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
-                        .onChange(of: email2) {
-                            // force lowercase
-                            email2 = email2.lowercased()
-                            
-                            if isValidEmail(string: email1) {isEmail2VerifiedImage = "imgVerifyOn" } else { isEmail2VerifiedImage = "imgVerifyOff" }
-                        }
-//                        .onSubmit {
-//                            // Dismiss the keyboard when the "Done" button is pressed
-//                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                        }
-                        
-                        Image(isEmail2VerifiedImage)
-                            .imageScale(.large)
-                            .frame(width: 32, height: 32, alignment: .center)
-                            .onChange(of: email2) {
-                                if email1 == email2 {
-                                    isEmailVerified = true
-                                } else {
-                                    isEmailVerified = false
-                                }
-                            }
-                    } // end HStack
-                     */
                     
                     HStack {
                         TextField(
@@ -234,6 +173,14 @@ struct OnboardEmailView: View {
                         .textCase(.lowercase)
                         .textContentType(.emailAddress)
                         .foregroundColor(Color.primary)
+                        .focused($focusedField, equals: .email2)
+                        .submitLabel(.done)
+                        .onSubmit {
+                            focusedField = nil
+                        }
+                        .onTapGesture {
+                            focusedField = .email2
+                        }
                         .onAppear {
                             
                             // force lowercase
@@ -256,6 +203,13 @@ struct OnboardEmailView: View {
                             //if email != userSettings.email { isChanged = true }
                             
                         }
+                        .frame(height: 40)
+                        .overlay(
+                            Rectangle() // This creates the underline effect
+                                .frame(height: 0.75)
+                                .foregroundColor(colorScheme == .dark ? .white : .black)
+                                .padding(.top, 30)
+                        )
                         Image(isEmail1VerifiedImage)
                             .imageScale(.large)
                             .frame(width: 32, height: 32, alignment: .center)
@@ -264,13 +218,9 @@ struct OnboardEmailView: View {
                                 if isEmailVerified {isEmail2VerifiedImage = "imgVerifyOn" } else { isEmail2VerifiedImage = "imgVerifyOff" }
                             }
                     }
-                    .overlay(
-                        Rectangle() // This creates the underline effect
-                            .frame(height: 0.75)
-                            .foregroundColor(colorScheme == .dark ? .white : .black)
-                            .padding(.top, 35),
-                        alignment: .bottomLeading
-                    )
+                }
+                .onAppear {
+                    focusedField = .email1
                 }
                 
                 Spacer()

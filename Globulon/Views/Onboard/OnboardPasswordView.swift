@@ -1,8 +1,8 @@
 //
 //  OnboardPasswordView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 7/3/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -12,6 +12,8 @@ import Security
 
 struct OnboardPasswordView: View {
     @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
+
     
     //@ObservedObject var appStatus = AppStatus()
     @EnvironmentObject var appStatus: AppStatus
@@ -29,8 +31,10 @@ struct OnboardPasswordView: View {
     @State var isPasswordVerified: Bool = false
     @State var isPasswordVerifiedImage: String = "imgVerifyOff"
     
-    /// An entry to correspond to each field tag for sequenced entry.  Set the field to true if you want it to become first responder
-    @State var fieldFocus = [true, false]
+//    /// An entry to correspond to each field tag for sequenced entry.  Set the field to true if you want it to become first responder
+//    @State var fieldFocus = [true, false]
+    @FocusState private var focusedField: InputOnboardPasswordField?
+    
     @State var isHidePassword = true
     
     @State var showKeychainAddUserFailedAlert: Bool = false
@@ -42,6 +46,11 @@ struct OnboardPasswordView: View {
     @State var showFirebaseAlreadyInUsedMessage: String = ""
     
     var email: String = UserSettings.init().email
+    
+    enum InputOnboardPasswordField: Hashable {
+        case passwordEntry
+        case passwordVerify
+    }
     
     var body: some View {
         HStack {
@@ -104,27 +113,62 @@ struct OnboardPasswordView: View {
                         }
                         
                     }
+                    
                     HStack {
-                        //SecureField("Enter password", text: $passwordEntry)
-                        TextFieldEx (
-                            label: "password",
-                            text: $passwordEntry,
-                            focusable: $fieldFocus,
-                            isSecureTextEntry: $isHidePassword,
-                            returnKeyType: .next,
-                            autocorrectionType: .no,
-                            tag: 0
-                        )
-                        .frame(height: 40)
-                        .padding(.vertical, 0)
-                        .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
-                        .onChange(of: passwordEntry) {
-                            // check strength
-                            let strength = passwordStrengthCheck(string: passwordEntry)
-                            isPasswordStrengthImage = strength.image
-                            if strength.value == 0 {isPasswordVerified = false}
-                            
+                        if isHidePassword {
+                            SecureField("password", text: $passwordEntry)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                            .focused($focusedField, equals: .passwordEntry)
+                            .submitLabel(.next)
+                            .onSubmit {
+                                focusedField = .passwordVerify
+                            }
+                            .onTapGesture {
+                                focusedField = .passwordEntry
+                            }
+                            .onChange(of: passwordEntry) {
+                                // check strength
+                                let strength = passwordStrengthCheck(string: passwordEntry)
+                                isPasswordStrengthImage = strength.image
+                                if strength.value == 0 {isPasswordVerified = false}
+                                
+                            }
+                            .frame(height: 40)
+                            .overlay(
+                                Rectangle() // This creates the underline effect
+                                    .frame(height: 0.75)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(.top, 30)
+                            )
+                        } else {
+                            TextField("password", text: $passwordEntry)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                            .focused($focusedField, equals: .passwordEntry)
+                            .submitLabel(.next)
+                            .onSubmit {
+                                focusedField = .passwordVerify
+                            }
+                            .onTapGesture {
+                                focusedField = .passwordEntry
+                            }
+                            .onChange(of: passwordEntry) {
+                                // check strength
+                                let strength = passwordStrengthCheck(string: passwordEntry)
+                                isPasswordStrengthImage = strength.image
+                                if strength.value == 0 {isPasswordVerified = false}
+                                
+                            }
+                            .frame(height: 40)
+                            .overlay(
+                                Rectangle() // This creates the underline effect
+                                    .frame(height: 0.75)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(.top, 30)
+                            )
                         }
+
                         Image(isPasswordStrengthImage)
                             .imageScale(.large)
                             .frame(width: 32, height: 32, alignment: .center)
@@ -133,40 +177,78 @@ struct OnboardPasswordView: View {
                     Spacer().frame(height: 32)
                     
                     HStack {
-                        //SecureField("Verify Password", text: $passwordVerify)
-                        TextFieldEx (
-                            label: "verify password",
-                            text: $passwordVerify,
-                            focusable: $fieldFocus,
-                            isSecureTextEntry: $isHidePassword,
-                            returnKeyType: .done,
-                            autocorrectionType: .no,
-                            tag: 1
-                        )
-                        .frame(height: 40)
-                        .padding(.vertical, 0)
-                        .overlay(Rectangle().frame(height: 0.5).padding(.top, 30))
-                        //.foregroundColor(inputColor)
-                        .onChange(of: passwordVerify) {
-                            // check validity
-                            if passwordVerify == passwordEntry && passwordStrengthCheck(string: passwordEntry).value > 0 {
-                                isPasswordVerified = true
-                                isPasswordVerifiedImage = "imgVerifyOn"
-                            } else {
-                                isPasswordVerified = false
-                                isPasswordVerifiedImage = "imgVerifyOff"
+                        if isHidePassword {
+                            SecureField("password verify", text: $passwordVerify)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                            .focused($focusedField, equals: .passwordVerify)
+                            .submitLabel(.next)
+                            .onSubmit {
+                                focusedField = nil
                             }
+                            .onTapGesture {
+                                focusedField = .passwordVerify
+                            }
+                            .onChange(of: passwordVerify) {
+                                // check validity
+                                if passwordVerify == passwordEntry && passwordStrengthCheck(string: passwordEntry).value > 0 {
+                                    isPasswordVerified = true
+                                    isPasswordVerifiedImage = "imgVerifyOn"
+                                } else {
+                                    isPasswordVerified = false
+                                    isPasswordVerifiedImage = "imgVerifyOff"
+                                }
+                            }
+                            .frame(height: 40)
+                            .overlay(
+                                Rectangle() // This creates the underline effect
+                                    .frame(height: 0.75)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(.top, 30)
+                            )
+
+                        } else {
+                            TextField("password verify", text: $passwordVerify)
+                            .disableAutocorrection(true)
+                            .autocapitalization(.none)
+                            .focused($focusedField, equals: .passwordVerify)
+                            .submitLabel(.next)
+                            .onSubmit {
+                                focusedField = nil
+                            }
+                            .onTapGesture {
+                                focusedField = .passwordVerify
+                            }
+                            .onChange(of: passwordVerify) {
+                                // check validity
+                                if passwordVerify == passwordEntry && passwordStrengthCheck(string: passwordEntry).value > 0 {
+                                    isPasswordVerified = true
+                                    isPasswordVerifiedImage = "imgVerifyOn"
+                                } else {
+                                    isPasswordVerified = false
+                                    isPasswordVerifiedImage = "imgVerifyOff"
+                                }
+                            }
+                            .frame(height: 40)
+                            .overlay(
+                                Rectangle() // This creates the underline effect
+                                    .frame(height: 0.75)
+                                    .foregroundColor(colorScheme == .dark ? .white : .black)
+                                    .padding(.top, 30)
+                            )
+
                         }
-//                        .onSubmit {
-//                            // Dismiss the keyboard when the "Done" button is pressed
-//                            UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-//                        }
                         
-                        Image(isPasswordVerifiedImage)
+                        Image(isPasswordStrengthImage)
                             .imageScale(.large)
                             .frame(width: 32, height: 32, alignment: .center)
                     }
-                } // end group
+                                        
+                }
+                .onAppear {
+                    focusedField = .passwordEntry
+                }
+                // end group
                 
                 Spacer()
 
