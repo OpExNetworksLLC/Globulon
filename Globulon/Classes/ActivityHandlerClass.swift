@@ -17,7 +17,7 @@ import Combine
     private let manager: CMMotionActivityManager
     
     @Published var isActivity = false
-    @Published var activityState: ActivityState = .stationary
+    @Published var activityState: ActivityState = .unknown
     
     private init() {
         self.manager = CMMotionActivityManager()
@@ -65,9 +65,9 @@ import Combine
 }
 
 enum ActivityState: String {
-    case walking = "Walking"
-    case running = "Running"
-    case driving = "Driving"
-    case stationary = "Stationary"
-    case unknown = "Unknown"
+    case walking = "xWalking"
+    case running = "xRunning"
+    case driving = "xDriving"
+    case stationary = "xStationary"
+    case unknown = "xUnknown"
 }

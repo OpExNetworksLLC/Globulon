@@ -23,7 +23,7 @@ import MapKit
     private let locationDataBufferLimit = 25
     @Published var locationDataBuffer: [LocationDataBuffer] = []
 
-    let activityHandler = ActivityHandler.shared  // access the ActivityHandler singleton
+    private var activityHandler = ActivityHandler.shared  // access the ActivityHandler singleton
 
     @Published var priorLocation = CLLocation()
     @Published var priorCount = 0
@@ -259,7 +259,7 @@ import MapKit
             speed: location.speed,
             processed: false,
             code: "",
-            note: "note:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.activityState)"
+            note: "buffer:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.isActivity)" + "\(activityHandler.activityState)"
         )
         locationDataBuffer.insert(entry, at: 0)
                 
