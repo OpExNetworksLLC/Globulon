@@ -16,6 +16,7 @@ import Combine
     
     private let manager: CMMotionActivityManager
     
+    @Published var isActivityMonitoringOn = false
     @Published var isActivity = false
     @Published var activityState: ActivityState = .unknown
     
@@ -41,12 +42,19 @@ import Combine
         manager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
             guard let self = self, let activity = activity else { return }
             LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "started ...")
+            
+            self.isActivityMonitoringOn = true
+            self.updatesStarted = true
+            
             self.updateActivityState(activity)
         }
     }
     
     func stopActivityUpdates() {
         manager.stopActivityUpdates()
+        
+        isActivityMonitoringOn = false
+        
         LogEvent.print(module: "ActivityHandler.stopActivityUpdates()", message: "Stopping activity updates")
     }
     

@@ -45,6 +45,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
         
         let activityHandler = ActivityHandler.shared
+        
         if activityHandler.updatesStarted {
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
             activityHandler.startActivityUpdates()

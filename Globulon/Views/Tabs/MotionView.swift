@@ -127,6 +127,70 @@ struct MotionView: View {
             }
             .navigationBarTitle("", displayMode: .inline)
             
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isShowSideMenu.toggle()
+                    }) {
+                        Image(systemName: "square.leftthird.inset.filled")
+                            .font(.system(size: 26, weight: .ultraLight))
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(AppValues.pallet.primaryLight)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if activityHandler.isActivityMonitoringOn {
+                        Rectangle()
+                            .fill(Color.green)
+                            .frame(width: 10, height: 10)
+                    } else {
+                        Rectangle()
+                            .fill(Color.red)
+                            .frame(width: 10, height: 10)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        isRecording.toggle()
+                        if isRecording {
+                            locationHandler.startLocationUpdates()
+                        } else {
+                            locationHandler.stopLocationUpdates()
+                        }
+                    }) {
+                        if isRecording {
+                            Image(systemName: "record.circle")
+                                .font(.system(size: 24, weight: .light))
+                                .foregroundColor(Color.red)
+                                .frame(width: 35, height: 35)
+                            Text("recording")
+                                .foregroundColor(Color.red)
+
+                        } else {
+                            Image(systemName: "record.circle")
+                                .font(.system(size: 24, weight: .light))
+                                .foregroundColor(AppValues.pallet.primaryLight)
+                                .foregroundColor(Color.red)
+                                .frame(width: 35, height: 35)
+                            Text("record")
+                                .foregroundColor(AppValues.pallet.primaryLight)
+                        }
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Image("appLogoTransparent")
+                        .resizable()
+                        .renderingMode(.template)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 38, height: 38)
+                        .foregroundColor(AppValues.pallet.primaryLight)
+                }
+            }
+            
+            /*
             .navigationBarItems(leading: Button(action: {
                 isShowSideMenu.toggle()
             }) {
@@ -177,6 +241,8 @@ struct MotionView: View {
                     .foregroundColor(AppValues.pallet.primaryLight)
                 }
             }
+            */
+            
         }
         .onAppear() {
             isRecording = locationHandler.updatesStarted
