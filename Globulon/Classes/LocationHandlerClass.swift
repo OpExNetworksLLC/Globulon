@@ -23,7 +23,7 @@ import MapKit
     private let locationDataBufferLimit = 25
     @Published var locationDataBuffer: [LocationDataBuffer] = []
 
-    private var activityHandler = ActivityHandler.shared  // access the ActivityHandler singleton
+    @ObservedObject var activityHandler = ActivityHandler.shared  // access the ActivityHandler singleton
 
     @Published var priorLocation = CLLocation()
     @Published var priorCount = 0
