@@ -19,19 +19,28 @@ import Combine
     @Published var isActivity = false
     @Published var activityState: ActivityState = .unknown
     
+    @Published
+    var updatesStarted: Bool = UserDefaults.standard.bool(forKey: "activityUpdatesStarted") {
+        didSet {
+            UserDefaults.standard.set(updatesStarted, forKey: "activityUpdatesStarted")
+            LogEvent.print(module: "ActivityHandler.updatesStarted", message: "\(updatesStarted ? "Activity updates started ..." : "... stopped activity updates")")
+        }
+    }
+    
     private init() {
         self.manager = CMMotionActivityManager()
     }
     
     func startActivityUpdates() {
+
         guard CMMotionActivityManager.isActivityAvailable() else {
-            print("Activity data is not available on this device.")
+            LogEvent.print(module: "**ActivityHandler.startActivityUpdates()", message: "Activity data is not available on this device.")
             return
         }
         
         manager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
             guard let self = self, let activity = activity else { return }
-            LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "Starting activity updates")
+            LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "started ...")
             self.updateActivityState(activity)
         }
     }

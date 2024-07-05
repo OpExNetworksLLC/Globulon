@@ -14,7 +14,7 @@ struct MotionView: View {
     @Binding var isShowSideMenu: Bool
     
     @ObservedObject var locationHandler = LocationHandler.shared
-    @StateObject private var activityHandler = ActivityHandler.shared
+    @ObservedObject var activityHandler = ActivityHandler.shared
 
     @State private var isShowHelp = false
     @State private var isRecording = false

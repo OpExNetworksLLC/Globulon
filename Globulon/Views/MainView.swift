@@ -11,6 +11,7 @@ import SwiftUI
 struct MainView: View {
     
     @StateObject var locationHandler = LocationHandler.shared
+    @StateObject var activityHandler = ActivityHandler.shared
     
     @StateObject var appStatus = AppStatus()
     @StateObject var networkStatus = NetworkStatus.shared
@@ -82,10 +83,27 @@ struct MainView: View {
             
         }
         .animation(.easeInOut, value: appStatus.isShowSideMenu)
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now()) {
-                processOnAppear()
+//        .onAppear {
+//            DispatchQueue.main.asyncAfter(deadline: .now()) {
+//                processOnAppear()
+//            }
+//        }
+        .task {
+            LogEvent.print(module: "MainView.task", message: "starting...")
+            
+            /// Do stuff...
+            
+            /// Force start location updates if they were manually stopped by the user
+            ///
+            if locationHandler.updatesStarted == false {
+                locationHandler.startLocationUpdates()
             }
+            
+            if activityHandler.updatesStarted == false {
+                activityHandler.startActivityUpdates()
+            }
+            
+            LogEvent.print(module: "MainView.task", message: "...finished")
         }
     }
     
@@ -101,6 +119,10 @@ struct MainView: View {
         ///
         if locationHandler.updatesStarted == false {
             locationHandler.startLocationUpdates()
+        }
+        
+        if activityHandler.updatesStarted == false {
+            activityHandler.startActivityUpdates()
         }
         
         LogEvent.print(module: "MainView.processOnAppear", message: "...finished")

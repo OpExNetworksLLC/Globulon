@@ -51,7 +51,29 @@ struct LaunchView: View {
 
                 .task {
                     
-                    await processTask()
+                    //await processTask()
+                    LogEvent.print(module: "LaunchView.task", message: "starting...")
+                    
+                    /// Load the help articles if needed
+                    ///
+                    Articles.load { success, message in
+                        LogEvent.print(module: "LaunchView.task", message: message)
+                    }
+                    
+                    /// We do this here early so that we can reflect the lastest in the scores based on processed trips
+                    ///
+                    await processTrips()
+                    
+                    /// Flush out processed GPS data
+                    ///
+                    _ = deleteAllProcessedGPSJournalSD()
+                    
+                    /// Change the status when done to exit the LaunchView
+                    ///
+                    isProcessing.toggle()
+                    
+                    LogEvent.print(module: "LaunchView.task", message: "...finished")
+
                 }
 
             } else {

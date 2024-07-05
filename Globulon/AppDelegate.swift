@@ -40,9 +40,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationHandler.backgroundActivity {
-            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity session")
+            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
             locationHandler.backgroundActivity = true
         }
+        
+        let activityHandler = ActivityHandler.shared
+        if activityHandler.updatesStarted {
+            LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
+            activityHandler.startActivityUpdates()
+        }
+        
         
         // Start Firebase...
         FirebaseApp.configure()
