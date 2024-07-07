@@ -12,6 +12,14 @@ import Combine
 
 @MainActor class ActivityHandler: ObservableObject {
     
+    enum ActivityState: String {
+        case walking = "Walking"
+        case running = "Running"
+        case driving = "Driving"
+        case stationary = "Stationary"
+        case unknown = "Unknown"
+    }
+    
     static let shared = ActivityHandler()
     
     private let manager: CMMotionActivityManager
@@ -119,13 +127,13 @@ import Combine
     func startActivityUpdates() {
 
         guard CMMotionActivityManager.isActivityAvailable() else {
-            LogEvent.print(module: "**ActivityHandler.startActivityUpdates()", message: "Activity data is not available on this device.")
+            LogEvent.print(module: "** ActivityHandler.startActivityUpdates()", message: "Activity data is not available on this device.")
             return
         }
         
         self.isActivityMonitoringOn = true
         self.updatesStarted = true
-        LogEvent.print(module: "++ActivityHandler.startActivityUpdates()", message: "started ...")
+        LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "started ...")
 
         
         manager.startActivityUpdates(to: OperationQueue.main) { [weak self] activity in
@@ -163,15 +171,8 @@ import Combine
             self.isActivity = !activity.stationary && !activity.unknown
             
             // Log the activity state
-            print("Current activity state: \(activityState.rawValue)")
+            //print("** Current activity state: \(activityState.rawValue)")
+            
         }
     }
-}
-
-enum ActivityState: String {
-    case walking = "xWalking"
-    case running = "xRunning"
-    case driving = "xDriving"
-    case stationary = "xStationary"
-    case unknown = "xUnknown"
 }

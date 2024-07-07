@@ -47,9 +47,9 @@ class Articles {
         if articlesLocation.description == "remote" {
             
             LogEvent.print(module: "Articles.load()", message: "Loading remote articles")
-            print("** internet reachable: \(InternetReachability.shared.isInternetReachable())")
+            print("** internet reachable: \(NetworkHandler.shared.isConnected)")
             
-            if InternetReachability.shared.isInternetReachable() {
+            if NetworkHandler.shared.isConnected {
                 print("* internet is reachable")
                 // Check to see if the URL is accessible
                 if let url = URL(string: AppValues.articlesLocation.remote) {

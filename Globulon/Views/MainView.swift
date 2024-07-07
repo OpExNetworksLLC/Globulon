@@ -14,7 +14,7 @@ struct MainView: View {
     @StateObject var activityHandler = ActivityHandler.shared
     
     @StateObject var appStatus = AppStatus()
-    @StateObject var networkStatus = NetworkStatus.shared
+    @StateObject var networkHandler = NetworkHandler.shared
     
     @State var currentTab =  UserSettings.init().landingPage
     
@@ -67,7 +67,7 @@ struct MainView: View {
             )
             /// Show an alert if network status changes
             /// 
-            .alert("No Internet Connection!", isPresented: .constant(!networkStatus.isConnected)) {
+            .alert("No Internet Connection!", isPresented: .constant(!networkHandler.isConnected)) {
                     Button("OK", role: .cancel) {}
                 } message: {
                     Text("Please check your internet connection.")
@@ -109,24 +109,24 @@ struct MainView: View {
     
     /// Perform and/or launch any processes or tasks before the user interacts with the app
     ///
-    func processOnAppear() {
-        
-        LogEvent.print(module: "MainView.processOnAppear", message: "starting...")
-        
-        /// Do stuff...
-        
-        /// Force start location updates if they were manually stopped by the user
-        ///
-        if locationHandler.updatesStarted == false {
-            locationHandler.startLocationUpdates()
-        }
-        
-        if activityHandler.updatesStarted == false {
-            activityHandler.startActivityUpdates()
-        }
-        
-        LogEvent.print(module: "MainView.processOnAppear", message: "...finished")
-    }
+//    func processOnAppear() {
+//        
+//        LogEvent.print(module: "MainView.processOnAppear", message: "starting...")
+//        
+//        /// Do stuff...
+//        
+//        /// Force start location updates if they were manually stopped by the user
+//        ///
+//        if locationHandler.updatesStarted == false {
+//            locationHandler.startLocationUpdates()
+//        }
+//        
+//        if activityHandler.updatesStarted == false {
+//            activityHandler.startActivityUpdates()
+//        }
+//        
+//        LogEvent.print(module: "MainView.processOnAppear", message: "...finished")
+//    }
 
 }
 

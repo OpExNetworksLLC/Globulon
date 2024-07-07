@@ -2,7 +2,7 @@
 //  LocationView.swift
 //  Globulon
 //
-//  Created by David Holeman on 6/26/24.
+//  Created by David Holeman on 7/7/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ struct LocationView: View {
     
     @StateObject var locationHandler = LocationHandler.shared
     @StateObject private var activityHandler = ActivityHandler.shared
-    @StateObject var networkManager = NetworkStatus.shared
+    @StateObject var networkHandler = NetworkHandler.shared
     
     @State var isShowHelp = false
     
@@ -102,7 +102,7 @@ struct LocationView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    if networkManager.isConnected {
+                    if networkHandler.isConnected {
                         Circle()
                             .fill(Color.green)
                             .frame(width: 10, height: 10)

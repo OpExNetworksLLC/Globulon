@@ -21,7 +21,6 @@ struct GlobulonApp: App {
     
     init() {
         LogEvent.print(module: "\(AppValues.appName)App.init()", message: "starting ...")
-
         
         /// Print out the settings in the log
         ///
@@ -37,11 +36,7 @@ struct GlobulonApp: App {
         ActivityHandler.shared.getMotionActivityStatus { result in
             LogEvent.print(module: "GlobulonApp.ActivityHandler.getMotionActivityStatus()", message: "\(result)")
         }
-        
-        /// Start monitoring the netwokr connectivity status
-        ///
-        NetworkStatus.shared.startMonitoring()
-        
+                
         AppEnvironment.sharedModelContainer = initializeModelContainer()
     
         //TODO: Flush out the history model context when I need to for testing

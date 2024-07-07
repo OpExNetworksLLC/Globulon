@@ -54,7 +54,7 @@ struct HomeView: View {
     
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var networkManager = NetworkStatus.shared
+    @StateObject var networkHandler = NetworkHandler.shared
     
     @State private var isShowHelp = false
     
@@ -211,7 +211,7 @@ struct HomeView: View {
                     }
                     
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        if networkManager.isConnected {
+                        if networkHandler.isConnected {
                             Circle()
                                 .fill(Color.green)
                                 .frame(width: 10, height: 10)

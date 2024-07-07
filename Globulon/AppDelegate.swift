@@ -50,8 +50,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
             activityHandler.startActivityUpdates()
         }
-        
-        
+
+        //TODO:
+        let networkHandler = NetworkHandler.shared
+        networkHandler.startNetworkUpdates()
+
         // Start Firebase...
         FirebaseApp.configure()
         FirebaseConfiguration.shared.setLoggerLevel(.min)

@@ -105,7 +105,7 @@ import MapKit
     }
     
     
-    var isTripInitiatd = false
+    var isTripInitiated = false
     var isTripActive = false
     var walkingSpeed = 0.0 // MPS
     var locationUpdateCounter = 0
@@ -146,13 +146,13 @@ import MapKit
                         ///
                         if loc.speed < UserSettings.init().trackingSpeedThreshold {
                             updateLocationDataBuffer(location: loc)
-                            self.isTripInitiatd = false
+                            self.isTripInitiated = false
                             self.isTripActive = false
                             if (loc.speed) > walkingSpeed {
-                                print("** moving faster than walking: \(loc.speed) \(UserSettings.init().trackingSpeedThreshold)")
+                                //print("** moving faster than walking: \(loc.speed) \(UserSettings.init().trackingSpeedThreshold)")
                             }
                         } else {
-                            if isTripActive == false { self.isTripInitiatd = true }
+                            if isTripActive == false { self.isTripInitiated = true }
                         }
                         
                         /// Action when speed is greater than 0
@@ -191,10 +191,10 @@ import MapKit
                         
                         /// Transfer buffer if trip initiated and active
                         ///
-                        if isTripInitiatd && isTripActive {
+                        if isTripInitiated && isTripActive {
                             LogEvent.print(module: "**LocationHandler.startLocationUpdates", message: "Transfering data from buffer")
                             saveLocationDataBuffer()
-                            self.isTripInitiatd = false
+                            self.isTripInitiated = false
                         }
 
                         /// We are driving at this point so do stuff
@@ -240,10 +240,13 @@ import MapKit
         
         /// Only move on if there is activity detected
         ///
-        // TODO:  check to see if activity permission is enabled, if it is proceed to this check.
-        if activityHandler.isActivity == false {
-            return
-        }
+        // TODO: check to see if activity permission is enabled, if it is proceed to this check.
+        // TODO: found out that activity can be false while state is actually doing something.mmActivity can be false but activityState can be driving.
+
+        // TODO: if I flter as below I miss activity set as driving but state is still false so this is why I have it commented out.
+//        if activityHandler.isActivity == false {
+//            return
+//        }
         
         //LogEvent.print(module: "updateLocationDataBuffer", message: "Location \(location)" )
 
@@ -264,7 +267,7 @@ import MapKit
             speed: location.speed,
             processed: false,
             code: "",
-            note: "buffer:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.isActivity)" + "/" + "\(activityHandler.activityState)"
+            note: "buffer:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "activity: \(activityHandler.isActivity)" + "/" + "\(activityHandler.activityState)"
         )
         locationDataBuffer.insert(entry, at: 0)
                 
@@ -342,7 +345,7 @@ import MapKit
                 speed: location.speed,
                 processed: false,
                 code: "",
-                note: "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "\(activityHandler.activityState)"
+                note: "live:" + " " + "\(isMoving ? "Moving" : "") " + "\(isWalking ? "Walking" : "") " + "\(isDriving ? "Driving" : "") "  + "activity: \(activityHandler.isActivity)" + "/" + "\(activityHandler.activityState)"
             )
             
             context.insert(entry)

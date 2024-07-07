@@ -38,9 +38,13 @@ struct SwiftUIWebView: UIViewRepresentable {
         /// Add a border
         //uiView.layer.borderWidth = 0.5
         
-        LogEvent.print(module: "SwiftUIWebView()", message: "NetworkStatus.shared.isConnected: \(NetworkStatus.shared.isConnected) ")
+        //TODO: if problem with network handler try this by 1st accessing the handler then the published states:
+        // - let networkHandler = NetworkHandler.shared
+        // - let isConnected = networkHandler.isConnected
         
-        if NetworkStatus.shared.isConnected == true {
+        LogEvent.print(module: "SwiftUIWebView()", message: "NetworkHandler.shared.isConnected: \(NetworkHandler.shared.isConnected) ")
+        
+        if NetworkHandler.shared.isConnected == true {
             uiView.load(urlRequest)
         } else {
             let str = "<p style=color:red>Document could not be accessed.</p><p>Check to be sure you are connected to the internet and then try again.</p>"
