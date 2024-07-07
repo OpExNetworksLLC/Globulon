@@ -157,7 +157,7 @@ struct PermissionsView: View {
                                 Text("Allow motion tracking to improve tracking accuracy")
                                 Button(action: {
                                     if !self.isMotionTrackingAllowed {
-                                        MotionManager.requestMotionTrackingPermission { result in
+                                        ActivityHandler.requestMotionActivityPermission { result in
                                             isMotionTrackingAllowed = result
                                         }
                                         // TODO: Forcing this for now.  should wait or loop until activated.
@@ -193,7 +193,10 @@ struct PermissionsView: View {
                             }
                             .fixedSize(horizontal: false, vertical: true)
                             .onAppear {
-                                MotionManager.getMotionTrackingPermission { result in
+                                ActivityHandler.getMotionActivityPermission { result in
+                                    
+                                    /// Passing back if tracking is allowed
+                                    /// 
                                     self.isMotionTrackingAllowed = result
                                 }
                             }

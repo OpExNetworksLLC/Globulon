@@ -232,11 +232,16 @@ import MapKit
     
     func updateLocationDataBuffer(location: CLLocation?) {
         
-        /// Guard to make sure location is not nil and speed is valid
+        /// Guard to make sure location is not nil and speed is greater than or equal to zero before moving on
         ///
         guard let location = location, location.speed >= 0 else {
-            /// Skip the update if location is nil or speed is invalid
-            ///
+            return
+        }
+        
+        /// Only move on if there is activity detected
+        ///
+        // TODO:  check to see if activity permission is enabled, if it is proceed to this check.
+        if activityHandler.isActivity == false {
             return
         }
         
