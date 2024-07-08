@@ -1,8 +1,8 @@
 //
 //  PermissionsView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 3/12/24.
+//  Created by David Holeman on 7/7/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 

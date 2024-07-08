@@ -31,8 +31,6 @@ struct OnboardPasswordView: View {
     @State var isPasswordVerified: Bool = false
     @State var isPasswordVerifiedImage: String = "imgVerifyOff"
     
-//    /// An entry to correspond to each field tag for sequenced entry.  Set the field to true if you want it to become first responder
-//    @State var fieldFocus = [true, false]
     @FocusState private var focusedField: InputOnboardPasswordField?
     
     @State var isHidePassword = true

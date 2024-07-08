@@ -26,8 +26,9 @@ struct GlobulonApp: App {
         ///
         LogEvent.print(module: "\(AppValues.appName)App.init()", message: "settings..." + printUserSettings(description: "Settings", indent: "  "))
          
-        /// Trigger a check to ensure we have location tracking authorization.  If the tracking is set to AlwaysInUse this request will detect that and trigger the proper processing in LocationHandler
-        /// 
+        /// Trigger a check to ensure we have location tracking authorization.  If the tracking is set to AlwaysInUse this request will 
+        /// detect that and trigger the proper processing in LocationHandler
+        ///
         LocationHandler.shared.getAuthorizedWhenInUse { result in
             LogEvent.print(module: "GlobulonApp.LocationHandler.getAuthorizedWhenInUse()", message: "\(result)")
         }

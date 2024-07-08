@@ -2,7 +2,7 @@
 //  UserAccountView.swift
 //  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 7/7/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -87,17 +87,7 @@ struct UserAccountView: View {
                         .frame(width: AppValues.screen.width - 36, height: 120, alignment: .leading)
                         
                         Section(header: Text("name")) {
-                            /*
-                            TextFieldEx (
-                                label: "First name",
-                                text: $firstname,
-                                focusable: $fieldFocus,
-                                returnKeyType: .next,
-                                autocapitalizationType: .words,
-                                textContentType: UITextContentType.givenName,
-                                tag: 0
-                            )
-                            */
+
                             TextField("First name", text: $firstname)
                                 .disableAutocorrection(true)
                                 .foregroundColor(Color.primary)
@@ -114,17 +104,7 @@ struct UserAccountView: View {
                             .onChange(of: firstname){
                                 userSettings.firstname = firstname.trimmingCharacters(in: .whitespacesAndNewlines)
                             }
-                            /*
-                            TextFieldEx (
-                                label: "Last name",
-                                text: $lastname,
-                                focusable: $fieldFocus,
-                                returnKeyType: .done,
-                                autocapitalizationType: .words,
-                                textContentType: UITextContentType.familyName,
-                                tag: 1
-                            )
-                            */
+
                             TextField("Last name", text: $lastname)
                                 .disableAutocorrection(true)
                                 .foregroundColor(Color.primary)

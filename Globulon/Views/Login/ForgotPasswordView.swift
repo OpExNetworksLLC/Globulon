@@ -1,8 +1,8 @@
 //
 //  ForgotPasswordView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/21/24.
+//  Created by David Holeman on 7/8/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
