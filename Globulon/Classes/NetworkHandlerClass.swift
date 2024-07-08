@@ -1,5 +1,5 @@
 //
-//  NetworkStatus.swift
+//  NetworkHandlerClass.swift
 //  Globulon
 //
 //  Created by David Holeman on 7/7/24.

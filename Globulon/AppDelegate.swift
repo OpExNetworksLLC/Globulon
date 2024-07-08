@@ -51,7 +51,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             activityHandler.startActivityUpdates()
         }
 
-        //TODO:
         let networkHandler = NetworkHandler.shared
         networkHandler.startNetworkUpdates()
 
