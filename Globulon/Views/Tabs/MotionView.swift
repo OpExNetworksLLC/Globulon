@@ -91,7 +91,6 @@ struct MotionView: View {
                         Button("Zoom Out") {
                             self.mapSpan += mapSpanIncrement
                             updateCameraPosition()
-                            print("[glo \(self.mapSpan)]")
                         }
                         .buttonStyle(.bordered)
                         Spacer()

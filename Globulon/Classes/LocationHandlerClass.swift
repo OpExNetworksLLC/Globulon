@@ -192,7 +192,7 @@ import MapKit
                         /// Transfer buffer if trip initiated and active
                         ///
                         if isTripInitiated && isTripActive {
-                            LogEvent.print(module: "**LocationHandler.startLocationUpdates", message: "Transfering data from buffer")
+                            LogEvent.print(module: "LocationHandler.startLocationUpdates", message: "Transfering data from buffer")
                             saveLocationDataBuffer()
                             self.isTripInitiated = false
                         }
@@ -286,7 +286,7 @@ import MapKit
                 
                 let context = ModelContext(container)
                 
-                print("**% \(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
+                LogEvent.print(module: "LocationHandler.saveLocationDataBuffer()", message: "\(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
                 
                 let entry = GpsJournalSD(
                     timestamp: locationDataBuffer[index].timestamp,
@@ -303,7 +303,7 @@ import MapKit
                 var saveIndex = 0
                 while saveIndex < index {
                     
-                    LogEvent.print(module: "**LocationHandler.saveLocationDataBuffer()", message: "\(locationDataBuffer[saveIndex].timestamp), \(locationDataBuffer[saveIndex].speed), \(locationDataBuffer[saveIndex].latitude) : \(locationDataBuffer[saveIndex].longitude)")
+                    LogEvent.print(module: "LocationHandler.saveLocationDataBuffer()", message: "\(locationDataBuffer[saveIndex].timestamp), \(locationDataBuffer[saveIndex].speed), \(locationDataBuffer[saveIndex].latitude) : \(locationDataBuffer[saveIndex].longitude)")
                     
                     let entry = GpsJournalSD(
                         timestamp: locationDataBuffer[saveIndex].timestamp,
@@ -350,7 +350,7 @@ import MapKit
             
             context.insert(entry)
             
-            LogEvent.print(module: "**LocationHandler.saveLocation()", message: "saved: \(entry.timestamp) \(formatMPH(convertMPStoMPH( entry.speed))) mph")
+            LogEvent.print(module: "LocationHandler.saveLocation()", message: "saved: \(entry.timestamp) \(formatMPH(convertMPStoMPH( entry.speed))) mph")
         }
     }
     

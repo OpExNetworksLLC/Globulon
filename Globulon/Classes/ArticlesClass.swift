@@ -1,8 +1,8 @@
 //
 //  ArticlesClass.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 3/9/24.
+//  Created by David Holeman on 7/7/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -543,8 +543,7 @@ class Articles {
     
     fileprivate static func decodeArticlesDate(_ myData: Data) -> Bool {
         do {
-            print("* decoding the articles date V2")
-            
+
             // Decode the json
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: myData)
             
