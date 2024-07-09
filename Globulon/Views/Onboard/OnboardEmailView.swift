@@ -98,9 +98,9 @@ struct OnboardEmailView: View {
                         .foregroundColor(Color.primary)
                         .focused($focusedField, equals: .email1)
                         .submitLabel(.next)
-                        .onSubmit {
-                            focusedField = .email2
-                        }
+//                        .onSubmit {
+//                            focusedField = .email2
+//                        }
                         .onTapGesture {
                             focusedField = .email1
                         }
@@ -174,10 +174,10 @@ struct OnboardEmailView: View {
                         .textContentType(.emailAddress)
                         .foregroundColor(Color.primary)
                         .focused($focusedField, equals: .email2)
-                        .submitLabel(.done)
-                        .onSubmit {
-                            focusedField = nil
-                        }
+//                        .submitLabel(.done)
+//                        .onSubmit {
+//                            focusedField = nil
+//                        }
                         .onTapGesture {
                             focusedField = .email2
                         }
@@ -264,6 +264,14 @@ struct OnboardEmailView: View {
             }
         }
         .onTapGesture { self.hideKeyboard() }
+        .onSubmit {
+            switch focusedField {
+            case .email1:
+                focusedField = .email2
+            default:
+                print("Creating account…")
+            }
+        }
         
     } // end view
 } // end struc_

@@ -119,9 +119,9 @@ struct OnboardPasswordView: View {
                             .autocapitalization(.none)
                             .focused($focusedField, equals: .passwordEntry)
                             .submitLabel(.next)
-                            .onSubmit {
-                                focusedField = .passwordVerify
-                            }
+//                            .onSubmit {
+//                                focusedField = .passwordVerify
+//                            }
                             .onTapGesture {
                                 focusedField = .passwordEntry
                             }
@@ -145,9 +145,9 @@ struct OnboardPasswordView: View {
                             .autocapitalization(.none)
                             .focused($focusedField, equals: .passwordEntry)
                             .submitLabel(.next)
-                            .onSubmit {
-                                focusedField = .passwordVerify
-                            }
+//                            .onSubmit {
+//                                focusedField = .passwordVerify
+//                            }
                             .onTapGesture {
                                 focusedField = .passwordEntry
                             }
@@ -181,9 +181,9 @@ struct OnboardPasswordView: View {
                             .autocapitalization(.none)
                             .focused($focusedField, equals: .passwordVerify)
                             .submitLabel(.next)
-                            .onSubmit {
-                                focusedField = nil
-                            }
+//                            .onSubmit {
+//                                focusedField = nil
+//                            }
                             .onTapGesture {
                                 focusedField = .passwordVerify
                             }
@@ -211,9 +211,9 @@ struct OnboardPasswordView: View {
                             .autocapitalization(.none)
                             .focused($focusedField, equals: .passwordVerify)
                             .submitLabel(.next)
-                            .onSubmit {
-                                focusedField = nil
-                            }
+//                            .onSubmit {
+//                                focusedField = nil
+//                            }
                             .onTapGesture {
                                 focusedField = .passwordVerify
                             }
@@ -388,6 +388,14 @@ struct OnboardPasswordView: View {
         .edgesIgnoringSafeArea(.top)
         .edgesIgnoringSafeArea(.bottom)
         .onTapGesture { self.hideKeyboard() }
+        .onSubmit {
+            switch focusedField {
+            case .passwordEntry:
+                focusedField = .passwordVerify
+            default:
+                print("Creating account…")
+            }
+        }
     } // end view
 } // end struc
 

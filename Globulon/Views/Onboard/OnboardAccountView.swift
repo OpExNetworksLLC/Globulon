@@ -77,9 +77,9 @@ struct OnboardAccountView: View {
                             .textContentType(.givenName)
                             .focused($focusedField, equals: .firstName)
                             .submitLabel(.next)
-                            .onSubmit {
-                                focusedField = .lastName
-                            }
+//                            .onSubmit {
+//                                focusedField = .lastName
+//                            }
                             .onTapGesture {
                                 focusedField = .firstName
                             }
@@ -106,9 +106,9 @@ struct OnboardAccountView: View {
                             .textContentType(.familyName)
                             .focused($focusedField, equals: .lastName)
                             .submitLabel(.done)
-                            .onSubmit {
-                                focusedField = nil
-                            }
+//                            .onSubmit {
+//                                focusedField = nil
+//                            }
                             .onTapGesture {
                                 focusedField = .lastName
                             }
@@ -165,6 +165,14 @@ struct OnboardAccountView: View {
 //            lastname = userSettings.lastname
         }
         .onTapGesture { self.hideKeyboard() }
+        .onSubmit {
+            switch focusedField {
+            case .firstName:
+                focusedField = .lastName
+            default:
+                print("Creating account…")
+            }
+        }
         
     } // end view
 } // end struc_

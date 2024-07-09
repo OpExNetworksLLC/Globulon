@@ -95,9 +95,9 @@ struct UserAccountView: View {
                                 .textContentType(.givenName)
                                 .focused($focusedField, equals: .firstName)
                                 .submitLabel(.next)
-                                .onSubmit {
-                                    focusedField = .lastName
-                                }
+//                                .onSubmit {
+//                                    focusedField = .lastName
+//                                }
                                 .onTapGesture {
                                     focusedField = .firstName
                                 }
@@ -112,9 +112,9 @@ struct UserAccountView: View {
                                 .textContentType(.familyName)
                                 .focused($focusedField, equals: .lastName)
                                 .submitLabel(.done)
-                                .onSubmit {
-                                    focusedField = nil
-                                }
+//                                .onSubmit {
+//                                    focusedField = nil
+//                                }
                                 .onTapGesture {
                                     focusedField = .lastName
                                 }
@@ -513,6 +513,14 @@ struct UserAccountView: View {
             originalEmail = userSettings.email
             phoneCell = userSettings.phoneCell
             isChanged = false
+        }
+        .onSubmit {
+            switch focusedField {
+            case .firstName:
+                focusedField = .lastName
+            default:
+                print("Creating account…")
+            }
         }
         
     }
