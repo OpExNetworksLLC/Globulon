@@ -68,6 +68,8 @@ struct LaunchView: View {
                     ///
                     _ = deleteAllProcessedGPSJournalSD()
                     
+                    sleep(3)
+                    
                     /// Change the status when done to exit the LaunchView
                     ///
                     isProcessing.toggle()
@@ -102,31 +104,31 @@ struct LaunchView: View {
     ///
     /// Using .task vs .onAppear will will wait for async tasks to complete before continuing.
     ///
-    func processTask() async {
-        
-        LogEvent.print(module: "LaunchView.processTask", message: "starting...")
-        
-        /// Load the help articles if needed
-        ///
-        Articles.load { success, message in
-            LogEvent.print(module: "LaunchView.processTask", message: message)
-        }
-        
-        /// We do this here early so that we can reflect the lastest in the scores based on processed trips
-        /// 
-        await processTrips()
-        
-        /// Flush out processed GPS data
-        ///
-        _ = deleteAllProcessedGPSJournalSD()
-        
-        /// Change the status when done to exit the LaunchView
-        ///
-        isProcessing.toggle()
-        
-        LogEvent.print(module: "LaunchView.processTask", message: "...finished")
-
-    }
+//    func processTask() async {
+//        
+//        LogEvent.print(module: "LaunchView.processTask", message: "starting...")
+//        
+//        /// Load the help articles if needed
+//        ///
+//        Articles.load { success, message in
+//            LogEvent.print(module: "LaunchView.processTask", message: message)
+//        }
+//        
+//        /// We do this here early so that we can reflect the lastest in the scores based on processed trips
+//        /// 
+//        await processTrips()
+//        
+//        /// Flush out processed GPS data
+//        ///
+//        _ = deleteAllProcessedGPSJournalSD()
+//        
+//        /// Change the status when done to exit the LaunchView
+//        ///
+//        isProcessing.toggle()
+//        
+//        LogEvent.print(module: "LaunchView.processTask", message: "...finished")
+//
+//    }
 }
 
 #Preview {
