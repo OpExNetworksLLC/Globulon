@@ -86,6 +86,7 @@
 		6E89635E2B7D8C62003ABB4F /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89635D2B7D8C62003ABB4F /* FeedView.swift */; };
 		6E8963622B7D8E8F003ABB4F /* DummyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963612B7D8E8F003ABB4F /* DummyView.swift */; };
 		6E8963642B7D9FCE003ABB4F /* HelpSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */; };
+		6E949E972C3CDC8D00E42D6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */; };
 		6E94F6F52B7C563C00AFA97F /* GlobulonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */; };
 		6E94F6FB2B7C563D00AFA97F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E94F6FA2B7C563D00AFA97F /* Assets.xcassets */; };
 		6E94F6FE2B7C563D00AFA97F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E94F6FD2B7C563D00AFA97F /* Preview Assets.xcassets */; };
@@ -197,7 +198,6 @@
 		6ED869E82B7EE26D004528DD /* convertMPStoMPH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */; };
 		6ED869F22B7F0FEE004528DD /* formatMPH.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869F12B7F0FEE004528DD /* formatMPH.swift */; };
 		6EDCC1B92BA75B12003B7BA7 /* xReachabilityClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EDCC1B82BA75B12003B7BA7 /* xReachabilityClass.swift */; };
-		6EE4CE232C2786CA002D1076 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */; };
 		6EFF1A542C2F3A2F0058D9A2 /* MotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -281,6 +281,7 @@
 		6E89635D2B7D8C62003ABB4F /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		6E8963612B7D8E8F003ABB4F /* DummyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyView.swift; sourceTree = "<group>"; };
 		6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSheetView.swift; sourceTree = "<group>"; };
+		6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6E94F6F12B7C563C00AFA97F /* Globulon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globulon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobulonApp.swift; sourceTree = "<group>"; };
 		6E94F6FA2B7C563D00AFA97F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -368,7 +369,6 @@
 		6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = convertMPStoMPH.swift; sourceTree = "<group>"; };
 		6ED869F12B7F0FEE004528DD /* formatMPH.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = formatMPH.swift; sourceTree = "<group>"; };
 		6EDCC1B82BA75B12003B7BA7 /* xReachabilityClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xReachabilityClass.swift; sourceTree = "<group>"; };
-		6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -507,7 +507,7 @@
 				6E9A19D42BAFE67F000E5128 /* Globulon.entitlements */,
 				6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */,
 				6EB56D2C2B855F5700C106F0 /* AppDelegate.swift */,
-				6EE4CE222C2786CA002D1076 /* LaunchScreen.storyboard */,
+				6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */,
 				6E94F7072B7C570800AFA97F /* Models */,
 				6E94F7042B7C567B00AFA97F /* Views */,
 				6E94F7062B7C56BC00AFA97F /* Classes */,
@@ -892,7 +892,7 @@
 				6E0EF6BC2BEEF044007A4CDD /* SampleTrip04.json in Resources */,
 				6E0EF6BE2BEEF06B007A4CDD /* SampleTrip05.json in Resources */,
 				6E94F6FE2B7C563D00AFA97F /* Preview Assets.xcassets in Resources */,
-				6EE4CE232C2786CA002D1076 /* LaunchScreen.storyboard in Resources */,
+				6E949E972C3CDC8D00E42D6D /* LaunchScreen.storyboard in Resources */,
 				6E94F6FB2B7C563D00AFA97F /* Assets.xcassets in Resources */,
 				6E87C0B02BAD3E23007493B4 /* SampleTrip03.json in Resources */,
 			);
