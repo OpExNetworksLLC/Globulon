@@ -190,7 +190,7 @@
 		6EC4D8082BEAE4B100F94548 /* deleteHistoryTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4D8072BEAE4B100F94548 /* deleteHistoryTrip.swift */; };
 		6EC4D80A2BEAE4E800F94548 /* scoreHistoryTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4D8092BEAE4E800F94548 /* scoreHistoryTrip.swift */; };
 		6ECA47BB2BDF5CEB00AD08E0 /* havershineDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */; };
-		6ECA47BD2BDF5E4700AD08E0 /* FormatDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECA47BC2BDF5E4700AD08E0 /* FormatDistance.swift */; };
+		6ECA47BD2BDF5E4700AD08E0 /* roundToDecimalPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECA47BC2BDF5E4700AD08E0 /* roundToDecimalPlace.swift */; };
 		6ECEC4052C27740200232E80 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ECEC4042C27740200232E80 /* GoogleService-Info.plist */; };
 		6ECFC8512BCA39A30011FF66 /* MapTripSnapshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECFC8502BCA39A30011FF66 /* MapTripSnapshotView.swift */; };
 		6ED869E42B7ED90E004528DD /* CurrentLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */; };
@@ -361,7 +361,7 @@
 		6EC4D8072BEAE4B100F94548 /* deleteHistoryTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteHistoryTrip.swift; sourceTree = "<group>"; };
 		6EC4D8092BEAE4E800F94548 /* scoreHistoryTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = scoreHistoryTrip.swift; sourceTree = "<group>"; };
 		6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = havershineDistance.swift; sourceTree = "<group>"; };
-		6ECA47BC2BDF5E4700AD08E0 /* FormatDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDistance.swift; sourceTree = "<group>"; };
+		6ECA47BC2BDF5E4700AD08E0 /* roundToDecimalPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roundToDecimalPlace.swift; sourceTree = "<group>"; };
 		6ECEC4042C27740200232E80 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ECFC8502BCA39A30011FF66 /* MapTripSnapshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTripSnapshotView.swift; sourceTree = "<group>"; };
 		6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentLocationView.swift; sourceTree = "<group>"; };
@@ -508,10 +508,10 @@
 				6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */,
 				6EB56D2C2B855F5700C106F0 /* AppDelegate.swift */,
 				6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */,
+				6E9AEEB42C2CDCC300522E71 /* Retire */,
 				6E94F7072B7C570800AFA97F /* Models */,
 				6E94F7042B7C567B00AFA97F /* Views */,
 				6E94F7062B7C56BC00AFA97F /* Classes */,
-				6E9AEEB42C2CDCC300522E71 /* Retire */,
 				6E94F70E2B7C68F400AFA97F /* Enums */,
 				6E94F70F2B7C692C00AFA97F /* Functions */,
 				6E94F7112B7C697A00AFA97F /* Representables */,
@@ -636,42 +636,42 @@
 			children = (
 				6E88DC2B2B84746100BBB4DD /* articlesFrom.swift */,
 				6EBAB8EB2BB9FCCD0027244A /* convertToDateISO8601.swift */,
+				6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */,
+				6E0831DA2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift */,
 				6E4E18452B8C52890084BC07 /* dedupGPSJournalSD.swift */,
 				6E4E18412B8C51A50084BC07 /* deleteGPSJournalSD.swift */,
 				6E4B2A062BCDAC6F00A1A60F /* deleteTripData.swift */,
 				6E0297852BDD45F800F3366C /* deleteTripJournalEntry.swift */,
 				6E4E18432B8C52150084BC07 /* deleteTripSummariesSD.swift */,
 				6E7E78F62BE2C8F200B52A77 /* deprocessGPSJournalSD.swift */,
-				6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */,
 				6E983A752B8427FB002F2251 /* encodeJSON.swift */,
-				6EB56CFD2B85326900C106F0 /* isImageEmpty.swift */,
-				6EB56D032B85333400C106F0 /* isValidEmail.swift */,
-				6EB56D052B85339C00C106F0 /* isValidPhoneNumber.swift */,
-				6EB56D212B855BF900C106F0 /* isURLReachable.swift */,
 				6E155B462BC99343004760E8 /* exportAllGPSData.swift */,
 				6E45BFB32BCC5E5700231F09 /* exportTripData.swift */,
 				6EAA35922BAE5FC700CA3C30 /* fileURLInDocumentsDirectory.swift */,
 				6ED869E52B7EE22E004528DD /* FormatDates.swift */,
-				6ECA47BC2BDF5E4700AD08E0 /* FormatDistance.swift */,
 				6ED869F12B7F0FEE004528DD /* formatMPH.swift */,
 				6EB4F21E2BDEAE7D00ED9A71 /* formatMMtoHHMM.swift */,
 				6EB56D072B8533F900C106F0 /* FormatPhoneNumbers.swift */,
 				6E23ABD52BAD203D00001DFA /* getDocumentsDirectory.swift */,
 				6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */,
+				6EB56CFD2B85326900C106F0 /* isImageEmpty.swift */,
+				6EB56D032B85333400C106F0 /* isValidEmail.swift */,
+				6EB56D052B85339C00C106F0 /* isValidPhoneNumber.swift */,
+				6EB56D212B855BF900C106F0 /* isURLReachable.swift */,
 				6EAA358E2BAE58CB00CA3C30 /* loadSampleTripsFromAssets.swift */,
-				6E3844932B9253A500614954 /* processTrips.swift */,
 				6EB56D192B855ACF00C106F0 /* passwordStrengthCheck.swift */,
 				6E94F7162B7C70E000AFA97F /* printUserSettings.swift */,
+				6E3844932B9253A500614954 /* processTrips.swift */,
+				6E84E4AC2BA5010A00A15732 /* purgeGPSJournalSDbyCount.swift */,
+				6E0E56CF2BE5D607000F9236 /* purgeTripSummariesSDbyDate.swift */,
+				6E0E56D12BE5DA7F000F9236 /* purgeTripSummariesSDbyCount.swift */,
 				6EB56D282B855D5000C106F0 /* replaceString.swift */,
+				6ECA47BC2BDF5E4700AD08E0 /* roundToDecimalPlace.swift */,
 				6E23ABD32BAD201000001DFA /* saveTextToFile.swift */,
 				6E0297812BDD455F00F3366C /* scoreTripColor.swift */,
 				6E6D9B1D2B83C10E004325A1 /* scoreTripAcceleration.swift */,
 				6E6D9B1F2B83C3C5004325A1 /* scoreTripDeceleration.swift */,
 				6E6D9B212B83FE57004325A1 /* scoreTripSmoothness.swift */,
-				6E84E4AC2BA5010A00A15732 /* purgeGPSJournalSDbyCount.swift */,
-				6E0E56CF2BE5D607000F9236 /* purgeTripSummariesSDbyDate.swift */,
-				6E0E56D12BE5DA7F000F9236 /* purgeTripSummariesSDbyCount.swift */,
-				6E0831DA2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift */,
 			);
 			path = Functions;
 			sourceTree = "<group>";
@@ -1012,7 +1012,7 @@
 				6E35DF622BE9F1660093286F /* HistoryMapTripView.swift in Sources */,
 				6EB56D252B855CD400C106F0 /* ArticleView.swift in Sources */,
 				6E94F7172B7C70E000AFA97F /* printUserSettings.swift in Sources */,
-				6ECA47BD2BDF5E4700AD08E0 /* FormatDistance.swift in Sources */,
+				6ECA47BD2BDF5E4700AD08E0 /* roundToDecimalPlace.swift in Sources */,
 				6E48E7E42BA0E8480052B3EB /* PermissionsView.swift in Sources */,
 				6E88DC312B84761200BBB4DD /* ViewExtensions.swift in Sources */,
 				6EB56CEF2B85303E00C106F0 /* UserProfileView.swift in Sources */,

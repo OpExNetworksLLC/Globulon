@@ -2,7 +2,7 @@
 //  AppDelegate.swift
 //  Globulon
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 7/11/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -30,10 +30,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        /// Check saved status in the app and adjust as appropriate for the locationHandler()
+        /// Start location monitoring...
+        ///
         let locationHandler = LocationHandler.shared
-        
-        /// If location updates were previously active and you stopped them then you'll have to restart them manually after the background launch.
         if locationHandler.updatesStarted {
             LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
             locationHandler.startLocationUpdates()
@@ -44,21 +43,25 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             locationHandler.backgroundActivity = true
         }
         
+        /// Start activity monitoring...
+        ///
         let activityHandler = ActivityHandler.shared
-        
         if activityHandler.updatesStarted {
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
             activityHandler.startActivityUpdates()
         }
 
+        /// Start network monitoring...
+        ///
         let networkHandler = NetworkHandler.shared
         networkHandler.startNetworkUpdates()
-
-        // Start Firebase...
+        
+        /// Start Firebase...
+        ///
         FirebaseApp.configure()
-        FirebaseConfiguration.shared.setLoggerLevel(.min)
                 
-        // Assign UNUserNotificationCenter's delegate
+        /// Assign UNUserNotificationCenter's delegate
+        ///
         UNUserNotificationCenter.current().delegate = self
         
         /// Registering for notifications is called outside the AppDelegate because we don't want to prompt the user to
@@ -70,7 +73,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// registerForNotifications()
         /// ```
         
-        // Messaging
+        /// Messaging
         Messaging.messaging().delegate = self
 
         Installations.installations().installationID { (firebaseInstallationID, error) in

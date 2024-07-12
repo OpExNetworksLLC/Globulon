@@ -64,11 +64,10 @@ struct LaunchView: View {
                     ///
                     await processTrips()
                     
-                    /// Flush out processed GPS data
-                    ///
-                    _ = deleteAllProcessedGPSJournalSD()
+                    // TODO: Uncomment to resume deleting processed trips
+                    //_ = deleteAllProcessedGPSJournalSD()
                     
-                    sleep(3)
+                    sleep(1)
                     
                     /// Change the status when done to exit the LaunchView
                     ///
