@@ -6,6 +6,14 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+/// # TripsViewV3
+/// Display current trips
+///
+/// # Version History
+/// ### 0.1.0.62
+/// # - cleaned up toolbar and toolbar items
+/// # - *Date*: 07/12/24
+
 import SwiftUI
 import SwiftData
 import MapKit
@@ -315,17 +323,19 @@ struct TripsViewV3: View {
             .task() {
                 await processTask()
             }
-            
-            .navigationBarItems(
-                leading: Button(action: {
-                    isShowSideMenu.toggle()
-                }) {
-                    Image(systemName: "square.leftthird.inset.filled")
-                        .font(.system(size: 26, weight: .ultraLight))
-                        .frame(width: 35, height: 35)
-                        .foregroundColor(AppValues.pallet.primaryLight)
-                },
-                trailing: HStack {
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isShowSideMenu.toggle()
+                    }) {
+                        Image(systemName: "square.leftthird.inset.filled")
+                            .font(.system(size: 26, weight: .ultraLight))
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(AppValues.pallet.primaryLight)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         
                         isProcessing = true
@@ -359,16 +369,16 @@ struct TripsViewV3: View {
                             .foregroundColor(AppValues.pallet.primaryLight)
                     }
                 }
-            )
-            .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("appLogoTransparent")
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                    .foregroundColor(AppValues.pallet.primaryLight)                }
+                        .foregroundColor(AppValues.pallet.primaryLight)
+                }
             }
+            
             Spacer() //?
             
         }

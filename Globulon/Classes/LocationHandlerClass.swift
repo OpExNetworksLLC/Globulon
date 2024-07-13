@@ -248,16 +248,6 @@ import MapKit
             return
         }
         
-        /// Only move on if there is activity detected
-        ///
-        // TODO: check to see if activity permission is enabled, if it is proceed to this check.
-        // TODO: found out that activity can be false while state is actually doing something.mmActivity can be false but activityState can be driving.
-
-        // TODO: if I flter as below I miss activity set as driving but state is still false so this is why I have it commented out.
-//        if activityHandler.isActivity == false {
-//            return
-//        }
-        
         //LogEvent.print(module: "updateLocationDataBuffer", message: "Location \(location)" )
 
         
