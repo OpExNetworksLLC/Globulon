@@ -6,6 +6,14 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+/// # LocationHandler
+/// This class handles location services
+///
+/// # Version History
+/// ### 0.1.0.62
+/// # - Added some comments to document the code
+/// # - *Date*: 07/12/24
+
 import Foundation
 import SwiftUI
 import SwiftData
@@ -199,6 +207,8 @@ import MapKit
 
                         /// We are driving at this point so do stuff
 
+                        /// Save the locatoin every n seconds based on the tracking sample rate parameter
+                        /// 
                         locationUpdateCounter += 1
                         if locationUpdateCounter >= UserSettings.init().trackingSampleRate {
                             
@@ -277,8 +287,10 @@ import MapKit
         var index = 0
         while index < locationDataBuffer.count {
 
+            /// Find the first entry in the buffer that  indicates no speed and thus no real motion
+            ///
             if locationDataBuffer[index].speed <= 0.0 {
-                
+              
                 guard let container = AppEnvironment.sharedModelContainer else {
                     LogEvent.print(module: "LocationManager.saveLocation()", message: "shared model container has not been initialized")
                     return
@@ -300,6 +312,8 @@ import MapKit
                 
                 context.insert(entry)
                 
+                /// Work through the buffer until the point we hit the frist zero speed then bail
+                ///
                 var saveIndex = 0
                 while saveIndex < index {
                     

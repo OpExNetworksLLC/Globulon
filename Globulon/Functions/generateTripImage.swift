@@ -10,7 +10,7 @@
 /// This function generates an image of trip
 ///
 /// # Version History
-/// ### 0.1.0.60
+/// ### 0.1.0.61
 /// # - corrected line width issue
 /// # - forced image to generate only in light appearance
 /// # - *Date*: 07/12/24
@@ -97,7 +97,7 @@ func generateTripImage(region: MKCoordinateRegion, trip: TripSummariesSD, size: 
         }
 
         // Set the line width and color for the context
-        context.setLineWidth(5.0)
+        context.setLineWidth(2.0)
         context.setStrokeColor(UIColor.blue.cgColor)
 
         // Stroke the path in the context
