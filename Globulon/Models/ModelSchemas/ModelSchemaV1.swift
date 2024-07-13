@@ -70,6 +70,8 @@ enum ModelSchemaV1: VersionedSchema {
         var destinationLongitude: Double
         var destinationAddress: String
         
+        var tripMap: Data?
+        
         var maxSpeed: Double
         var duration: Double
         var distance: Double
@@ -82,7 +84,7 @@ enum ModelSchemaV1: VersionedSchema {
         
         var toTripJournal: [TripJournalSD]?
         
-        init(originationTimestamp: Date, originationLatitude: Double, originationLongitude: Double, originationAddress: String, destinationTimestamp: Date, destinationLatitude: Double, destinationLongitude: Double, destinationAddress: String, maxSpeed: Double, duration: Double, distance: Double, scoreAcceleration: Double, scoreDeceleration: Double, scoreSmoothness: Double, archived: Bool) {
+        init(originationTimestamp: Date, originationLatitude: Double, originationLongitude: Double, originationAddress: String, destinationTimestamp: Date, destinationLatitude: Double, destinationLongitude: Double, destinationAddress: String, tripMap: Data? = nil, maxSpeed: Double, duration: Double, distance: Double, scoreAcceleration: Double, scoreDeceleration: Double, scoreSmoothness: Double, archived: Bool) {
             self.originationTimestamp = originationTimestamp
             self.originationLatitude = originationLatitude
             self.originationLongitude = originationLongitude
@@ -91,6 +93,7 @@ enum ModelSchemaV1: VersionedSchema {
             self.destinationLatitude = destinationLatitude
             self.destinationLongitude = destinationLongitude
             self.destinationAddress = destinationAddress
+            self.tripMap = tripMap
             self.maxSpeed = maxSpeed
             self.duration = duration
             self.distance = distance
@@ -105,7 +108,6 @@ enum ModelSchemaV1: VersionedSchema {
             return sortedJournals.map { CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude) }
         }
     }
-    
     /// Trip Journal
     /// - This is the detailed GPS location data for the trip
     ///

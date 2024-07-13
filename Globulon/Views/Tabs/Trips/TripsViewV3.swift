@@ -2,7 +2,7 @@
 //  TripsViewV3.swift
 //  ZenTrac
 //
-//  Created by David Holeman on 4/23/24.
+//  Created by David Holeman on 7/11/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -97,6 +97,7 @@ struct TripsViewV3: View {
                             .font(.system(size: 14))
                             .padding(.trailing, -16)
                             
+                            /*
                             Map(interactionModes: []) {
                                 
                                 Marker("start", systemImage: "circle", coordinate: CLLocationCoordinate2D(latitude: (trip.originationLatitude), longitude: (trip.originationLongitude)))
@@ -112,6 +113,21 @@ struct TripsViewV3: View {
                             .onTapGesture {
                                 tripManager.originationTimestamp = trip.originationTimestamp
                                 isShowMapTripView.toggle()
+                            }
+                            */
+                                                        
+                            //let _ = print("listing: \(formatDateStampDayMonth(trip.originationTimestamp)) \(trip.tripMap as Any)")
+                            if let imageData = trip.tripMap, let uiImage = UIImage(data: imageData) {
+                                Image(uiImage: uiImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: AppValues.screen.width - 36)
+                                    .onTapGesture {
+                                        tripManager.originationTimestamp = trip.originationTimestamp
+                                        isShowMapTripView.toggle()
+                                    }
+                            } else {
+                                Text("No map image available")
                             }
                             
                             /// SCORES & Actions
@@ -315,6 +331,8 @@ struct TripsViewV3: View {
                         isProcessing = true
                         
                         /// purge trips over the limit
+                        //  TODO: Reinstate if we want to auto purge.
+                        //
                         //_ = purgeTripSummariesSDbyCount(tripLimit: UserSettings.init().tripHistoryLimit)
                         
                         /// Clear out the old trips
@@ -322,7 +340,8 @@ struct TripsViewV3: View {
                         
                         /// Process new trips
                         Task {
-                            await processTrips()
+
+                            await processTask()
                             
                             /// Switch back to the main thread to update UI components
                             ///
@@ -359,14 +378,16 @@ struct TripsViewV3: View {
     func processTask() async {
         LogEvent.print(module: "TripViewV3.processTask", message: "starting...")
         
-            await processTrips()
-            
-            /// Switch back to the main thread to update UI components
-            ///
-            DispatchQueue.main.async {
-                isProcessing = false
-            }
-    
+        isProcessing = true
+        
+        await processTrips()
+        
+        /// Switch back to the main thread to update UI components
+        ///
+        DispatchQueue.main.async {
+            isProcessing = false
+        }
+        
         LogEvent.print(module: "TripViewV3.processTask", message: "...finished")
     }
 }
@@ -374,3 +395,4 @@ struct TripsViewV3: View {
 #Preview {
     TripsViewV3(isShowSideMenu: .constant(false))
 }
+

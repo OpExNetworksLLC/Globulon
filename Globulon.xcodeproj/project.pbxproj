@@ -86,6 +86,9 @@
 		6E89635E2B7D8C62003ABB4F /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89635D2B7D8C62003ABB4F /* FeedView.swift */; };
 		6E8963622B7D8E8F003ABB4F /* DummyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963612B7D8E8F003ABB4F /* DummyView.swift */; };
 		6E8963642B7D9FCE003ABB4F /* HelpSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */; };
+		6E89EB812C41FA0D00D6499E /* generateTripImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89EB802C41FA0D00D6499E /* generateTripImage.swift */; };
+		6E89EB832C41FA3900D6499E /* convertDataToImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89EB822C41FA3900D6499E /* convertDataToImage.swift */; };
+		6E89EB852C41FA7400D6499E /* convertImageToData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E89EB842C41FA7400D6499E /* convertImageToData.swift */; };
 		6E949E972C3CDC8D00E42D6D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */; };
 		6E94F6F52B7C563C00AFA97F /* GlobulonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */; };
 		6E94F6FB2B7C563D00AFA97F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E94F6FA2B7C563D00AFA97F /* Assets.xcassets */; };
@@ -281,6 +284,9 @@
 		6E89635D2B7D8C62003ABB4F /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
 		6E8963612B7D8E8F003ABB4F /* DummyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummyView.swift; sourceTree = "<group>"; };
 		6E8963632B7D9FCE003ABB4F /* HelpSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpSheetView.swift; sourceTree = "<group>"; };
+		6E89EB802C41FA0D00D6499E /* generateTripImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = generateTripImage.swift; sourceTree = "<group>"; };
+		6E89EB822C41FA3900D6499E /* convertDataToImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = convertDataToImage.swift; sourceTree = "<group>"; };
+		6E89EB842C41FA7400D6499E /* convertImageToData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = convertImageToData.swift; sourceTree = "<group>"; };
 		6E949E962C3CDC8D00E42D6D /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6E94F6F12B7C563C00AFA97F /* Globulon.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Globulon.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobulonApp.swift; sourceTree = "<group>"; };
@@ -637,6 +643,8 @@
 				6E88DC2B2B84746100BBB4DD /* articlesFrom.swift */,
 				6EBAB8EB2BB9FCCD0027244A /* convertToDateISO8601.swift */,
 				6ED869E72B7EE26D004528DD /* convertMPStoMPH.swift */,
+				6E89EB822C41FA3900D6499E /* convertDataToImage.swift */,
+				6E89EB842C41FA7400D6499E /* convertImageToData.swift */,
 				6E0831DA2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift */,
 				6E4E18452B8C52890084BC07 /* dedupGPSJournalSD.swift */,
 				6E4E18412B8C51A50084BC07 /* deleteGPSJournalSD.swift */,
@@ -653,6 +661,7 @@
 				6EB4F21E2BDEAE7D00ED9A71 /* formatMMtoHHMM.swift */,
 				6EB56D072B8533F900C106F0 /* FormatPhoneNumbers.swift */,
 				6E23ABD52BAD203D00001DFA /* getDocumentsDirectory.swift */,
+				6E89EB802C41FA0D00D6499E /* generateTripImage.swift */,
 				6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */,
 				6EB56CFD2B85326900C106F0 /* isImageEmpty.swift */,
 				6EB56D032B85333400C106F0 /* isValidEmail.swift */,
@@ -934,6 +943,7 @@
 				6EDCC1B92BA75B12003B7BA7 /* xReachabilityClass.swift in Sources */,
 				6E7F55852BAB3B7F004136DA /* PostNotificationClass.swift in Sources */,
 				6E88DC352B8479DA00BBB4DD /* AppStatus.swift in Sources */,
+				6E89EB812C41FA0D00D6499E /* generateTripImage.swift in Sources */,
 				6E4B2A072BCDAC6F00A1A60F /* deleteTripData.swift in Sources */,
 				6E4E18422B8C51A50084BC07 /* deleteGPSJournalSD.swift in Sources */,
 				6E88DC372B847A6100BBB4DD /* OnboardPageEnum.swift in Sources */,
@@ -956,6 +966,7 @@
 				6EB56D102B85588F00C106F0 /* UserSettingsView.swift in Sources */,
 				6E88DC2E2B84753100BBB4DD /* ArticleLocationsEnum.swift in Sources */,
 				6E2A22D52B8968950030F23E /* IntroTermsView.swift in Sources */,
+				6E89EB852C41FA7400D6499E /* convertImageToData.swift in Sources */,
 				6EB56D702B85697B00C106F0 /* OnboardEmailView.swift in Sources */,
 				6E94F7212B7C75BC00AFA97F /* LaunchView.swift in Sources */,
 				6EBAB8EC2BB9FCCD0027244A /* convertToDateISO8601.swift in Sources */,
@@ -1034,6 +1045,7 @@
 				6ED869E82B7EE26D004528DD /* convertMPStoMPH.swift in Sources */,
 				6ED869E42B7ED90E004528DD /* CurrentLocationView.swift in Sources */,
 				6E4E18462B8C52890084BC07 /* dedupGPSJournalSD.swift in Sources */,
+				6E89EB832C41FA3900D6499E /* convertDataToImage.swift in Sources */,
 				6EB56CF12B85306C00C106F0 /* AvatarPickerView.swift in Sources */,
 				6E5928832BA1FFCF00CE0B8F /* AddressClass.swift in Sources */,
 				6E6FC46B2BA10C8A0088500A /* NotificationManagerClass.swift in Sources */,
@@ -1190,7 +1202,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
@@ -1237,7 +1249,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 60;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
