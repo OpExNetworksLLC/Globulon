@@ -6,17 +6,11 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
-import UIKit
-import MapKit
-
-/// Generate a map image of the trip
-/// - Parameters:
-///   - region: bounds of the trip north and south based on min and max latitudes and min and max longitudes
-///   - trip: Data structure holding the trip data
-///   - size: Size of the image to generate
-/// - Returns: The map image or nil
-///
-///
+/// # Version History
+/// ### 0.1.0.60
+/// # - corrected line width issue
+/// # - forced image to generate only in light appearance
+/// # - *Date*: 07/12/24
 
 import UIKit
 import MapKit
@@ -28,8 +22,6 @@ import MapKit
 ///   - size: Size of the image to generate
 /// - Returns: The map image or nil
 ///
-///
-
 func generateTripImage(region: MKCoordinateRegion, trip: TripSummariesSD, size: CGSize) -> UIImage? {
     let options = MKMapSnapshotter.Options()
     options.region = region
