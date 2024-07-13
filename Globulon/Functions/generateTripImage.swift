@@ -6,6 +6,9 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+/// # generateTripImage
+/// This function generates an image of trip
+///
 /// # Version History
 /// ### 0.1.0.60
 /// # - corrected line width issue
