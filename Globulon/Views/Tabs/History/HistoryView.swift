@@ -6,6 +6,14 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+/// # HistoryView
+/// Display summary of trips by month
+///
+/// # Version History
+/// ### 0.1.0.62
+/// # - cleaned up toolbar and toolbar items
+/// # - *Date*: 07/12/24
+
 import SwiftUI
 import SwiftData
 
@@ -160,29 +168,37 @@ struct HistoryView: View {
                 }
             }
             .navigationBarTitle("History", displayMode: .inline)
-            .navigationBarItems(
-                leading: Button(action: {
-                    isShowSideMenu.toggle()
-                }) {
-                    Image(systemName: "square.leftthird.inset.filled")
-                        .font(.system(size: 26, weight: .ultraLight))
-                        .frame(width: 35, height: 35)
-                        .foregroundColor(AppValues.pallet.primaryLight)
-                },
-                trailing: HStack {
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        isShowSideMenu.toggle()
+                    }) {
+                        Image(systemName: "square.leftthird.inset.filled")
+                            .font(.system(size: 26, weight: .ultraLight))
+                            .frame(width: 35, height: 35)
+                            .foregroundColor(AppValues.pallet.primaryLight)
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: {
                         
                         isProcessing = true
                         
                         /// purge trips over the limit
+                        //  TODO: Reinstate if we want to auto purge.
+                        //
+                        //  TODO: replace this function with one that purges monthly summaries
                         //_ = purgeTripSummariesSDbyCount(tripLimit: UserSettings.init().tripHistoryLimit)
                         
                         /// Clear out the old trips
                         if UserSettings.init().isTripReprocessingAllowed { deleteTripSummariesSD() }
                         
-                        /// Process stuff
+                        /// Process new trips
                         Task {
-                            //await processTrips()
+
+                            // TODO: Replace this with some function to reprocess the monthly summaries
+                            //await processTask()
                             
                             /// Switch back to the main thread to update UI components
                             ///
@@ -200,15 +216,14 @@ struct HistoryView: View {
                             .foregroundColor(AppValues.pallet.primaryLight)
                     }
                 }
-            )
-            .toolbar {
                 ToolbarItem(placement: .principal) {
                     Image("appLogoTransparent")
                         .resizable()
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                    .foregroundColor(AppValues.pallet.primaryLight)                }
+                        .foregroundColor(AppValues.pallet.primaryLight)
+                }
             }
             Spacer()
             

@@ -714,6 +714,8 @@
 		6E9AEEB42C2CDCC300522E71 /* Retire */ = {
 			isa = PBXGroup;
 			children = (
+				6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */,
+				6E89635D2B7D8C62003ABB4F /* FeedView.swift */,
 				6E08F52A2BA8FC4F004E6329 /* xInternetReachability.swift */,
 				6EDCC1B82BA75B12003B7BA7 /* xReachabilityClass.swift */,
 				6E88DC1B2B846D4F00BBB4DD /* xCheckReachability.swift */,
@@ -777,8 +779,6 @@
 		6ED869E92B7EF1E2004528DD /* Tabs */ = {
 			isa = PBXGroup;
 			children = (
-				6ED869E32B7ED90E004528DD /* CurrentLocationView.swift */,
-				6E89635D2B7D8C62003ABB4F /* FeedView.swift */,
 				6EFF1A532C2F3A2F0058D9A2 /* MotionView.swift */,
 				6E9AEEB92C2D1EA700522E71 /* LocationView.swift */,
 				6E2A88EA2BE7F47100DFC163 /* Home */,

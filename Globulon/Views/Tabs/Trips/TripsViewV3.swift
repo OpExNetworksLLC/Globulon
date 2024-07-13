@@ -319,10 +319,10 @@ struct TripsViewV3: View {
                 
                 Spacer()
             }
-            .navigationBarTitle("Trips V3", displayMode: .inline)
             .task() {
                 await processTask()
             }
+            .navigationBarTitle("Trips V3", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
