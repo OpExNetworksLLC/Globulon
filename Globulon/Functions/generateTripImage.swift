@@ -1,6 +1,6 @@
 //
 //  generateTripImage.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 7/11/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.

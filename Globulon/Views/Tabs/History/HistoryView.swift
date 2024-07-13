@@ -192,7 +192,9 @@ struct HistoryView: View {
                         //_ = purgeTripSummariesSDbyCount(tripLimit: UserSettings.init().tripHistoryLimit)
                         
                         /// Clear out the old trips
-                        if UserSettings.init().isTripReprocessingAllowed { deleteTripSummariesSD() }
+                        if UserSettings.init().isTripReprocessingAllowed {
+                            _ = deleteTripSummariesSD()
+                        }
                         
                         /// Process new trips
                         Task {

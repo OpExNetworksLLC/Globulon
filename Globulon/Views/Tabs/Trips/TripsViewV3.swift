@@ -346,7 +346,10 @@ struct TripsViewV3: View {
                         //_ = purgeTripSummariesSDbyCount(tripLimit: UserSettings.init().tripHistoryLimit)
                         
                         /// Clear out the old trips
-                        if UserSettings.init().isTripReprocessingAllowed { deleteTripSummariesSD() }
+                        if UserSettings.init().isTripReprocessingAllowed {
+                            _ = deprocessGpsJournalSD()
+                            _ = deleteTripSummariesSD()
+                        }
                         
                         /// Process new trips
                         Task {

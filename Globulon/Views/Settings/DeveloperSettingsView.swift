@@ -1,6 +1,6 @@
 //
 //  DeveloperSettingsView.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 2/20/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
@@ -9,15 +9,20 @@
 import SwiftUI
 import SwiftData
 
+/// # DeveloperSettingsView
+/// Display current trips
+///
+/// # Version History
+/// ### 0.1.0.62
+/// # - update deleteGpsJournalSD to return and handle count in alert messages
+/// # - update deleteTripSummariesSD to return and handle count in alert messages
+/// # - *Date*: 07/13/24
 
 struct DeveloperSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
-    //@EnvironmentObject var globalVariables: AppStatus
     @EnvironmentObject var userSettings: UserSettings
-    
-//    @State var mySettingsContent: String = displayUserSettings()//DisplaySettings.user
    
     @State var isIntroduced: Bool = false
     @State var isTracking: Bool = false
@@ -35,13 +40,19 @@ struct DeveloperSettingsView: View {
     @State var showAlertDeleteUserSettings: Bool = false
     @State var showAlertLoadArticlesSuccess: Bool = false
     @State var showAlertLoadArticlesMessage: String = ""
-    @State var showAlertDeleteAllTrips: Bool = false
-    @State var showAlertDeleteAllGPSData: Bool = false
+    
+    @State var showAlertDeleteAllGPSDataConfirm: Bool = false
+    @State var showAlertDeleteAllGPSDataSuccess: Bool = false
+    @State var showAlertDeleteAllGPSDataMessage: String = ""
+
+    @State var showAlertDeleteAllTripsConfirm: Bool = false
+    @State var showAlertDeleteAllTripsSuccess: Bool = false
+    @State var showAlertDeleteAllTripsMessage: String = ""
     
     @State var showAlertDeleteAllProcessedGPSDataConfirm: Bool = false
-    @State var showAlertDeleteAllProcessedGPSDataMessage: String = ""
     @State var showAlertDeleteAllProcessedGPSDataSuccess: Bool = false
-    
+    @State var showAlertDeleteAllProcessedGPSDataMessage: String = ""
+
     @State var showAlertDedupSuccess: Bool = false
     @State var showAlertDedupMessage: String = ""
     
@@ -56,6 +67,10 @@ struct DeveloperSettingsView: View {
     @State var showAlertGPSDeleteTripLimitSuccess: Bool = false
     @State var showAlertGPSDeleteTripLimitMessage: String = ""
     
+    @State var showAlertDeleteJournalSDConfirm: Bool = false
+    @State var showAlertDeleteJournalSDSuccess: Bool = false
+    @State var showAlertDeleteJournalSDMessage: String = ""
+    
     @State var showAlertLoadSampleGPSDataSuccess: Bool = false
     @State var showAlertLoadSampleGPSDataMessage: String = ""
 
@@ -67,19 +82,11 @@ struct DeveloperSettingsView: View {
     @State var tripGPSHistoryLimit = UserSettings.init().tripGPSHistoryLimit
     @State var tripHistoryLimit = UserSettings.init().tripHistoryLimit
 
-    
-//    @ObservedObject var alerts = Alerts()
-    
-    
-    //@State var articlesLocation = ArticleLocations.local
-    //@State var articlesLocation =  UserSettings.init().articlesLocation
     @State var articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
     @State var userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
-
-    
     
     init() {
-        //print("^articlesLocation: \(articlesLocation)")
+        // Do stuff if needed
     }
     
     var body: some View {
@@ -101,10 +108,6 @@ struct DeveloperSettingsView: View {
                         Spacer()
                     }
                     .frame(width: AppValues.screen.width - 36, height: 120, alignment: .leading)
-                    //.padding(.bottom, 16)
-                    
-                    
-                    // TODO:  as they save on change vs. save on exit.  have to change the onChange to note a @state value then check the state values on save exit
                     
                     /// APP SETTINGS
                     ///
@@ -298,7 +301,7 @@ struct DeveloperSettingsView: View {
                         ///
                         VStack {
                             Button(action: {
-                                showAlertDeleteAllTrips = true
+                                showAlertDeleteAllTripsConfirm = true
                             }
                             ) {
                                 HStack {
@@ -310,18 +313,22 @@ struct DeveloperSettingsView: View {
                                 }
                                 .padding(.trailing, -16)
                             }
-                            .alert(isPresented: $showAlertDeleteAllTrips, content: {
-                                let firstButton = Alert.Button.default(Text("Cancel"))
-                                let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                    
-                                    //TODO:  Ideally we don't want to delete all these.  Just have the view update if ther is a change
-                                    deleteTripSummariesSD()
-                                    
-                                    showAlertDeleteAllTrips = false
+                            .padding(.trailing, 8)
+                            .alert("Warning!", isPresented: $showAlertDeleteAllTripsConfirm) {
+                                Button("Continue", role: .destructive) {
+                                    let result = deleteTripSummariesSD()
+                                    showAlertDeleteAllTripsMessage = "\(result) trips were deleted"
+                                    showAlertDeleteAllTripsSuccess = true
                                 }
-                                return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All trips?"), primaryButton: firstButton, secondaryButton: secondButton)
-                            })
-                        .padding(.trailing, 8)
+                                Button("Cancel", role: .cancel) {}
+                            } message: {
+                                Text("Are you sure you want to delete all trips?")
+                            }
+                            .alert("Delete Completed", isPresented: $showAlertDeleteAllTripsSuccess) {
+                                Button("OK", role: .cancel) {}
+                            } message: {
+                                Text(showAlertDeleteAllTripsMessage)
+                            }
                         }
                         
                         
@@ -376,7 +383,7 @@ struct DeveloperSettingsView: View {
                         /// Delete all GPS Data
                         ///
                         Button(action: {
-                            showAlertDeleteAllGPSData = true
+                            showAlertDeleteAllGPSDataConfirm = true
                         }
                         ) {
                             HStack {
@@ -388,6 +395,8 @@ struct DeveloperSettingsView: View {
                             }
                             .padding(.trailing, -16)
                         }
+                        .padding(.trailing, 8)
+                        /*
                         .alert(isPresented: $showAlertDeleteAllGPSData, content: {
                             let firstButton = Alert.Button.default(Text("Cancel"))
                             let secondButton = Alert.Button.destructive(Text("Continue")) {
@@ -400,6 +409,24 @@ struct DeveloperSettingsView: View {
                             return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All GPS Data?"), primaryButton: firstButton, secondaryButton: secondButton)
                         })
                         .padding(.trailing, 8)
+                        */
+                        .alert("Warning!", isPresented: $showAlertDeleteAllGPSDataConfirm) {
+                            Button("Continue", role: .destructive) {
+                            
+                                let result = deleteGpsJournalSD()
+                                showAlertDeleteAllGPSDataMessage = "\(result) GPS Journal entries\n were deleted"
+                                showAlertDeleteAllGPSDataSuccess = true
+                            }
+                            Button("Cancel", role: .cancel) {}
+                        } message: {
+                            Text("Are you sure you want to delete all processed GPS Journal entries?")
+                        }
+                        .alert("Delete Completed", isPresented: $showAlertDeleteAllGPSDataSuccess) {
+                            Button("OK", role: .cancel) {}
+                        } message: {
+                            Text(showAlertDeleteAllGPSDataMessage)
+                        }
+                        
                         
                         /// Delete all processed GPS Data
                         ///
