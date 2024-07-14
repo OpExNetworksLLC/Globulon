@@ -1,10 +1,18 @@
 //
 //  drivingSummaryView.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 5/5/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
+
+/// # drivingSummaryView
+/// Show summary of driver metrics
+///
+/// # Version History
+/// ### 0.1.0.64
+/// # - Fixed an index problem with loading prior month on record score.  Was casing the app to crash.
+/// # - *Date*: 07/14/24
 
 import SwiftUI
 import SwiftData
@@ -120,7 +128,7 @@ struct drivingSummaryView: View {
                             thisMonthDistance = String(format: "%.0f", tripHistorySummarySD.first?.totalDistance ?? 0)
                             thisMonthDuration = formatMMtoHHMM(minutes: tripHistorySummarySD.first?.totalDuration ?? 0)
                             
-                            if tripHistorySummarySD.count > 0 {
+                            if tripHistorySummarySD.count > 1 {
                                 pastMonthTripCount = String(tripHistorySummarySD[1].totalTrips)
                                 if tripHistorySummarySD[0].totalTrips > tripHistorySummarySD[1].totalTrips {
                                     thisMonthTripCountDelta = "↑"
@@ -148,8 +156,8 @@ struct drivingSummaryView: View {
                                 } else {
                                     thisMonthDurationDelta = " "
                                 }
-                                
                             }
+                            
                         }
                         Text("Since...")
                             .foregroundColor(.white)
