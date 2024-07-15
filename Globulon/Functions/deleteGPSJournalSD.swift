@@ -1,6 +1,6 @@
 //
 //  deleteGPSJournalSD.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 2/25/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
