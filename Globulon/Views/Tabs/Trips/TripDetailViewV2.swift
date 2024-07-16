@@ -1,10 +1,18 @@
 //
 //  TripDetailViewV2.swift
-//  ZenTrac
+//  Globulon
 //
 //  Created by David Holeman on 4/24/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
+
+/// # TripDetailViewV3
+/// Display trip details
+///
+/// # Version History
+/// ### 0.1.0.64
+/// # - cleaned up toolbar and toolbar items
+/// # - *Date*: 07/15/24
 
 import SwiftUI
 import SwiftData
@@ -263,7 +271,7 @@ struct TripDetailViewV2: View {
                                 primaryButton: .destructive(Text("Delete")) {
                                     
                                     /// Try to delete the entry
-                                    _ = deleteTripJournalEntry(tripTimestamp: tripManager.originationTimestamp!, journalEntryTimestamp: tripManager.journalEntryTimestamp!)
+                                    _ = deleteTripGPSJournalEntry(tripTimestamp: tripManager.originationTimestamp!, journalEntryTimestamp: tripManager.journalEntryTimestamp!)
                                     
                                 },
                                 secondaryButton: .cancel()

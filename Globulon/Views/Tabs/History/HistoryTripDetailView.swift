@@ -1,10 +1,18 @@
 //
 //  HistoryTripDetailView.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 5/6/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
+
+/// # HistoryTripDetailView
+/// Delete a trip in the trip history
+///
+/// # Version History
+/// ### 0.1.0.64
+/// # - Removed delete as an option for a GPS entry
+/// # - *Date*: 07/15/24
 
 import SwiftUI
 import SwiftData
@@ -259,23 +267,7 @@ struct HistoryTripDetailView: View {
                             HistoryMapTripLocationView(latitude: tripManager.latitude ?? 0.0, longitude: tripManager.longitude ?? 0.0)
                         }
                         /*
-                        .alert(isPresented: $isShowDeleteConfirmation) {
-                            Alert(
-                                title: Text("Delete GPS Entry"),
-                                message: Text("Are you sure you want to delete this entry?\n \(formatDateStampA(tripManager.originationTimestamp!))"),
-                                primaryButton: .destructive(Text("Delete")) {
-                                    
-                                    //TODO: Delete from the history not the current list of trips
-                                    
-                                    /// Try to delete the entry
-                                    /*
-                                    _ = deleteTripJournalEntry(tripTimestamp: tripManager.originationTimestamp!, journalEntryTimestamp: tripManager.journalEntryTimestamp!)
-                                    */
-                                    
-                                },
-                                secondaryButton: .cancel()
-                            )
-                        }
+                        /// once in the history you do not want to allow the deleting of a specific entry 
                         */
                         
                     }

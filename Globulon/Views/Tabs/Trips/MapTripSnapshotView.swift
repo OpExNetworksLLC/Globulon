@@ -1,6 +1,6 @@
 //
 //  MapTripSnapshotView.swift
-//  ViDrive
+//  Globulon
 //
 //  Created by David Holeman on 4/12/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
@@ -10,6 +10,13 @@ import SwiftUI
 import SwiftData
 import MapKit
 
+/// # mapTripSnapshotView
+/// snapshot view of the trip
+///
+/// # Version History
+/// ### 0.1.0.64
+/// # - Removed print statement no longer needed
+/// # - *Date*: 07/15/24
 
 struct MapTripSnapshotView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -55,7 +62,6 @@ struct MapTripSnapshotView: View {
                     let sortedJournals = journals.sorted { $0.timestamp < $1.timestamp }
 
                     for location in sortedJournals {
-                        print("** \(location.timestamp) \(location.latitude) \(location.longitude)")
                         coordinatesArray.append(CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude))
                     }
                 }

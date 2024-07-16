@@ -10,7 +10,7 @@
 		6E0297802BDD44FA00F3366C /* TripsViewV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E02977F2BDD44FA00F3366C /* TripsViewV3.swift */; };
 		6E0297822BDD455F00F3366C /* scoreTripColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0297812BDD455F00F3366C /* scoreTripColor.swift */; };
 		6E0297842BDD459B00F3366C /* TripDetailViewV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0297832BDD459B00F3366C /* TripDetailViewV2.swift */; };
-		6E0297862BDD45F800F3366C /* deleteTripJournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0297852BDD45F800F3366C /* deleteTripJournalEntry.swift */; };
+		6E0297862BDD45F800F3366C /* deleteTripGPSJournalEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0297852BDD45F800F3366C /* deleteTripGPSJournalEntry.swift */; };
 		6E0831DB2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E0831DA2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift */; };
 		6E08F52B2BA8FC4F004E6329 /* xInternetReachability.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52A2BA8FC4F004E6329 /* xInternetReachability.swift */; };
 		6E08F52F2BA905B7004E6329 /* NetworkHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52E2BA905B7004E6329 /* NetworkHandlerClass.swift */; };
@@ -208,7 +208,7 @@
 		6E02977F2BDD44FA00F3366C /* TripsViewV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripsViewV3.swift; sourceTree = "<group>"; };
 		6E0297812BDD455F00F3366C /* scoreTripColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = scoreTripColor.swift; sourceTree = "<group>"; };
 		6E0297832BDD459B00F3366C /* TripDetailViewV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailViewV2.swift; sourceTree = "<group>"; };
-		6E0297852BDD45F800F3366C /* deleteTripJournalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteTripJournalEntry.swift; sourceTree = "<group>"; };
+		6E0297852BDD45F800F3366C /* deleteTripGPSJournalEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteTripGPSJournalEntry.swift; sourceTree = "<group>"; };
 		6E0831DA2C04DD9B004A97BA /* deleteAllProcessedGPSJournalSD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteAllProcessedGPSJournalSD.swift; sourceTree = "<group>"; };
 		6E08F52A2BA8FC4F004E6329 /* xInternetReachability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xInternetReachability.swift; sourceTree = "<group>"; };
 		6E08F52E2BA905B7004E6329 /* NetworkHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandlerClass.swift; sourceTree = "<group>"; };
@@ -649,7 +649,7 @@
 				6E4E18452B8C52890084BC07 /* dedupGPSJournalSD.swift */,
 				6E4E18412B8C51A50084BC07 /* deleteGPSJournalSD.swift */,
 				6E4B2A062BCDAC6F00A1A60F /* deleteTripData.swift */,
-				6E0297852BDD45F800F3366C /* deleteTripJournalEntry.swift */,
+				6E0297852BDD45F800F3366C /* deleteTripGPSJournalEntry.swift */,
 				6E4E18432B8C52150084BC07 /* deleteTripSummariesSD.swift */,
 				6E7E78F62BE2C8F200B52A77 /* deprocessGPSJournalSD.swift */,
 				6E983A752B8427FB002F2251 /* encodeJSON.swift */,
@@ -950,7 +950,7 @@
 				6E1493072BE8328C00E8C33E /* copyTripToHistorySummarySD.swift in Sources */,
 				6E7274982B804A9E00B5547C /* AppDefaults.swift in Sources */,
 				6E1493092BE8510800E8C33E /* HistoryView.swift in Sources */,
-				6E0297862BDD45F800F3366C /* deleteTripJournalEntry.swift in Sources */,
+				6E0297862BDD45F800F3366C /* deleteTripGPSJournalEntry.swift in Sources */,
 				6E725C452BB2777200C5B61E /* CircularScoreView.swift in Sources */,
 				6E88DC202B846E6E00BBB4DD /* AppInfoClass.swift in Sources */,
 				6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */,
@@ -1202,7 +1202,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
@@ -1249,7 +1249,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 64;
+				CURRENT_PROJECT_VERSION = 65;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				DEVELOPMENT_TEAM = ZDT4SG39G9;
 				ENABLE_PREVIEWS = YES;
