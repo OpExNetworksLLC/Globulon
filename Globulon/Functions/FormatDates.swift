@@ -16,6 +16,12 @@ func formatDateStampM(_ date: Date) -> String {
     return formatter.string(from: date)
 }
 
+func formatDateStampMSSS(_ date: Date) -> String {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+    return formatter.string(from: date)
+}
+
 // MARK: dd/mm/yy hh:mm:ss am/pm
 func formatDateStampA(_ date: Date) -> String {
     let formatter = DateFormatter()

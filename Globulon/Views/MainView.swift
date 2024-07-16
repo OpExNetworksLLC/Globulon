@@ -27,18 +27,26 @@ struct MainView: View {
                         Text("Home")
                     }
                     .tag(LandingPageEnum.home)
+                /*
                 LocationView(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "location")
                         Text("Location")
                     }
                     .tag(LandingPageEnum.location)
+                */
                 MotionView(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "arrow.triangle.pull")
                         Text("Feed")
                     }
                     .tag(LandingPageEnum.feed)
+                ActivityView(isShowSideMenu: $appStatus.isShowSideMenu)
+                    .tabItem {
+                        Image(systemName: "circle.dotted.and.circle")
+                        Text("Activity")
+                    }
+                    //.tag(LandingPageEnum.feed)
                 TripsViewV3(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "map")
@@ -106,28 +114,6 @@ struct MainView: View {
             LogEvent.print(module: "MainView.task", message: "...finished")
         }
     }
-    
-    /// Perform and/or launch any processes or tasks before the user interacts with the app
-    ///
-//    func processOnAppear() {
-//        
-//        LogEvent.print(module: "MainView.processOnAppear", message: "starting...")
-//        
-//        /// Do stuff...
-//        
-//        /// Force start location updates if they were manually stopped by the user
-//        ///
-//        if locationHandler.updatesStarted == false {
-//            locationHandler.startLocationUpdates()
-//        }
-//        
-//        if activityHandler.updatesStarted == false {
-//            activityHandler.startActivityUpdates()
-//        }
-//        
-//        LogEvent.print(module: "MainView.processOnAppear", message: "...finished")
-//    }
-
 }
 
 #Preview {

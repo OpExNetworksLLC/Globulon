@@ -8,4 +8,4 @@
 
 import Foundation
 
-//typealias LocationManager = LocationManagerVx
+// eg: typealias LocationManager = LocationManagerV1
