@@ -111,15 +111,27 @@ struct MotionView: View {
                     
                     List {
                         ForEach(activityHandler.motionDataBuffer, id: \.self) { detail in
-                            Text("\(formatDateStampMSSS(detail.timestamp))\n\(detail.note)")
+                            VStack(alignment: .leading) {
+                                Text("\(formatDateStampMSSS(detail.timestamp))\n\(detail.note)")
+                                HStack {
+                                    Text("X:")
+                                    Spacer()
+                                    Text("\(detail.accelerometerX)")
+                                }
+                                HStack {
+                                    Text("Y:")
+                                    Spacer()
+                                    Text("\(detail.accelerometerY)")
+                                }
+                                HStack {
+                                    Text("Z:")
+                                    Spacer()
+                                    Text("\(detail.accelerometerZ)")
+                                }
+                            }
                         }
                     }
                     .listStyle(.plain)
-                    
-//                    Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
-//                        self.locationHandler.backgroundActivity.toggle()
-//                    }
-//                    .buttonStyle(.bordered)
                 }
 
                 Spacer()

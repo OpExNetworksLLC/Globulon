@@ -30,6 +30,12 @@ class ActivityHandler: ObservableObject {
         case unknown = "Unknown"
     }
     
+    struct AccelerometerData {
+        var x: Double
+        var y: Double
+        var z: Double
+    }
+    
     private let activityDataBufferLimit = 25
     @Published var activityDataBuffer: [ActivityDataBuffer] = []
 
@@ -190,7 +196,7 @@ class ActivityHandler: ObservableObject {
             note: "buffer:" + " " + "activity: \(isActivity ? "active" : "inactive")" + " / " + "\(activityState)"
         )
         activityDataBuffer.insert(entry, at: 0)
-        LogEvent.print(module: "** ", message: entry.note)
+        //LogEvent.print(module: "** ", message: entry.note)
         
     }
     
@@ -218,19 +224,20 @@ class ActivityHandler: ObservableObject {
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude,
             speed: 0,
+            accelerometerX: accelerometerData.x,
+            accelerometerY: accelerometerData.y,
+            accelerometerZ: accelerometerData.z,
             processed: false,
             code: "",
-            note: "buffer:" + " " + "activity: \(isActivity ? "active" : "inactive")" + " / " + "\(activityState)" + "\nx: \(accelerometerData.x)\ny: \(accelerometerData.y)\nz: \(accelerometerData.z)"
+            note: "buffer:" + " " + "activity: \(isActivity ? "active" : "inactive")" + " / " + "\(activityState)"
         )
         motionDataBuffer.insert(entry, at: 0)
         //LogEvent.print(module: "** ", message: entry.note)
         
     }
     private func processAccelerometerData(_ data: CMAccelerometerData) {
-        // Assuming you want to log the accelerometer data and update activityDataBuffer based on it
-        let acceleration = data.acceleration
-        //LogEvent.print(module: "ActivityHandler.processAccelerometerData()", message: "Accelerometer data: x=\(acceleration.x), y=\(acceleration.y), z=\(acceleration.z)")
         
+        let acceleration = data.acceleration
         self.accelerometerData.x = acceleration.x
         self.accelerometerData.y = acceleration.y
         self.accelerometerData.z = acceleration.z
