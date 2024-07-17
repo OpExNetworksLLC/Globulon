@@ -8,8 +8,12 @@
 
 import Foundation
 
-func formatMPH(_ speed: Double) -> String {
-    // for two decimal points: "%.2f"
-    return String(format: "%.0f", speed)
-    
+//func formatMPH(_ speed: Double) -> String {
+//    // for two decimal points: "%.2f"
+//    return String(format: "%.0f", speed)
+//    
+//}
+func formatMPH(_ speed: Double, decimalPoints: Int = 0) -> String {
+    let formatString = "%.\(decimalPoints)f"
+    return String(format: formatString, speed)
 }

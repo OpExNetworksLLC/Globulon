@@ -49,7 +49,7 @@ struct ActivityView: View {
                     HStack {
                         Text("Speed:")
                         Spacer()
-                        Text("\(convertMPStoMPH(locationHandler.lastSpeed))")
+                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .padding()
@@ -120,17 +120,16 @@ struct ActivityView: View {
                     
                     List {
                         ForEach(activityHandler.activityDataBuffer, id: \.self) { detail in
-                            Text("\(formatDateStampMSSS(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed))) mph\n\(detail.note)")
+                            Text("\(formatDateStampMSSS(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed), decimalPoints: 2)) mph\n\(detail.note)")
                         }
                     }
                     .listStyle(.plain)
                     
-                    /*
                     Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
                         self.locationHandler.backgroundActivity.toggle()
                     }
                     .buttonStyle(.bordered)
-                    */
+                    
                 }
 
                 Spacer()

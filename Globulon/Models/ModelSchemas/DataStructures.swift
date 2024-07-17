@@ -52,6 +52,22 @@ struct ActivityDataBuffer: Codable, Hashable {
     var note: String
 }
 
+struct AccelerometerData {
+    var x: Double
+    var y: Double
+    var z: Double
+}
+
+struct MotionDataBuffer: Codable, Hashable {
+    var timestamp: Date
+    var latitude: Double
+    var longitude: Double
+    var speed: Double
+    var processed: Bool
+    var code: String
+    var note: String
+}
+
 //struct HistoryTripGPStoJSON: Codable {
 //    var timestamp: Date
 //    var latitude: Double

@@ -40,7 +40,7 @@ struct MotionView: View {
                     HStack {
                         Text("Speed:")
                         Spacer()
-                        Text("\(convertMPStoMPH(locationHandler.lastSpeed))")
+                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .padding()
@@ -110,16 +110,16 @@ struct MotionView: View {
                     .padding(.bottom, 16)
                     
                     List {
-                        ForEach(locationHandler.locationDataBuffer, id: \.self) { detail in
-                            Text("\(formatDateStampM(detail.timestamp))  \(formatMPH(convertMPStoMPH(detail.speed))) mph\n\(detail.note)")
+                        ForEach(activityHandler.motionDataBuffer, id: \.self) { detail in
+                            Text("\(formatDateStampMSSS(detail.timestamp))\n\(detail.note)")
                         }
                     }
                     .listStyle(.plain)
                     
-                    Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
-                        self.locationHandler.backgroundActivity.toggle()
-                    }
-                    .buttonStyle(.bordered)
+//                    Button(self.locationHandler.backgroundActivity ? "Stop BG Activity Session" : "Start BG Activity Session") {
+//                        self.locationHandler.backgroundActivity.toggle()
+//                    }
+//                    .buttonStyle(.bordered)
                 }
 
                 Spacer()
@@ -154,9 +154,9 @@ struct MotionView: View {
                     Button(action: {
                         isRecording.toggle()
                         if isRecording {
-                            locationHandler.startLocationUpdates()
+                            activityHandler.startMotionUpdates()
                         } else {
-                            locationHandler.stopLocationUpdates()
+                            activityHandler.stopMotionUpdates()
                         }
                     }) {
                         if isRecording {
