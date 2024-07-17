@@ -105,7 +105,14 @@ class ActivityHandler: ObservableObject {
             motionManager.accelerometerUpdateInterval = 0.1
             motionManager.startAccelerometerUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
-                self.processAccelerometerData(data)
+                
+                //self.processAccelerometerData(data)
+                let acceleration = data.acceleration
+                self.accelerometerData.x = acceleration.x
+                self.accelerometerData.y = acceleration.y
+                self.accelerometerData.z = acceleration.z
+                updateMotionDataBuffer()
+                
             }
             LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
         } else {
@@ -136,7 +143,7 @@ class ActivityHandler: ObservableObject {
         motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
             guard let self = self, let activity = activity else { return }
             self.updateActivityState(activity)
-            self.updateActivityDataBuffer(location: self.locationHandler.siftLocation)
+            self.updateActivityDataBuffer(location: self.locationHandler.lastLocation)
         }
     }
     
@@ -200,15 +207,7 @@ class ActivityHandler: ObservableObject {
         
     }
     
-    func updateMotionDataBuffer(location: CLLocation?) {
-        
-        /// Guard to make sure location is not nil
-        /// 
-        guard let location = location else {
-            return
-        }
-        
-        //LogEvent.print(module: "updateLocationDataBuffer", message: "Location \(location)" )
+    func updateMotionDataBuffer() {
         
         /// Check if the array has reached its capacity
         ///
@@ -221,9 +220,9 @@ class ActivityHandler: ObservableObject {
         ///
         let entry = MotionDataBuffer(
             timestamp: Date(),
-            latitude: location.coordinate.latitude,
-            longitude: location.coordinate.longitude,
-            speed: 0,
+            latitude: locationHandler.siftLocation.coordinate.latitude,
+            longitude: locationHandler.siftLocation.coordinate.longitude,
+            speed: locationHandler.lastSpeed,
             accelerometerX: accelerometerData.x,
             accelerometerY: accelerometerData.y,
             accelerometerZ: accelerometerData.z,
@@ -234,19 +233,6 @@ class ActivityHandler: ObservableObject {
         motionDataBuffer.insert(entry, at: 0)
         //LogEvent.print(module: "** ", message: entry.note)
         
-    }
-    private func processAccelerometerData(_ data: CMAccelerometerData) {
-        
-        let acceleration = data.acceleration
-        self.accelerometerData.x = acceleration.x
-        self.accelerometerData.y = acceleration.y
-        self.accelerometerData.z = acceleration.z
-        
-        // Create a mock location object (you should replace this with actual location data if available)
-        let mockLocation = CLLocation(latitude: 37.7749, longitude: -122.4194)
-        
-        // Update motionDataBuffer with mock location
-        updateMotionDataBuffer(location: mockLocation)
     }
 }
 

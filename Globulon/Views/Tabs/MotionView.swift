@@ -112,7 +112,11 @@ struct MotionView: View {
                     List {
                         ForEach(activityHandler.motionDataBuffer, id: \.self) { detail in
                             VStack(alignment: .leading) {
-                                Text("\(formatDateStampMSSS(detail.timestamp))\n\(detail.note)")
+                                HStack {
+                                    Text("\(formatDateStampMSSS(detail.timestamp))")
+                                    Spacer()
+                                    Text("\(formatMPH(convertMPStoMPH(detail.speed), decimalPoints: 2)) mph")
+                                }
                                 HStack {
                                     Text("X:")
                                     Spacer()
