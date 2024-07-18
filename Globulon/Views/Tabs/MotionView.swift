@@ -65,14 +65,20 @@ struct MotionView: View {
                         Text(self.locationHandler.isDriving ? "Driving" : "")
                             .foregroundColor(self.locationHandler.isDriving ? .green : .red)
                     }
+                    HStack {
+                        Text("Trip:")
+                        Spacer()
+                        Text(self.locationHandler.isTripActive ? "Active Trip" : "")
+                            .foregroundColor(self.locationHandler.isTripActive ? .green : .red)
+                    }
                 }
                 .padding(.leading, 16)
                 .padding(.trailing, 16)
                 
                 Spacer()
 
+                /*
                 VStack {
-                    // (Other UI components)
                     
                     Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
                         Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.siftLocation.coordinate.latitude), longitude: (locationHandler.siftLocation.coordinate.longitude)))
@@ -108,7 +114,10 @@ struct MotionView: View {
                     .padding(.leading, 16)
                     .padding(.trailing, 16)
                     .padding(.bottom, 16)
-                    
+                }
+                */
+                
+                VStack{
                     List {
                         ForEach(activityHandler.motionDataBuffer, id: \.self) { detail in
                             VStack(alignment: .leading) {
@@ -118,21 +127,56 @@ struct MotionView: View {
                                     Text("\(formatMPH(convertMPStoMPH(detail.speed), decimalPoints: 2)) mph")
                                 }
                                 HStack {
-                                    Text("X:")
+                                    Text("Accelerometer X:")
                                     Spacer()
                                     Text("\(detail.accelerometerX)")
                                 }
                                 HStack {
-                                    Text("Y:")
+                                    Text("Accelerometer Y:")
                                     Spacer()
                                     Text("\(detail.accelerometerY)")
                                 }
                                 HStack {
-                                    Text("Z:")
+                                    Text("Accelerometer Z:")
                                     Spacer()
                                     Text("\(detail.accelerometerZ)")
                                 }
+                                .padding(.bottom, 2)
+                                HStack {
+                                    Text("Gyroscope X:")
+                                    Spacer()
+                                    Text("\(detail.gyroscopeX)")
+                                }
+                                HStack {
+                                    Text("Gyroscope Y:")
+                                    Spacer()
+                                    Text("\(detail.gyroscopeY)")
+                                }
+                                HStack {
+                                    Text("Gyroscope Z:")
+                                    Spacer()
+                                    Text("\(detail.gyroscopeZ)")
+                                }
+                                .padding(.bottom, 2)
+
+                                HStack {
+                                    Text("Attitude Pitch:")
+                                    Spacer()
+                                    Text("\(detail.attitudePitch)")
+                                }
+                                HStack {
+                                    Text("Attitude Yaw:")
+                                    Spacer()
+                                    Text("\(detail.attitudeYaw)")
+                                }
+                                HStack {
+                                    Text("Attitude Roll:")
+                                    Spacer()
+                                    Text("\(detail.attitudeRoll)")
+                                }
+                                .padding(.bottom, 2)
                             }
+                            .font(.system(size: 10, design: .monospaced))
                         }
                     }
                     .listStyle(.plain)

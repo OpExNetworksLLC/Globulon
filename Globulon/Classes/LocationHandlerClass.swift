@@ -10,6 +10,9 @@
 /// This class handles location services
 ///
 /// # Version History
+/// ### 0.1.0.68
+/// # - Converted isTripActive to a Published variable
+/// # - *Date*: 07/12/24
 /// ### 0.1.0.62
 /// # - Added some comments to document the code
 /// # - *Date*: 07/12/24
@@ -47,6 +50,8 @@ import MapKit
     @Published var isMoving = false
     @Published var isWalking = false
     @Published var isDriving = false
+    
+    @Published var isTripActive = false
         
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0.0, longitude: -0.0),
@@ -114,7 +119,7 @@ import MapKit
     
     
     var isTripInitiated = false
-    var isTripActive = false
+    //var isTripActive = false
     var walkingSpeed = 0.0 // MPS
     var locationUpdateCounter = 0
     

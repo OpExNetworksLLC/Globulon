@@ -60,6 +60,12 @@ struct MotionDataBuffer: Codable, Hashable {
     var accelerometerX: Double
     var accelerometerY: Double
     var accelerometerZ: Double
+    var gyroscopeX: Double
+    var gyroscopeY: Double
+    var gyroscopeZ: Double
+    var attitudePitch: Double
+    var attitudeYaw: Double
+    var attitudeRoll: Double
     var processed: Bool
     var code: String
     var note: String
