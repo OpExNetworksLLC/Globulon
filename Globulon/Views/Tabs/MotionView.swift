@@ -45,6 +45,7 @@ struct MotionView: View {
                 }
                 .padding()
                 Divider()
+                
                 VStack(alignment: .leading) {
                     HStack {
                         Text("Activity/State:")
@@ -73,7 +74,30 @@ struct MotionView: View {
                     }
                 }
                 .padding(.leading, 16)
-                .padding(.trailing, 16)
+                .padding(.trailing, 32)
+                
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text("Accelerometer XYZ:")
+                        Spacer()
+                        Text("\(activityHandler.accelerometerData.x), \(activityHandler.accelerometerData.y), \(activityHandler.accelerometerData.z)")
+                    }
+                    .padding(.trailing, 2)
+                    HStack {
+                        Text("Gyroscope XYZ:")
+                        Spacer()
+                        Text("\(activityHandler.gyroscopeData.x), \(activityHandler.gyroscopeData.y), \(activityHandler.gyroscopeData.z)")
+                    }
+                    .padding(.trailing, 2)
+                    HStack {
+                        Text("Attitude PYR:")
+                        Spacer()
+                        Text("\(activityHandler.attitudeData.pitch), \(activityHandler.attitudeData.yaw), \(activityHandler.attitudeData.roll)")
+                    }
+                    .padding(.trailing, 2)
+                }
+                .font(.system(size: 10, design: .monospaced))
+                .padding()
                 
                 Spacer()
 

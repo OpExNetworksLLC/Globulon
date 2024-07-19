@@ -12,7 +12,7 @@
 /// # Version History
 /// ### 0.1.0.68
 /// # - Converted isTripActive to a Published variable
-/// # - *Date*: 07/12/24
+/// # - *Date*: 07/17/24
 /// ### 0.1.0.62
 /// # - Added some comments to document the code
 /// # - *Date*: 07/12/24
@@ -46,13 +46,12 @@ import MapKit
     @Published var siftLocation = CLLocation()
     @Published var siftCount = 0
     
+    @Published var isTripActive = false
     @Published var isStationary = false
     @Published var isMoving = false
     @Published var isWalking = false
     @Published var isDriving = false
     
-    @Published var isTripActive = false
-        
     @Published var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0.0, longitude: -0.0),
         span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)

@@ -6,6 +6,14 @@
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+/// # NotificationHandler
+/// This class handles location services
+///
+/// # Version History
+/// ### 0.1.0.69
+/// # - Revised to notify once if disconnected
+/// # - *Date*: 07/18/24
+
 import SwiftUI
 import Network
 import Combine
@@ -22,10 +30,9 @@ class NetworkHandler: ObservableObject {
     @Published var isExpensive: Bool = false
     @Published var isConstrained: Bool = false
     @Published var connectionType = NWInterface.InterfaceType.other
-
+    
     private init() {
         self.monitor = NWPathMonitor()
-        //startNetworkUpdates()
     }
 
     deinit {
@@ -36,6 +43,8 @@ class NetworkHandler: ObservableObject {
         
         LogEvent.print(module: "NetworkHandler.startNetworkUpdates()", message: "started ...")
         
+        var wasNotifiedOfDisconnect = false
+
         monitor?.pathUpdateHandler = { [weak self] path in
             DispatchQueue.main.async {
                 let isConnected = path.status == .satisfied
@@ -46,22 +55,30 @@ class NetworkHandler: ObservableObject {
                 let connectionTypes: [NWInterface.InterfaceType] = [.cellular, .wifi, .wiredEthernet]
                 self?.connectionType = connectionTypes.first(where: path.usesInterfaceType) ?? .other
                 
+                if wasNotifiedOfDisconnect == false {
+                    if ((self?.isConnected) == false) {
+                        self?.handleConnectivityChange(isConnected: isConnected)
+                        wasNotifiedOfDisconnect = true
+                        self?.wasDisconnected = true
+                        LogEvent.print(module: "NetworkStatus.startMonitoring()", message: "Internet is not available")
+                    }
+                }
+                
+                /*
                 if ((self?.isConnected) == true) {
                     if ((self?.wasDisconnected) == true) {
                         self?.handleConnectivityChange(isConnected: isConnected)
                         self?.wasDisconnected = false
                         LogEvent.print(module: "NetworkStatus.startMonitoring()", message: "Internet is available")
-                        print(">>> Connected: \(path.status)")
                     }
                 } else {
                     if ((self?.wasDisconnected) == false) {
                         self?.handleConnectivityChange(isConnected: isConnected)
                         self?.wasDisconnected = true
                         LogEvent.print(module: "NetworkStatus.startMonitoring()", message: "Internet is not available")
-                        print(">>> Disconnected: \(path.status)")
                     }
                 }
-                
+                */
             }
         }
         monitor?.start(queue: queue)
