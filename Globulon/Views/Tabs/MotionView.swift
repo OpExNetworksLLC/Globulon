@@ -102,19 +102,31 @@ struct MotionView: View {
                 .padding()
                 
                 VStack {
-                    Rectangle()
-                        .fill(Color.blue)
-                        .frame(width: 50, height: 100)
-                        .rotationEffect(Angle(radians: activityHandler.attitudeData.roll), anchor: .center)
-                        .rotation3DEffect(Angle(radians: activityHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
-                        .rotation3DEffect(Angle(radians: activityHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
+                    HStack {
+                        Rectangle()
+                            .fill(Color.blue)
+                            .frame(width: 50, height: 100)
+                            .rotationEffect(Angle(radians: activityHandler.attitudeData.roll), anchor: .center)
+                            .rotation3DEffect(Angle(radians: activityHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
+                            .rotation3DEffect(Angle(radians: activityHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
+                        Spacer().frame(width: 50)
+                        SceneView(
+                            scene: activityHandler.scene,
+                            options: [.allowsCameraControl]
+                        )
+                        .frame(width: 100, height: 100)
+                        
+                    }
                 }
+                .padding()
                 /*
                 Gyroscope3DView(rotation: $activityHandler.rotation)
                     .frame(height: 100)
                     .padding()
                 */
+                
+                
                 VStack {
                     Chart {
                         ForEach(activityHandler.accelerationHistory) { dataPoint in
@@ -152,47 +164,8 @@ struct MotionView: View {
                     .padding()
                 }
                 
+                
                 Spacer()
-
-                /*
-                VStack {
-                    
-                    Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.siftLocation.coordinate.latitude), longitude: (locationHandler.siftLocation.coordinate.longitude)))
-                    }
-                    .onAppear {
-                        updateCameraPosition()
-                    }
-                    .onChange(of: locationHandler.lastLocation) {
-                        updateCameraPosition()
-                    }
-                    .padding(.leading, 16)
-                    .padding(.trailing, 16)
-                    
-                    Spacer()
-                    HStack() {
-                        Button("Zoom Out") {
-                            self.mapSpan += mapSpanIncrement
-                            updateCameraPosition()
-                        }
-                        .buttonStyle(.bordered)
-                        Spacer()
-                        Button("Zoom in") {
-                            /// Ensure mapSpan does not go lower than mapSpanIncrement
-                            if mapSpan > mapSpanIncrement {
-                                mapSpan -= mapSpanIncrement
-                            } else {
-                                mapSpan = mapSpanMinimum
-                            }
-                            updateCameraPosition()
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    .padding(.leading, 16)
-                    .padding(.trailing, 16)
-                    .padding(.bottom, 16)
-                }
-                */
                 
                 VStack{
                     List {
@@ -424,5 +397,67 @@ struct Gyroscope3DView: UIViewRepresentable {
         if let boxNode = uiView.scene?.rootNode.childNode(withName: "gyroscopeBox", recursively: false) {
             boxNode.eulerAngles = rotation
         }
+    }
+}
+
+
+import SceneKit
+
+extension SCNGeometry {
+    static func cubeWithColoredSides(sideLength: CGFloat) -> SCNGeometry {
+        let box = SCNBox(width: sideLength, height: sideLength, length: sideLength, chamferRadius: 0.0)
+
+        // Assign different colors to each face of the cube
+        let materials = [
+            UIColor.red,    // front
+            UIColor.green,  // right
+            UIColor.blue,   // back
+            UIColor.yellow, // left
+            UIColor.cyan,   // top
+            UIColor.magenta // bottom
+        ].map { color -> SCNMaterial in
+            let material = SCNMaterial()
+            material.diffuse.contents = color
+            return material
+        }
+        
+        box.materials = materials
+        
+        // Edges setup
+        let indices: [Int32] = [
+            0, 1, 1, 2, 2, 3, 3, 0,
+            4, 5, 5, 6, 6, 7, 7, 4,
+            0, 4, 1, 5, 2, 6, 3, 7
+        ]
+        
+        let sources = box.sources
+        let elements = box.elements
+        
+        let edgeGeometrySource = SCNGeometrySource(
+            vertices: [
+                SCNVector3(-0.5, -0.5, -0.5), SCNVector3(0.5, -0.5, -0.5),
+                SCNVector3(0.5, 0.5, -0.5), SCNVector3(-0.5, 0.5, -0.5),
+                SCNVector3(-0.5, -0.5, 0.5), SCNVector3(0.5, -0.5, 0.5),
+                SCNVector3(0.5, 0.5, 0.5), SCNVector3(-0.5, 0.5, 0.5)
+            ]
+        )
+        
+        let edgeGeometryElement = SCNGeometryElement(
+            indices: indices,
+            primitiveType: .line
+        )
+        
+        let edgeGeometry = SCNGeometry(sources: [edgeGeometrySource], elements: [edgeGeometryElement])
+        edgeGeometry.firstMaterial?.diffuse.contents = UIColor.black
+        
+        let node = SCNNode(geometry: box)
+        let edgeNode = SCNNode(geometry: edgeGeometry)
+        node.addChildNode(edgeNode)
+        
+        let geometry = SCNGeometry(sources: sources, elements: elements)
+        let finalNode = SCNNode()
+        finalNode.addChildNode(node)
+        
+        return box
     }
 }

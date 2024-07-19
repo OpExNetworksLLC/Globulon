@@ -11,6 +11,7 @@
 ///
 /// # Version History
 /// ### 0.1.0.70
+/// # - Added Dispatch Queue to Gyro and Attitude data processing
 /// # - Cleaned up some comments
 /// # - *Date*: 07/16/24
 /// ### 0.1.0.69
@@ -100,9 +101,33 @@ class ActivityHandler: ObservableObject {
     private var attitudeUpdated = false
     
     @Published var rotation = SCNVector3(0, 0, 0)
-    @Published var accelerationHistory: [AccelerationData] = []
     
+    let scene = SCNScene()
+    private var cubeNode: SCNNode!
+    
+    // Low-pass filter parameters
+    private var lastRotation = SCNVector4Zero
+    private let filterFactor: Float = 0.05    // the lower the number means more smoothing because less of the new data is used.
+    private let threshold:    Float = 0.01   // gyroscope absolute values x,y,z have to be greater than this to update
+
+    @Published var accelerationHistory: [AccelerationData] = []
+
     private init() {
+        // Create a 3D cube
+        //let cube = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
+        
+        // Create a 3D cube with colored sides
+        let cube = SCNGeometry.cubeWithColoredSides(sideLength: 1.0)
+        
+        //cube.firstMaterial?.diffuse.contents = UIColor.red
+        
+        cubeNode = SCNNode(geometry: cube)
+        
+        // Add cube to the scene
+        scene.rootNode.addChildNode(cubeNode)
+        
+
+        
         self.accelerometerData = AccelerometerData(x: 0.0, y: 0.0, z: 0.0)
         self.gyroscopeData = GyroscopeData(x: 0.0, y: 0.0, z: 0.0)
         self.attitudeData = AttitudeData(pitch: 0.0, yaw: 0.0, roll: 0.0)
@@ -233,6 +258,8 @@ class ActivityHandler: ObservableObject {
                 )
                 */
                 
+                /// Load into structure
+                ///
                 let newAccelerationData = AccelerationData(
                     timestamp: Date(),
                     x: accelerometerData.x,
@@ -240,7 +267,10 @@ class ActivityHandler: ObservableObject {
                     z: accelerometerData.z
                 )
                 
+                /// Add to the history array
+                ///
                 self.accelerationHistory.append(newAccelerationData)
+                
                 if self.accelerationHistory.count > 100 {
                     self.accelerationHistory.removeFirst()
                 }
@@ -249,7 +279,6 @@ class ActivityHandler: ObservableObject {
                 
                 self.checkAndUpdateMotionDataBuffer()
                 
-                //LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer data updated: x: \(acceleration.x), y: \(acceleration.y), z: \(acceleration.z)")
             }
             LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
         } else {
@@ -270,18 +299,59 @@ class ActivityHandler: ObservableObject {
                     self.gyroscopeData.z = result.z
                     
                     
-                    self.rotation = SCNVector3(
-                        Float(data.rotationRate.x),
-                        Float(data.rotationRate.y),
-                        Float(data.rotationRate.z)
+//                    self.rotation = SCNVector3(
+//                        Float(self.gyroscopeData.x),
+//                        Float(self.gyroscopeData.y),
+//                        Float(self.gyroscopeData.z)
+//                    )
+                    
+                    let rotation4 = SCNVector4(
+                        x: Float(self.gyroscopeData.x),
+                        y: Float(self.gyroscopeData.y),
+                        z: Float(self.gyroscopeData.z),
+                        w: Float(data.timestamp)
                     )
+                    
+//                    let rotation4 = SCNVector4(
+//                        x: Float(roundDouble(self.gyroscopeData.x, decimalPlaces: 2)),
+//                        y: Float(roundDouble(self.gyroscopeData.y, decimalPlaces: 2)),
+//                        z: Float(roundDouble(self.gyroscopeData.z, decimalPlaces: 2)),
+//                        w: Float(data.timestamp)
+//                    )
+//                    DispatchQueue.main.async {
+//                        self.cubeNode.rotation = rotation4
+//                    }
+                    /*
+                    self.lastRotation.x = (self.lastRotation.x * (1.0 - self.filterFactor)) + (rotation4.x * self.filterFactor)
+                    self.lastRotation.y = (self.lastRotation.y * (1.0 - self.filterFactor)) + (rotation4.y * self.filterFactor)
+                    self.lastRotation.z = (self.lastRotation.z * (1.0 - self.filterFactor)) + (rotation4.z * self.filterFactor)
+                    self.lastRotation.w = rotation4.w  // Timestamp doesn't need filtering
+                    
+                    DispatchQueue.main.async {
+                        self.cubeNode.rotation = self.lastRotation
+                    }
+                    */
+                    // Apply threshold filter
+                    if abs(rotation4.x) > self.threshold ||
+                       abs(rotation4.y) > self.threshold ||
+                       abs(rotation4.z) > self.threshold {
+                        
+                        // Apply low-pass filter
+                        self.lastRotation.x = (self.lastRotation.x * (1.0 - self.filterFactor)) + (rotation4.x * self.filterFactor)
+                        self.lastRotation.y = (self.lastRotation.y * (1.0 - self.filterFactor)) + (rotation4.y * self.filterFactor)
+                        self.lastRotation.z = (self.lastRotation.z * (1.0 - self.filterFactor)) + (rotation4.z * self.filterFactor)
+                        self.lastRotation.w = rotation4.w  // Timestamp doesn't need filtering
+                        
+                        DispatchQueue.main.async {
+                            self.cubeNode.rotation = self.lastRotation
+                        }
+                    }
                 }
                 
                 self.gyroscopeUpdated = true
                 
                 self.checkAndUpdateMotionDataBuffer()
-                
-                //LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Gyroscope data updated: x: \(rotationRate.x), y: \(rotationRate.y), z: \(rotationRate.z)")
+
             }
             LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Gyroscope updates have started...")
         } else {
@@ -294,10 +364,12 @@ class ActivityHandler: ObservableObject {
             motionManager.startDeviceMotionUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
                 
-                let result = data.attitude
-                self.attitudeData.pitch = result.pitch
-                self.attitudeData.yaw = result.yaw
-                self.attitudeData.roll = result.roll
+                DispatchQueue.main.async {
+                    let result = data.attitude
+                    self.attitudeData.pitch = result.pitch
+                    self.attitudeData.yaw = result.yaw
+                    self.attitudeData.roll = result.roll
+                }
                 
                 self.attitudeUpdated = true
                 
