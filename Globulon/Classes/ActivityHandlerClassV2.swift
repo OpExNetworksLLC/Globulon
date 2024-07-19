@@ -224,12 +224,22 @@ class ActivityHandler: ObservableObject {
                 self.accelerometerData.y = result.y
                 self.accelerometerData.z = result.z
                 
+                /*
                 let newAccelerationData = AccelerationData(
                     timestamp: Date(),
                     x: data.acceleration.x,
                     y: data.acceleration.y,
                     z: data.acceleration.z
                 )
+                */
+                
+                let newAccelerationData = AccelerationData(
+                    timestamp: Date(),
+                    x: accelerometerData.x,
+                    y: accelerometerData.y,
+                    z: accelerometerData.z
+                )
+                
                 self.accelerationHistory.append(newAccelerationData)
                 if self.accelerationHistory.count > 100 {
                     self.accelerationHistory.removeFirst()
@@ -253,16 +263,19 @@ class ActivityHandler: ObservableObject {
             motionManager.startGyroUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
                 
-                let result = data.rotationRate
-                self.gyroscopeData.x = result.x
-                self.gyroscopeData.y = result.y
-                self.gyroscopeData.z = result.z
-                
-                self.rotation = SCNVector3(
-                    Float(data.rotationRate.x),
-                    Float(data.rotationRate.y),
-                    Float(data.rotationRate.z)
-                )
+                DispatchQueue.main.async {
+                    let result = data.rotationRate
+                    self.gyroscopeData.x = result.x
+                    self.gyroscopeData.y = result.y
+                    self.gyroscopeData.z = result.z
+                    
+                    
+                    self.rotation = SCNVector3(
+                        Float(data.rotationRate.x),
+                        Float(data.rotationRate.y),
+                        Float(data.rotationRate.z)
+                    )
+                }
                 
                 self.gyroscopeUpdated = true
                 
