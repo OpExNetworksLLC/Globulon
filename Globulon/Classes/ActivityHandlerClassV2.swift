@@ -10,6 +10,9 @@
 /// Show live activity information
 ///
 /// # Version History
+/// ### 0.1.0.70
+/// # - Cleaned up some comments
+/// # - *Date*: 07/16/24
 /// ### 0.1.0.69
 /// # - added motion sensor data collection into buffer
 /// # - *Date*: 07/16/24
@@ -209,16 +212,17 @@ class ActivityHandler: ObservableObject {
     
     func startMotionUpdates() {
         
-        // Start accelerometer updates
+        /// Start accelerometer updates
+        ///
         if motionManager.isAccelerometerAvailable {
             motionManager.accelerometerUpdateInterval = 0.1
             motionManager.startAccelerometerUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
                 
-                let acceleration = data.acceleration
-                self.accelerometerData.x = acceleration.x
-                self.accelerometerData.y = acceleration.y
-                self.accelerometerData.z = acceleration.z
+                let result = data.acceleration
+                self.accelerometerData.x = result.x
+                self.accelerometerData.y = result.y
+                self.accelerometerData.z = result.z
                 
                 let newAccelerationData = AccelerationData(
                     timestamp: Date(),
@@ -242,16 +246,17 @@ class ActivityHandler: ObservableObject {
             LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer is not available.")
         }
         
-        // Start gyroscope updates
+        /// Start gyroscope updates
+        ///
         if motionManager.isGyroAvailable {
             motionManager.gyroUpdateInterval = 0.1
             motionManager.startGyroUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
                 
-                let rotationRate = data.rotationRate
-                self.gyroscopeData.x = rotationRate.x
-                self.gyroscopeData.y = rotationRate.y
-                self.gyroscopeData.z = rotationRate.z
+                let result = data.rotationRate
+                self.gyroscopeData.x = result.x
+                self.gyroscopeData.y = result.y
+                self.gyroscopeData.z = result.z
                 
                 self.rotation = SCNVector3(
                     Float(data.rotationRate.x),
@@ -275,10 +280,12 @@ class ActivityHandler: ObservableObject {
             motionManager.deviceMotionUpdateInterval = 0.1
             motionManager.startDeviceMotionUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
-                let attitude = data.attitude
-                self.attitudeData.pitch = attitude.pitch
-                self.attitudeData.yaw = attitude.yaw
-                self.attitudeData.roll = attitude.roll
+                
+                let result = data.attitude
+                self.attitudeData.pitch = result.pitch
+                self.attitudeData.yaw = result.yaw
+                self.attitudeData.roll = result.roll
+                
                 self.attitudeUpdated = true
                 
                 self.checkAndUpdateMotionDataBuffer()
@@ -300,8 +307,6 @@ class ActivityHandler: ObservableObject {
         }
     }
 
-    
-    
     func stopMotionUpdates() {
         motionManager.stopAccelerometerUpdates()
         motionManager.stopGyroUpdates()

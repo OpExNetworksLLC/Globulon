@@ -101,8 +101,7 @@ struct MotionView: View {
                 .font(.system(size: 10, design: .monospaced))
                 .padding()
                 
-                HStack {
-                    Spacer()
+                VStack {
                     Rectangle()
                         .fill(Color.blue)
                         .frame(width: 50, height: 100)
@@ -110,11 +109,13 @@ struct MotionView: View {
                         .rotation3DEffect(Angle(radians: activityHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
                         .rotation3DEffect(Angle(radians: activityHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
-                    
-                    Gyroscope3DView(rotation: $activityHandler.rotation)
-                        .frame(height: 100)
-                        .padding()
-                    
+                }
+                /*
+                Gyroscope3DView(rotation: $activityHandler.rotation)
+                    .frame(height: 100)
+                    .padding()
+                */
+                VStack {
                     Chart {
                         ForEach(activityHandler.accelerationHistory) { dataPoint in
                             LineMark(
@@ -136,35 +137,19 @@ struct MotionView: View {
                             .foregroundStyle(.blue)
                         }
                     }
+                    .chartYScale(domain: -2...2)
                     .chartYAxis {
-                        AxisMarks(values: .stride(by: 0.1))
+                        //AxisMarks(values: .stride(by: 0.1))
+                        AxisMarks(values: .stride(by: 1.0))
                     }
+                    /*
                     .chartXAxis {
                         AxisMarks(format: .dateTime)
                     }
-                    .padding()
-
-                    /* 3D
-                    Rectangle()
-                        .fill(Color.blue)
-                        .frame(width: 50, height: 100)
-                        .offset(x: CGFloat(activityHandler.accelerometerData.x * 100),
-                                y: CGFloat(-activityHandler.accelerometerData.y * 100))
-                        .rotation3DEffect(
-                            Angle(radians: activityHandler.accelerometerData.x),
-                            axis: (x: 1, y: 0, z: 0)
-                        )
-                        .rotation3DEffect(
-                            Angle(radians: activityHandler.accelerometerData.y),
-                            axis: (x: 0, y: 1, z: 0)
-                        )
-                        .rotation3DEffect(
-                            Angle(radians: activityHandler.accelerometerData.z),
-                            axis: (x: 0, y: 0, z: 1)
-                        )
-                        .padding()
                     */
-                    Spacer()
+                    .chartXAxis(.hidden)
+                    
+                    .padding()
                 }
                 
                 Spacer()
