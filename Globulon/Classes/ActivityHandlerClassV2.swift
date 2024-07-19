@@ -21,6 +21,15 @@ import Foundation
 import CoreMotion
 import CoreLocation
 import Combine
+import SceneKit
+
+struct AccelerationData: Identifiable {
+    let id = UUID()
+    let timestamp: Date
+    let x: Double
+    let y: Double
+    let z: Double
+}
 
 @MainActor
 class ActivityHandler: ObservableObject {
@@ -87,8 +96,8 @@ class ActivityHandler: ObservableObject {
     private var gyroscopeUpdated = false
     private var attitudeUpdated = false
     
-//    private let updateQueue = OperationQueue()
-//    private let dispatchGroup = DispatchGroup()
+    @Published var rotation = SCNVector3(0, 0, 0)
+    @Published var accelerationHistory: [AccelerationData] = []
     
     private init() {
         self.accelerometerData = AccelerometerData(x: 0.0, y: 0.0, z: 0.0)
@@ -210,6 +219,18 @@ class ActivityHandler: ObservableObject {
                 self.accelerometerData.x = acceleration.x
                 self.accelerometerData.y = acceleration.y
                 self.accelerometerData.z = acceleration.z
+                
+                let newAccelerationData = AccelerationData(
+                    timestamp: Date(),
+                    x: data.acceleration.x,
+                    y: data.acceleration.y,
+                    z: data.acceleration.z
+                )
+                self.accelerationHistory.append(newAccelerationData)
+                if self.accelerationHistory.count > 100 {
+                    self.accelerationHistory.removeFirst()
+                }
+                
                 self.accelerometerUpdated = true
                 
                 self.checkAndUpdateMotionDataBuffer()
@@ -231,6 +252,13 @@ class ActivityHandler: ObservableObject {
                 self.gyroscopeData.x = rotationRate.x
                 self.gyroscopeData.y = rotationRate.y
                 self.gyroscopeData.z = rotationRate.z
+                
+                self.rotation = SCNVector3(
+                    Float(data.rotationRate.x),
+                    Float(data.rotationRate.y),
+                    Float(data.rotationRate.z)
+                )
+                
                 self.gyroscopeUpdated = true
                 
                 self.checkAndUpdateMotionDataBuffer()
@@ -395,55 +423,3 @@ class ActivityHandler: ObservableObject {
         
     }
 }
-
-
-/*
- /// Accelerometer
- if motionManager.isAccelerometerAvailable {
-     motionManager.accelerometerUpdateInterval = 0.1 // Update interval in seconds
-     motionManager.startAccelerometerUpdates(to: OperationQueue.main) { (data, error) in
-         guard let data = data else { return }
-         let x = data.acceleration.x
-         let y = data.acceleration.y
-         let z = data.acceleration.z
-         print("Accelerometer: x=\(x), y=\(y), z=\(z)")
-         
-         // Detect if phone is dropped
-         if abs(x) > 2 || abs(y) > 2 || abs(z) > 2 {
-             print("Phone might be dropped!")
-         }
-     }
- } else {
-     print("Accelerometer is not available")
- }
- 
- // Check if gyroscope is available
- if motionManager.isGyroAvailable {
-     motionManager.gyroUpdateInterval = 0.1 // Update interval in seconds
-     motionManager.startGyroUpdates(to: OperationQueue.main) { (data, error) in
-         guard let data = data else { return }
-         let rotationRateX = data.rotationRate.x
-         let rotationRateY = data.rotationRate.y
-         let rotationRateZ = data.rotationRate.z
-         print("Gyroscope: x=\(rotationRateX), y=\(rotationRateY), z=\(rotationRateZ)")
-     }
- } else {
-     print("Gyroscope is not available")
- }
- 
- // Check if device motion is available
- if motionManager.isDeviceMotionAvailable {
-     motionManager.deviceMotionUpdateInterval = 0.1 // Update interval in seconds
-     motionManager.startDeviceMotionUpdates(to: OperationQueue.main) { (data, error) in
-         guard let data = data else { return }
-         let attitude = data.attitude
-         let pitch = attitude.pitch
-         let yaw = attitude.yaw
-         let roll = attitude.roll
-         print("Device Motion: pitch=\(pitch), yaw=\(yaw), roll=\(roll)")
-     }
- } else {
-     print("Device motion is not available")
- }
-
- */

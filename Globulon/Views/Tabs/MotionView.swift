@@ -8,6 +8,8 @@
 
 import SwiftUI
 import MapKit
+import SceneKit
+import Charts
 
 struct MotionView: View {
     
@@ -15,7 +17,7 @@ struct MotionView: View {
     
     @ObservedObject var locationHandler = LocationHandler.shared
     @ObservedObject var activityHandler = ActivityHandler.shared
-
+    
     @State private var isShowHelp = false
     @State private var isRecording = false
     
@@ -98,6 +100,72 @@ struct MotionView: View {
                 }
                 .font(.system(size: 10, design: .monospaced))
                 .padding()
+                
+                HStack {
+                    Spacer()
+                    Rectangle()
+                        .fill(Color.blue)
+                        .frame(width: 50, height: 100)
+                        .rotationEffect(Angle(radians: activityHandler.attitudeData.roll), anchor: .center)
+                        .rotation3DEffect(Angle(radians: activityHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
+                        .rotation3DEffect(Angle(radians: activityHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
+                        .padding()
+                    
+                    Gyroscope3DView(rotation: $activityHandler.rotation)
+                        .frame(height: 100)
+                        .padding()
+                    
+                    Chart {
+                        ForEach(activityHandler.accelerationHistory) { dataPoint in
+                            LineMark(
+                                x: .value("Time", dataPoint.timestamp),
+                                y: .value("X", dataPoint.x)
+                            )
+                            .foregroundStyle(.red)
+                            
+                            LineMark(
+                                x: .value("Time", dataPoint.timestamp),
+                                y: .value("Y", dataPoint.y)
+                            )
+                            .foregroundStyle(.green)
+                            
+                            LineMark(
+                                x: .value("Time", dataPoint.timestamp),
+                                y: .value("Z", dataPoint.z)
+                            )
+                            .foregroundStyle(.blue)
+                        }
+                    }
+                    .chartYAxis {
+                        AxisMarks(values: .stride(by: 0.1))
+                    }
+                    .chartXAxis {
+                        AxisMarks(format: .dateTime)
+                    }
+                    .padding()
+
+                    /* 3D
+                    Rectangle()
+                        .fill(Color.blue)
+                        .frame(width: 50, height: 100)
+                        .offset(x: CGFloat(activityHandler.accelerometerData.x * 100),
+                                y: CGFloat(-activityHandler.accelerometerData.y * 100))
+                        .rotation3DEffect(
+                            Angle(radians: activityHandler.accelerometerData.x),
+                            axis: (x: 1, y: 0, z: 0)
+                        )
+                        .rotation3DEffect(
+                            Angle(radians: activityHandler.accelerometerData.y),
+                            axis: (x: 0, y: 1, z: 0)
+                        )
+                        .rotation3DEffect(
+                            Angle(radians: activityHandler.accelerometerData.z),
+                            axis: (x: 0, y: 0, z: 1)
+                        )
+                        .padding()
+                    */
+                    Spacer()
+                }
                 
                 Spacer()
 
@@ -347,4 +415,29 @@ struct MotionView: View {
 
 #Preview {
     MotionView(isShowSideMenu: .constant(false))
+}
+
+
+struct Gyroscope3DView: UIViewRepresentable {
+    @Binding var rotation: SCNVector3
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        sceneView.scene = SCNScene()
+        sceneView.allowsCameraControl = true
+        sceneView.autoenablesDefaultLighting = true
+
+        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
+        let boxNode = SCNNode(geometry: box)
+        boxNode.name = "gyroscopeBox"
+        sceneView.scene?.rootNode.addChildNode(boxNode)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        if let boxNode = uiView.scene?.rootNode.childNode(withName: "gyroscopeBox", recursively: false) {
+            boxNode.eulerAngles = rotation
+        }
+    }
 }
