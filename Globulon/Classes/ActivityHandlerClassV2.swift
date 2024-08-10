@@ -85,6 +85,8 @@ class ActivityHandler: ObservableObject {
     @Published var isActivityMonitoringOn = false
     @Published var isActivity = false
     @Published var activityState: ActivityState = .stationary
+    //TODO: Added 2024-08-10
+    @Published var isMotion = false
     
     @Published var updatesStarted: Bool {
         didSet {
@@ -236,6 +238,8 @@ class ActivityHandler: ObservableObject {
     */
     
     func startMotionUpdates() {
+        
+        self.isMotion = true
         
         /// Start accelerometer updates
         ///
@@ -396,6 +400,7 @@ class ActivityHandler: ObservableObject {
         motionManager.stopAccelerometerUpdates()
         motionManager.stopGyroUpdates()
         motionManager.stopDeviceMotionUpdates()
+        self.isMotion = false
         LogEvent.print(module: "ActivityHandler.stopMotionUpdates()", message: "Device Motion Activity updates have stopped.")
     }
     
