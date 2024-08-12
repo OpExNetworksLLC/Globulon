@@ -164,9 +164,9 @@ import MapKit
                                 //print("** moving faster than walking: \(loc.speed) \(UserSettings.init().trackingSpeedThreshold)")
                             }
                             //TODO: Turn off motion updates until driving status starts again.
-                            if activityHandler.isMotion {
-                                activityHandler.stopMotionUpdates()
-                            }
+//                            if activityHandler.isMotion {
+//                                activityHandler.stopMotionUpdates()
+//                            }
                             
                         } else {
                             if isTripActive == false { self.isTripInitiated = true }
@@ -213,8 +213,8 @@ import MapKit
                             saveLocationDataBuffer()
                             
                             //TODO: Added motion handler start here 2024-08-10
-                            LogEvent.print(module: "LocationHandler.startLocationUpdates", message: "Starting motion updates")
-                            activityHandler.startMotionUpdates()
+//                            LogEvent.print(module: "LocationHandler.startLocationUpdates", message: "Starting motion updates")
+//                            activityHandler.startMotionUpdates()
                             
                             self.isTripInitiated = false
                         }

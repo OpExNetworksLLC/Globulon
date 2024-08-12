@@ -96,7 +96,7 @@ struct LocationView: View {
                         Image(systemName: "square.leftthird.inset.filled")
                             .font(.system(size: 26, weight: .ultraLight))
                             .frame(width: 35, height: 35)
-                            .foregroundColor(AppValues.pallet.primaryLight)
+                            .foregroundColor(AppSettings.pallet.primaryLight)
                     }
                 }
                 
@@ -118,7 +118,7 @@ struct LocationView: View {
                     }) {
                         Image(systemName: "questionmark")
                             .font(.system(size: 22, weight: .light))
-                            .foregroundColor(AppValues.pallet.primaryLight)
+                            .foregroundColor(AppSettings.pallet.primaryLight)
                             .frame(width: 35, height: 35)
                     }
                 }
@@ -128,7 +128,7 @@ struct LocationView: View {
                         .renderingMode(.template)
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 38, height: 38)
-                        .foregroundColor(AppValues.pallet.primaryLight)
+                        .foregroundColor(AppSettings.pallet.primaryLight)
                 }
             }
             .fullScreenCover(isPresented: $isShowHelp) {

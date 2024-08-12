@@ -107,10 +107,10 @@ struct MainView: View {
                 locationHandler.startLocationUpdates()
             }
 
-//TODO: commented out so activity is not automatically started
-//            if activityHandler.updatesStarted == false {
-//                activityHandler.startActivityUpdates()
-//            }
+            //TODO: commented out so activity is not automatically started
+            if activityHandler.updatesStarted == false {
+                activityHandler.startActivityUpdates()
+            }
             
             LogEvent.print(module: "MainView.task", message: "...finished")
         }
