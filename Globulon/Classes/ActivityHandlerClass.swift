@@ -64,13 +64,11 @@ class ActivityHandler: ObservableObject {
         var roll: Double
     }
     
-    
     private let activityDataBufferLimit = 25
     @Published var activityDataBuffer: [ActivityDataBuffer] = []
 
     private let motionDataBufferLimit = 25
     @Published var motionDataBuffer: [MotionDataBuffer] = []
-
     
     @Published var accelerometerData: AccelerometerData
     @Published var gyroscopeData: GyroscopeData
@@ -163,77 +161,6 @@ class ActivityHandler: ObservableObject {
         
         getMotionActivityPermission(completion: completion)
     }
-
-    /*
-    func startMotionUpdates() {
-        if motionManager.isAccelerometerAvailable {
-            motionManager.accelerometerUpdateInterval = 0.1
-            motionManager.startAccelerometerUpdates(to: .main) { [weak self] data, error in
-                guard let self = self, let data = data, error == nil else { return }
-                
-                //self.processAccelerometerData(data)
-                let acceleration = data.acceleration
-                self.accelerometerData.x = acceleration.x
-                self.accelerometerData.y = acceleration.y
-                self.accelerometerData.z = acceleration.z
-                updateMotionDataBuffer()
-                
-            }
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
-        } else {
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer is not available.")
-        }
-    }
-    */
-
-    /*
-    func startMotionUpdates() {
-        updateQueue.maxConcurrentOperationCount = 1 // Ensure operations execute serially
-        
-        // Start accelerometer updates
-        if motionManager.isAccelerometerAvailable {
-            motionManager.accelerometerUpdateInterval = 0.1
-            motionManager.startAccelerometerUpdates(to: updateQueue) { [weak self] data, error in
-                guard let self = self, let data = data, error == nil else { return }
-                
-                self.dispatchGroup.enter()
-                let acceleration = data.acceleration
-                self.accelerometerData.x = acceleration.x
-                self.accelerometerData.y = acceleration.y
-                self.accelerometerData.z = acceleration.z
-                LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer data updated: x: \(acceleration.x), y: \(acceleration.y), z: \(acceleration.z)")
-                self.dispatchGroup.leave()
-            }
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
-        } else {
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Accelerometer is not available.")
-        }
-        
-        // Start gyroscope updates
-        if motionManager.isGyroAvailable {
-            motionManager.gyroUpdateInterval = 0.1
-            motionManager.startGyroUpdates(to: updateQueue) { [weak self] data, error in
-                guard let self = self, let data = data, error == nil else { return }
-                
-                self.dispatchGroup.enter()
-                let rotationRate = data.rotationRate
-                self.gyroscopeData.x = rotationRate.x
-                self.gyroscopeData.y = rotationRate.y
-                self.gyroscopeData.z = rotationRate.z
-                LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Gyroscope data updated: x: \(rotationRate.x), y: \(rotationRate.y), z: \(rotationRate.z)")
-                self.dispatchGroup.leave()
-            }
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Gyroscope updates have started...")
-        } else {
-            LogEvent.print(module: "ActivityHandler.startMotionUpdates()", message: "Gyroscope is not available.")
-        }
-        
-        // Notify the update queue when both accelerometer and gyroscope data are updated
-        dispatchGroup.notify(queue: .main) { [weak self] in
-            self?.updateMotionDataBuffer()
-        }
-    }
-    */
     
     func startMotionUpdates() {
         
@@ -248,16 +175,7 @@ class ActivityHandler: ObservableObject {
                 self.accelerometerData.x = result.x
                 self.accelerometerData.y = result.y
                 self.accelerometerData.z = result.z
-                
-                /*
-                let newAccelerationData = AccelerationData(
-                    timestamp: Date(),
-                    x: data.acceleration.x,
-                    y: data.acceleration.y,
-                    z: data.acceleration.z
-                )
-                */
-                
+
                 /// Load into structure
                 ///
                 let newAccelerationData = AccelerationData(
@@ -298,13 +216,6 @@ class ActivityHandler: ObservableObject {
                     self.gyroscopeData.y = result.y
                     self.gyroscopeData.z = result.z
                     
-                    
-//                    self.rotation = SCNVector3(
-//                        Float(self.gyroscopeData.x),
-//                        Float(self.gyroscopeData.y),
-//                        Float(self.gyroscopeData.z)
-//                    )
-                    
                     let rotation4 = SCNVector4(
                         x: Float(self.gyroscopeData.x),
                         y: Float(self.gyroscopeData.y),
@@ -312,25 +223,6 @@ class ActivityHandler: ObservableObject {
                         w: Float(data.timestamp)
                     )
                     
-//                    let rotation4 = SCNVector4(
-//                        x: Float(roundDouble(self.gyroscopeData.x, decimalPlaces: 2)),
-//                        y: Float(roundDouble(self.gyroscopeData.y, decimalPlaces: 2)),
-//                        z: Float(roundDouble(self.gyroscopeData.z, decimalPlaces: 2)),
-//                        w: Float(data.timestamp)
-//                    )
-//                    DispatchQueue.main.async {
-//                        self.cubeNode.rotation = rotation4
-//                    }
-                    /*
-                    self.lastRotation.x = (self.lastRotation.x * (1.0 - self.filterFactor)) + (rotation4.x * self.filterFactor)
-                    self.lastRotation.y = (self.lastRotation.y * (1.0 - self.filterFactor)) + (rotation4.y * self.filterFactor)
-                    self.lastRotation.z = (self.lastRotation.z * (1.0 - self.filterFactor)) + (rotation4.z * self.filterFactor)
-                    self.lastRotation.w = rotation4.w  // Timestamp doesn't need filtering
-                    
-                    DispatchQueue.main.async {
-                        self.cubeNode.rotation = self.lastRotation
-                    }
-                    */
                     // Apply threshold filter
                     if abs(rotation4.x) > self.threshold ||
                        abs(rotation4.y) > self.threshold ||
