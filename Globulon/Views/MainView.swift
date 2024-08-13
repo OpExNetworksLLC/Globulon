@@ -12,6 +12,7 @@ struct MainView: View {
     
     @StateObject var locationHandler = LocationHandler.shared
     @StateObject var activityHandler = ActivityHandler.shared
+    @StateObject var motionHandler = MotionHandler.shared
     
     @StateObject var appStatus = AppStatus()
     @StateObject var networkHandler = NetworkHandler.shared
@@ -107,10 +108,11 @@ struct MainView: View {
                 locationHandler.startLocationUpdates()
             }
 
-            //TODO: commented out so activity is not automatically started
             if activityHandler.updatesStarted == false {
                 activityHandler.startActivityUpdates()
             }
+            
+            motionHandler.startMotionUpdates()
             
             LogEvent.print(module: "MainView.task", message: "...finished")
         }

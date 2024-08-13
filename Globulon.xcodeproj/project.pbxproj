@@ -112,7 +112,7 @@
 		6E983A702B84272B002F2251 /* TermsClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E983A6F2B84272B002F2251 /* TermsClass.swift */; };
 		6E983A762B8427FB002F2251 /* encodeJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E983A752B8427FB002F2251 /* encodeJSON.swift */; };
 		6E983A782B842C56002F2251 /* Terms.json in Resources */ = {isa = PBXBuildFile; fileRef = 6E983A772B842C56002F2251 /* Terms.json */; };
-		6E9AEEB32C2CDC6D00522E71 /* ActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */; };
+		6E9AEEB32C2CDC6D00522E71 /* xActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB22C2CDC6D00522E71 /* xActivityHandlerClass.swift */; };
 		6E9AEEB62C2CDD0300522E71 /* LocationHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB52C2CDD0300522E71 /* LocationHandlerClass.swift */; };
 		6E9AEEBA2C2D1EA700522E71 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9AEEB92C2D1EA700522E71 /* LocationView.swift */; };
 		6E9C448C2BAE8E9E002FABDB /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 6E9C448B2BAE8E9E002FABDB /* FirebaseAnalytics */; };
@@ -194,6 +194,8 @@
 		6EC4D8062BEAE43C00F94548 /* exportHistoryTripFullToJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4D8052BEAE43C00F94548 /* exportHistoryTripFullToJSON.swift */; };
 		6EC4D8082BEAE4B100F94548 /* deleteHistoryTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4D8072BEAE4B100F94548 /* deleteHistoryTrip.swift */; };
 		6EC4D80A2BEAE4E800F94548 /* scoreHistoryTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC4D8092BEAE4E800F94548 /* scoreHistoryTrip.swift */; };
+		6EC603C52C6AE745001BB460 /* ActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */; };
+		6EC603C72C6AE7A5001BB460 /* MotionHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC603C62C6AE7A5001BB460 /* MotionHandlerClass.swift */; };
 		6ECA47BB2BDF5CEB00AD08E0 /* havershineDistance.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */; };
 		6ECA47BD2BDF5E4700AD08E0 /* roundToDecimalPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECA47BC2BDF5E4700AD08E0 /* roundToDecimalPlace.swift */; };
 		6ECEC4052C27740200232E80 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ECEC4042C27740200232E80 /* GoogleService-Info.plist */; };
@@ -315,7 +317,7 @@
 		6E983A752B8427FB002F2251 /* encodeJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = encodeJSON.swift; sourceTree = "<group>"; };
 		6E983A772B842C56002F2251 /* Terms.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = Terms.json; sourceTree = "<group>"; };
 		6E9A19D42BAFE67F000E5128 /* Globulon.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Globulon.entitlements; sourceTree = "<group>"; };
-		6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandlerClass.swift; sourceTree = "<group>"; };
+		6E9AEEB22C2CDC6D00522E71 /* xActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = xActivityHandlerClass.swift; sourceTree = "<group>"; };
 		6E9AEEB52C2CDD0300522E71 /* LocationHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationHandlerClass.swift; sourceTree = "<group>"; };
 		6E9AEEB92C2D1EA700522E71 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		6EA242452B86E07800C02D88 /* UserStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatus.swift; sourceTree = "<group>"; };
@@ -370,6 +372,8 @@
 		6EC4D8052BEAE43C00F94548 /* exportHistoryTripFullToJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = exportHistoryTripFullToJSON.swift; sourceTree = "<group>"; };
 		6EC4D8072BEAE4B100F94548 /* deleteHistoryTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = deleteHistoryTrip.swift; sourceTree = "<group>"; };
 		6EC4D8092BEAE4E800F94548 /* scoreHistoryTrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = scoreHistoryTrip.swift; sourceTree = "<group>"; };
+		6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandlerClass.swift; sourceTree = "<group>"; };
+		6EC603C62C6AE7A5001BB460 /* MotionHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionHandlerClass.swift; sourceTree = "<group>"; };
 		6ECA47BA2BDF5CEB00AD08E0 /* havershineDistance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = havershineDistance.swift; sourceTree = "<group>"; };
 		6ECA47BC2BDF5E4700AD08E0 /* roundToDecimalPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = roundToDecimalPlace.swift; sourceTree = "<group>"; };
 		6ECEC4042C27740200232E80 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -583,7 +587,9 @@
 		6E94F7062B7C56BC00AFA97F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				6E9AEEB22C2CDC6D00522E71 /* ActivityHandlerClass.swift */,
+				6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */,
+				6EC603C62C6AE7A5001BB460 /* MotionHandlerClass.swift */,
+				6E9AEEB22C2CDC6D00522E71 /* xActivityHandlerClass.swift */,
 				6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */,
 				6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */,
 				6EB56D1F2B855BA800C106F0 /* ArticlesClass.swift */,
@@ -951,6 +957,7 @@
 				6E88DC352B8479DA00BBB4DD /* AppStatus.swift in Sources */,
 				6E89EB812C41FA0D00D6499E /* generateTripImage.swift in Sources */,
 				6E4B2A072BCDAC6F00A1A60F /* deleteTripData.swift in Sources */,
+				6EC603C52C6AE745001BB460 /* ActivityHandlerClass.swift in Sources */,
 				6E4E18422B8C51A50084BC07 /* deleteGPSJournalSD.swift in Sources */,
 				6E88DC372B847A6100BBB4DD /* OnboardPageEnum.swift in Sources */,
 				6E1493072BE8328C00E8C33E /* copyTripToHistorySummarySD.swift in Sources */,
@@ -986,7 +993,7 @@
 				6E88DC222B846FC400BBB4DD /* WelcomePageView.swift in Sources */,
 				6EB56D182B855A6B00C106F0 /* MailView.swift in Sources */,
 				6EB56D722B85699500C106F0 /* OnboardPasswordView.swift in Sources */,
-				6E9AEEB32C2CDC6D00522E71 /* ActivityHandlerClass.swift in Sources */,
+				6E9AEEB32C2CDC6D00522E71 /* xActivityHandlerClass.swift in Sources */,
 				6E88DC1C2B846D4F00BBB4DD /* xCheckReachability.swift in Sources */,
 				6E6301A72C470B2500AD272D /* ActivityView.swift in Sources */,
 				6EB56CF42B8530C600C106F0 /* ImageNavCancel.swift in Sources */,
@@ -1044,6 +1051,7 @@
 				6EB56D122B8558A800C106F0 /* UserSupportView.swift in Sources */,
 				6E08F52B2BA8FC4F004E6329 /* xInternetReachability.swift in Sources */,
 				6E23ABD42BAD201000001DFA /* saveTextToFile.swift in Sources */,
+				6EC603C72C6AE7A5001BB460 /* MotionHandlerClass.swift in Sources */,
 				6EB19F182BEB071D00F79BBB /* updateTripHistoryMonthSummary.swift in Sources */,
 				6EB56D0A2B8556E400C106F0 /* DeveloperSettingsView.swift in Sources */,
 				6EB56D162B8559AA00C106F0 /* BiometricsClass.swift in Sources */,

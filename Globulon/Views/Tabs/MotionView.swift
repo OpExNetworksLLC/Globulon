@@ -17,6 +17,7 @@ struct MotionView: View {
     
     @ObservedObject var locationHandler = LocationHandler.shared
     @ObservedObject var activityHandler = ActivityHandler.shared
+    @ObservedObject var motionHandler = MotionHandler.shared
     
     @State private var isShowHelp = false
     @State private var isRecording = false
@@ -87,19 +88,19 @@ struct MotionView: View {
                     HStack {
                         Text("Accelerometer XYZ:")
                         Spacer()
-                        Text("\(activityHandler.accelerometerData.x), \(activityHandler.accelerometerData.y), \(activityHandler.accelerometerData.z)")
+                        Text("\(motionHandler.accelerometerData.x), \(motionHandler.accelerometerData.y), \(motionHandler.accelerometerData.z)")
                     }
                     .padding(.trailing, 2)
                     HStack {
                         Text("Gyroscope XYZ:")
                         Spacer()
-                        Text("\(activityHandler.gyroscopeData.x), \(activityHandler.gyroscopeData.y), \(activityHandler.gyroscopeData.z)")
+                        Text("\(motionHandler.gyroscopeData.x), \(motionHandler.gyroscopeData.y), \(motionHandler.gyroscopeData.z)")
                     }
                     .padding(.trailing, 2)
                     HStack {
                         Text("Attitude PYR:")
                         Spacer()
-                        Text("\(activityHandler.attitudeData.pitch), \(activityHandler.attitudeData.yaw), \(activityHandler.attitudeData.roll)")
+                        Text("\(motionHandler.attitudeData.pitch), \(motionHandler.attitudeData.yaw), \(motionHandler.attitudeData.roll)")
                     }
                     .padding(.trailing, 2)
                 }
@@ -111,13 +112,13 @@ struct MotionView: View {
                         Rectangle()
                             .fill(Color.blue)
                             .frame(width: 50, height: 100)
-                            .rotationEffect(Angle(radians: activityHandler.attitudeData.roll), anchor: .center)
-                            .rotation3DEffect(Angle(radians: activityHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
-                            .rotation3DEffect(Angle(radians: activityHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
+                            .rotationEffect(Angle(radians: motionHandler.attitudeData.roll), anchor: .center)
+                            .rotation3DEffect(Angle(radians: motionHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
+                            .rotation3DEffect(Angle(radians: motionHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
                         Spacer().frame(width: 50)
                         SceneView(
-                            scene: activityHandler.scene,
+                            scene: motionHandler.scene,
                             options: [.allowsCameraControl]
                         )
                         .frame(width: 100, height: 100)
@@ -134,7 +135,7 @@ struct MotionView: View {
                 
                 VStack {
                     Chart {
-                        ForEach(activityHandler.accelerationHistory) { dataPoint in
+                        ForEach(motionHandler.accelerationHistory) { dataPoint in
                             LineMark(
                                 x: .value("Time", dataPoint.timestamp),
                                 y: .value("X", dataPoint.x)
@@ -254,7 +255,7 @@ struct MotionView: View {
                 }
                 
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if activityHandler.isActivityMonitoringOn {
+                    if motionHandler.isMotionMonitoringOn {
                         Rectangle()
                             .fill(Color.green)
                             .frame(width: 10, height: 10)
@@ -269,9 +270,9 @@ struct MotionView: View {
                     Button(action: {
                         isRecording.toggle()
                         if isRecording {
-                            activityHandler.startMotionUpdates()
+                            motionHandler.startMotionUpdates()
                         } else {
-                            activityHandler.stopMotionUpdates()
+                            motionHandler.stopMotionUpdates()
                         }
                     }) {
                         if isRecording {
@@ -303,60 +304,6 @@ struct MotionView: View {
                         .foregroundColor(AppSettings.pallet.primaryLight)
                 }
             }
-            
-            /*
-            .navigationBarItems(leading: Button(action: {
-                isShowSideMenu.toggle()
-            }) {
-                Image(systemName: "square.leftthird.inset.filled")
-                    .font(.system(size: 26, weight: .ultraLight))
-                    .frame(width: 35, height:35)
-                    .foregroundColor(AppValues.pallet.primaryLight)
-                
-            }, trailing: Button(action: {
-                // Do stuff
-                isRecording.toggle()
-                if isRecording {
-                    locationHandler.startLocationUpdates()
-                } else {
-                    locationHandler.stopLocationUpdates()
-                }
-            }) {
-                if isRecording {
-                    Image(systemName: "record.circle")
-                        .font(.system(size: 24, weight: .light))
-                        .foregroundColor(Color.red)
-                        .frame(width: 35, height: 35)
-                    Text("recording")
-                        .foregroundColor(Color.red)
-
-                } else {
-                    Image(systemName: "record.circle")
-                        .font(.system(size: 24, weight: .light))
-                        .foregroundColor(AppValues.pallet.primaryLight)
-                        .foregroundColor(Color.red)
-                        .frame(width: 35, height: 35)
-                    Text("record")
-                        .foregroundColor(AppValues.pallet.primaryLight)
-                }
-            })
-            //.fullScreenCover(isPresented: $isShowHelp, content: {
-            .sheet(isPresented: $isShowHelp, content: {
-                // Content of the sheet
-                HelpSheetView(isShowHelp: $isShowHelp)
-            })
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Image("appLogoTransparent")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 38, height: 38)
-                    .foregroundColor(AppValues.pallet.primaryLight)
-                }
-            }
-            */
-            
         }
         .onAppear() {
             // TODO: I've turned this off as I don't want it automatically running when I open the view
