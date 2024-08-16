@@ -39,8 +39,11 @@ class MotionHandler: ObservableObject {
     
     @Published var isActivity = false
     @Published var isMotionMonitoringOn = false
-    //TODO: Add relevant activity states here...
-    //@Published var activityState: ActivityState = .stationary
+
+    @Published var isAccelerometer = false
+    @Published var isGyroscope = false
+    @Published var isAttitude = false
+    
     @Published var updatesStarted: Bool {
         didSet {
             UserDefaults.standard.set(updatesStarted, forKey: "motionUpdatesStarted")
@@ -80,7 +83,6 @@ class MotionHandler: ObservableObject {
         
         self.updatesStarted = UserDefaults.standard.bool(forKey: "motionUpdatesStarted")
 
-        
         let cube = SCNGeometry.cubeWithColoredSides(sideLength: 1.0)
         cubeNode = SCNNode(geometry: cube)
         scene.rootNode.addChildNode(cubeNode)
@@ -91,12 +93,13 @@ class MotionHandler: ObservableObject {
     }
 
     func startMotionUpdates() {
+        
+        self.updatesStarted = true
+        
         if motionManager.isAccelerometerAvailable {
             motionManager.accelerometerUpdateInterval = 0.1
             motionManager.startAccelerometerUpdates(to: .main) { [weak self] data, error in
                 guard let self = self, let data = data, error == nil else { return }
-                
-                self.isMotionMonitoringOn = true
                 
                 let result = data.acceleration
                 self.accelerometerData.x = result.x
@@ -114,10 +117,11 @@ class MotionHandler: ObservableObject {
                 if self.accelerationHistory.count > 100 {
                     self.accelerationHistory.removeFirst()
                 }
-                
-                self.accelerometerUpdated = true
                 self.checkAndUpdateMotionDataBuffer()
             }
+            self.accelerometerUpdated = true
+            self.isActivity = true
+            self.isMotionMonitoringOn = true
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
         } else {
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Accelerometer is not available.")
@@ -155,10 +159,11 @@ class MotionHandler: ObservableObject {
                         }
                     }
                 }
-
-                self.gyroscopeUpdated = true
                 self.checkAndUpdateMotionDataBuffer()
             }
+            self.gyroscopeUpdated = true
+            self.isActivity = true
+            self.isMotionMonitoringOn = true
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Gyroscope updates have started...")
         } else {
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Gyroscope is not available.")
@@ -175,10 +180,11 @@ class MotionHandler: ObservableObject {
                     self.attitudeData.yaw = result.yaw
                     self.attitudeData.roll = result.roll
                 }
-
-                self.attitudeUpdated = true
                 self.checkAndUpdateMotionDataBuffer()
             }
+            self.attitudeUpdated = true
+            self.isActivity = true
+            self.isMotionMonitoringOn = true
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Device motion updates have started...")
         } else {
             LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Device motion is not available.")

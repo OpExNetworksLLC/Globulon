@@ -108,11 +108,16 @@ struct MainView: View {
                 locationHandler.startLocationUpdates()
             }
 
+            /// Force start activity updates if they were manually stopped by the user
+            /// 
             if activityHandler.updatesStarted == false {
                 activityHandler.startActivityUpdates()
             }
             
-            motionHandler.startMotionUpdates()
+            ///TODO: OPTION Turn on if you want these to the  automaticallly start when the user opens the app
+//            if motionHandler.updatesStarted == false {
+//                motionHandler.startMotionUpdates()
+//            }
             
             LogEvent.print(module: "MainView.task", message: "...finished")
         }
