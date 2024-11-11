@@ -41,13 +41,13 @@ struct MainView: View {
                         Image(systemName: "arrow.triangle.pull")
                         Text("Activity")
                     }
-                    //.tag(LandingPageEnum.feed)
+                    .tag(LandingPageEnum.activity)
                 MotionView(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "circle.dotted.and.circle")
                         Text("Motion")
                     }
-                    .tag(LandingPageEnum.feed)
+                    .tag(LandingPageEnum.motion)
                 TripsViewV3(isShowSideMenu: $appStatus.isShowSideMenu)
                     .tabItem {
                         Image(systemName: "map")

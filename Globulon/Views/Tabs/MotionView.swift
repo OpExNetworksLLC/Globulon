@@ -384,8 +384,8 @@ extension SCNGeometry {
             0, 4, 1, 5, 2, 6, 3, 7
         ]
         
-        let sources = box.sources
-        let elements = box.elements
+        //let sources = box.sources
+        //let elements = box.elements
         
         let edgeGeometrySource = SCNGeometrySource(
             vertices: [
