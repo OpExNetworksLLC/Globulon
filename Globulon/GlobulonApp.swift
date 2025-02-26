@@ -33,8 +33,8 @@ import FirebaseAnalytics
     @StateObject private var userStatus = UserStatus()
     @StateObject private var appEnvironment = AppEnvironment()
     
-    private let backgroundFetchTaskIdentifier = "com.opexnetworks.GeoGato.backgroundFetch"
-    private let backgroundProcessingTaskIdentifier = "com.opexnetworks.GeoGato.backgroundProcessing"
+    private let backgroundFetchTaskIdentifier = "com.opexnetworks.Globulon.backgroundFetch"
+    private let backgroundProcessingTaskIdentifier = "com.opexnetworks.Globulon.backgroundProcessing"
     
     init() {
         
@@ -43,7 +43,7 @@ import FirebaseAnalytics
         /// Save the prior logfile
         LogEvent.ArchiveLogFile()
         
-        LogEvent.print(module: "GeoGatoApp.init()", message: "▶️ starting...")
+        LogEvent.print(module: "GlobulonApp.init()", message: "▶️ starting...")
         
         /// OPTION: Force set any settings here to start other than the app default settings
         ///
@@ -128,7 +128,7 @@ import FirebaseAnalytics
             */
         }
         //LogEvent.getLogFileURL()
-        LogEvent.print(module: "GeoGatoApp.init()", message: "⏹️ ...finished")
+        LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
         
     }
     
