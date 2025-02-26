@@ -170,10 +170,10 @@ struct MainView: View {
                     ToolbarItem(placement: .principal) {
                         Image("symLogo")
                             .resizable()
-                            .renderingMode(.template)
+                            .renderingMode(.original)
                             .foregroundStyle(AppSettings.symLogo.primaryLight, AppSettings.symLogo.primary, AppSettings.symLogo.primaryDark)
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 42, height: 42)
+                            .frame(width: 34, height: 34)
                     }
                     
                     /// Show the network connectivity status only on the home tab

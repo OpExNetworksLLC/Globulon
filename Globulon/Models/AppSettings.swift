@@ -68,10 +68,9 @@ struct AppSettings {
     }
     
     struct symLogo {
-        //static let primaryLight = Color(red: 0/255, green: 0/255, blue: 0/255)   // 100% Black
-        static let primaryLight = Color(red: 0.4, green: 0.4, blue: 0.4)           //  60% Black
-        static let primary = Color(red: 255/255, green: 255/255, blue: 255/255)    // 100% White
-        static let primaryDark = Color(red: 232/255, green: 111/255, blue: 81/255) // Custom Orange
+        static let primaryLight = Color(red: 232/255, green: 196/255, blue: 104/255)
+        static let primary = Color(red: 245/255, green: 164/255, blue: 98/255)
+        static let primaryDark = Color(red: 232/255, green: 111/255, blue: 81/255)
     }
     
 }
