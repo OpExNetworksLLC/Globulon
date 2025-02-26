@@ -1,21 +1,14 @@
 //
-//  Biometrics.swift
-//  ViDrive
+//  BiometricsClass.swift
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import LocalAuthentication
 
-enum BiometricTypes {
-    case none
-    case touchID
-    case faceID
-    case opticID
-}
-
-class Biometrics {
+class Biometrics: @unchecked Sendable {
     
     let context = LAContext()
     
@@ -23,22 +16,55 @@ class Biometrics {
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
     
-    // TODO: Deal with .opticID
-    func biometricType() -> BiometricTypes {
-        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+    /// Checks if the device supports biometric authentication.
+    var isBiometricSupported: Bool {
+        var error: NSError?
+        return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+    }
+
+//    /// Asynchronously checks if the device supports biometric authentication.
+//    func isBiometricSupported() async -> Bool {
+//        await withCheckedContinuation { continuation in
+//            DispatchQueue.global(qos: .userInitiated).async { [self] in
+//                var error: NSError?
+//                let isSupported = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
+//                DispatchQueue.main.async {
+//                    continuation.resume(returning: isSupported)
+//                }
+//            }
+//        }
+//    }
+    
+    
+    /// Returns the type of biometric authentication supported (Face ID, Touch ID, or None).
+    var biometricType: BiometricType {
+        guard isBiometricSupported else { return .none }
+
         switch context.biometryType {
-        case .none:
-            return .none
-        case .touchID:
-            return .touchID
         case .faceID:
             return .faceID
-        case .opticID:
+        case .touchID:
+            return .touchID
+        default:
             return .none
-        @unknown default:
-            fatalError("Unknown BiometricType encountered")
         }
     }
+//    // TODO: Deal with .opticID
+//    func biometricType() -> BiometricTypes {
+//        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+//        switch context.biometryType {
+//        case .none:
+//            return .none
+//        case .touchID:
+//            return .touchID
+//        case .faceID:
+//            return .faceID
+//        case .opticID:
+//            return .none
+//        @unknown default:
+//            fatalError("Unknown BiometricType encountered")
+//        }
+//    }
     
     // TODO: Deal with .opticID
     func isBiometric() -> Bool {

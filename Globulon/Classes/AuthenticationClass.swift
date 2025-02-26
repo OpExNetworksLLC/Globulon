@@ -2,9 +2,15 @@
 //  AuthenticationClass.swift
 //  Globulon
 //
-//  Created by David Holeman on 6/28/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
+
+/**
+ - Version: 1.0.0 (2025.02.25)
+ - Note:
+*/
+
 
 import SwiftUI
 
@@ -15,14 +21,18 @@ import Security
 
 /// Firebase
 ///
+#if FIREBASE_ENABLED
 import FirebaseAuth
+import FirebaseAnalytics
+#endif
+
+import LocalAuthentication
 
 class Authentication {
     
+    #if FIREBASE_ENABLED || KEYCHAIN_ENABLED
     class biometric {
-        /// Authenticate and then return true/false and the error code
-        ///
-        class func authenticateUser(completion: @escaping (Bool, Error?) -> Void) {
+        class func authenticateUser() async -> (Bool, Error?) {
             let context = LAContext()
             var error: NSError?
             
@@ -35,28 +45,61 @@ class Authentication {
                     reason = "Authenticate with Touch ID"
                 }
                 
-                context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason) { success, evaluationError in
-                    DispatchQueue.main.async {
-                        LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication.  success: \"\(success)\".  evaluationError: \"\(String(describing: evaluationError))\"")
-                        
-                        completion(success, evaluationError)
-                    }
+                do {
+                    let success = try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason)
+                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication. success: \"\(success)\".")
+                    return (success, nil)
+                } catch let evaluationError as LAError {
+                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication failed. evaluationError: \"\(evaluationError.localizedDescription)\"")
+                    return (false, evaluationError)
+                } catch {
+                    return (false, error)
                 }
             } else {
-                /// Biometric authentication is not available on this device or it's disabled.
-                ///
-                LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Error code: (\(error!.code))  desc: \"\(error!.localizedDescription)\"")
-                completion(false, error)
+                if let error = error {
+                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Error code: (\(error.code)) desc: \"\(error.localizedDescription)\"")
+                    return (false, error)
+                } else {
+                    return (false, nil)
+                }
             }
         }
+        
+        static private func handleEvaluationError(_ error: LAError) -> (errorCode: Int, errorCase: LAError.Code, description: String) {
+            let description: String
+            switch error.code {
+            case .authenticationFailed:
+                description = "Authentication failed: User did not provide valid credentials."
+            case .userCancel:
+                description = "Authentication was canceled by the user."
+            case .userFallback:
+                description = "User chose to use the fallback authentication method."
+            case .systemCancel:
+                description = "Authentication was canceled by the system."
+            case .passcodeNotSet:
+                description = "Passcode is not set on the device."
+            case .biometryNotAvailable:
+                description = "Biometric authentication is not available on this device."
+            case .biometryNotEnrolled:
+                description = "Biometry is not enrolled on this device."
+            case .biometryLockout:
+                description = "Biometry is locked out due to too many failed attempts."
+            default:
+                description = "Authentication failed due to an unknown error: \(error.localizedDescription)"
+            }
+            return (error.code.rawValue, error.code,  description)
+        }
     }
+    #endif
     
     /// Keychain authentication functions
+    ///
+    //#if KEYCHAIN_ENABLED
     class keychain {
         
         class func authUser(username: String, password: String) -> Bool {
             
-            let serviceName = AppValues.appName
+            let serviceName = AppSettings.appName
             let accountData = username.data(using: .utf8)!
             
             let query: [CFString: Any] = [
@@ -76,10 +119,10 @@ class Authentication {
                let passwordData = result as? Data,
                let retrievedPassword = String(data: passwordData, encoding: .utf8) {
                 if retrievedPassword == password {
-                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization succeded.  user: \"\(username)\" \"\(password)\"")
+                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization succeded.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\"")
                     return true
                 } else {
-                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization failed.  user: \"\(username)\" \"\(password)\", error: \(status.localizedDescription)")
+                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization failed.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\", error: \(status.localizedDescription)")
                     return false
                 }
             } else {
@@ -90,7 +133,7 @@ class Authentication {
 
         class func addUser(username: String, password: String, completion: @escaping (Bool, String, Error?) -> Void) {
             
-            let serviceName = AppValues.appName
+            let serviceName = AppSettings.appName
             let accountData = username.data(using: .utf8)!
             let passwordData = password.data(using: .utf8)!
             
@@ -115,19 +158,19 @@ class Authentication {
                 return completion(false, "", result)
             }
                     
-            LogEvent.print(module: "Authentication.keychain.addUser", message: "\(username)/\(password) added successfully.")
+            LogEvent.print(module: "Authentication.keychain.addUser", message: "\(maskUsername(username))/\(maskPassword(password)) added successfully.")
+            LogEvent.debug(module: "Authentication.keychain.addUser", message: "\(username)/\(password) added successfully.")
+
             completion(true, "", result)
         }
         
         class func deleteUser(username: String, completion: (Bool, Error?) -> Void) {
             
-            let serviceName = AppValues.appName
             let accountData = username.data(using: .utf8)!
             
             let query: [CFString: Any] = [
                 kSecClass: kSecClassGenericPassword,
                 kSecAttrAccount: accountData,
-                kSecAttrService: serviceName
             ]
             
             let error = SecItemDelete(query as CFDictionary)
@@ -139,7 +182,7 @@ class Authentication {
                 completion(false, result)
             } else {
                 
-                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(username) removed successfully.")
+                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(AppSettings.appName) removed successfully.")
                 completion(true, result)
             }
         }
@@ -151,12 +194,12 @@ class Authentication {
                     /// Delete old account to clear it out
                     Authentication.keychain.deleteUser(username: oldUsername) { success, error in
                         if success {
-                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(oldUsername) deleted successfully.")
+                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(maskUsername(oldUsername)) deleted successfully.")
                             /// Add the new user
                             Authentication.keychain.addUser(username: newUsername, password: password) { success, userID, error in
                                 if success {
                                     /// do stuff
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "\(oldUsername) added successfully.")
+                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "\(maskUsername(oldUsername)) added successfully.")
                                     completion(true, error)
                                 } else {
                                     LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error adding account \(error!)")
@@ -178,7 +221,7 @@ class Authentication {
         
         class func retrievePassword(username: String, completion: @escaping (Bool, String, Error?) -> Void) {
             
-            let serviceName = AppValues.appName
+            let serviceName = AppSettings.appName
             let accountData = username.data(using: .utf8)!
             
             let query: [String: Any] = [
@@ -194,7 +237,7 @@ class Authentication {
             let status = convertOSStatusToNSError(error)
             
             if error == errSecSuccess, let passwordData = result as? Data, let password = String(data: passwordData, encoding: .utf8) {
-                LogEvent.print(module: "Authentication.keychain.retrievePassword", message: "Password \"\(password)\" retrieved successfully.")
+                LogEvent.print(module: "Authentication.keychain.retrievePassword", message: "Password \"\(maskPassword(password))\" retrieved successfully.")
                 completion(true, password, status)
             } else if error == errSecItemNotFound {
                 evaluateKeychainError(errorCode: error)
@@ -207,7 +250,7 @@ class Authentication {
                 
         class func updatePassword(username: String, passwordOld: String, passwordNew: String, completion: @escaping (Bool, Error?) -> Void) {
             
-            let serviceName = AppValues.appName
+            let serviceName = AppSettings.appName
             let accountData = username.data(using: .utf8)!
             let passwordData = passwordNew.data(using: .utf8)!
             
@@ -230,7 +273,7 @@ class Authentication {
             let result = convertOSStatusToNSError(error)
             
             if error == errSecSuccess {
-                LogEvent.print(module: "Authentication.keychain.updatePassword", message: "Password \"\(passwordOld)\"  changed to \"\(passwordNew)\" successfully")
+                LogEvent.print(module: "Authentication.keychain.updatePassword", message: "Password \"\(maskPassword(passwordOld))\"  changed to \"\(maskPassword(passwordNew))\" successfully")
                 completion(true, result)
             } else {
                 evaluateKeychainError(errorCode: error)
@@ -252,9 +295,11 @@ class Authentication {
             }
         }
     }
+    //#endif
     
     /// Firebase authentication
     ///
+    #if FIREBASE_ENABLED
     class firebase {
         
         class func authUser(email: String, password: String, completion: @escaping (Bool, String, Error?) -> Void) {
@@ -266,17 +311,21 @@ class Authentication {
                 
                 if let error = error {
                     
-                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization failed.  user: \"\(email)\" \"\(password)\", error: \(error.localizedDescription)")
+                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization failed.  user: \"\(maskEmail(email))\" \"\(maskPassword(password))\", error: \(error.localizedDescription)")
 
                     completion(false, "", error)
                     
                 } else {
                     /// User was authorized
-                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(email)\", authResut = \(authResult?.user.uid ?? "")")
+                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut = \(maskString(authResult?.user.uid ?? ""))")
+                    LogEvent.debug(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(email)\", password: \"\(password)\", authResut = \(authResult?.user.uid ?? "")")
                     
                     /// Save results
                     firebaseUID = authResult?.user.uid ?? ""
-                    userPassword = password
+                    
+                    /// OPTION: Firebase event:  login
+                    ///
+                    Analytics.logEvent(AnalyticsEventLogin, parameters: [AnalyticsParameterMethod: "email"])
                     
                     completion(true, authResult?.user.uid ?? "", error)
                 }
@@ -292,18 +341,17 @@ class Authentication {
                 
                 if let error = error {
                     
-                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user failed.  user: \"\(email)\", error: \(error.localizedDescription)")
+                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, "", error)
                 } else {
                     /// User was created
                     ///
-                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user was successful.  user: \"\(email)\", authResut: = \(authResult?.user.uid ?? "")")
-
+                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut: = \(authResult?.user.uid ?? "")")
+                    
                     /// Save results
                     firebaseUID = authResult?.user.uid ?? ""
                     userPassword = password
 
-                    
                     completion(true, authResult?.user.uid ?? "", error)
                 }
             }
@@ -327,10 +375,10 @@ class Authentication {
             /// Delete the current user
             user.delete { error in
                 if let error = error {
-                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user failed.  user: \"\(email)\", error: \(error.localizedDescription)")
+                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, error)
                 } else {
-                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user was successful.  user: \"\(email)\"")
+                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user was successful.  user: \"\(maskEmail(email))\"")
 
                     completion(true, error)
                 }
@@ -341,12 +389,12 @@ class Authentication {
             Auth.auth().sendPasswordReset(withEmail: email) { error in
                 if let error = error {
                     /// Reset failed to send
-                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset failed.  user: \"\(email)\", error: \(error.localizedDescription)")
+                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, error)
 
                 } else {
                     /// Reset was sent
-                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset sent.  email: \"\(email)\"")
+                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset sent.  email: \"\(maskEmail(email))\"")
                     completion(true, error)
                 }
             }
@@ -400,7 +448,35 @@ class Authentication {
                 }
             }
         }
-
+        
+        static func handleEvaluationError(_ error: NSError) -> (errorCode: Int, errorCase: AuthErrorCode.Code?, message: String, description: String) {
+            if let errorCase = AuthErrorCode.Code(rawValue: error.code) {
+                let userFriendlyMessage: String
+                switch errorCase {
+                case .networkError:
+                    userFriendlyMessage = "Network error. Please try again."
+                case .wrongPassword:
+                    userFriendlyMessage = "The password is invalid."
+                case .userNotFound:
+                    userFriendlyMessage = "No user found with this email."
+                case .emailAlreadyInUse:
+                    userFriendlyMessage = "The email is already in use by another account."
+                case .invalidEmail:
+                    userFriendlyMessage = "The email address is badly formatted."
+                case .tooManyRequests:
+                    userFriendlyMessage = "Too many attempts. Please try again later."
+                case .userDisabled:
+                    userFriendlyMessage = "This user account has been disabled."
+                default:
+                    userFriendlyMessage = "An unknown error occurred."
+                }
+                return (error.code, errorCase, userFriendlyMessage, error.localizedDescription)
+            } else {
+                let fallbackMessage = "An error occurred."
+                return (error.code, nil, fallbackMessage, error.localizedDescription)
+            }
+        }
+        
         /*
         class func changeUser(emailOld: String, emailNew: String, completion: @escaping (Bool, Error?) -> Void) {
             
@@ -427,5 +503,6 @@ class Authentication {
         }
          */
     }
+    #endif
 }
 

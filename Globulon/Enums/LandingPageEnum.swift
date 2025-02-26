@@ -1,26 +1,29 @@
 //
 //  LandingPageEnum.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/13/24.
+//  Created by David Holeman on 2/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import Foundation
 
 enum LandingPageEnum: Int, CaseIterable, Equatable {
-    case home     = 0
-    case activity = 1
-    case motion   = 2
-    case trips    = 3
-    case history  = 4
+    case home       = 0
+    //case location   = 1
+    case travel     = 1
+    case tours      = 2
+    case myTours    = 3
+    case bluetooth  = 4
     
     var description: String {
         switch self {
-        case .home     : return "home"
-        case .activity : return "activity"
-        case .motion   : return "motion"
-        case .trips    : return "trips"
-        case .history  : return "history"
+        case .home      : return "home"
+        //case .location  : return "location"
+        case .travel    : return "travel"
+        case .tours      : return "tours"
+        case .myTours   : return "myTours"
+        case .bluetooth : return "bluetooth"
         }
     }
 }

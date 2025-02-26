@@ -1,14 +1,55 @@
 //
 //  AppEnvironment.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/16/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
-import SwiftData
+import SwiftUI
+import Combine
 
-// Define a global access point for the sharedModelContainer in a way that it can be accessed outside of SwiftUI views
-class AppEnvironment {
-    static var sharedModelContainer: ModelContainer!
+/**
+ - Version: 1.0.0 (2025.02.25)
+ - Note:
+ */
+
+@MainActor
+class AppEnvironment: ObservableObject {
+    
+    static let shared = AppEnvironment()
+    
+    private let userSettings = UserSettings() // Assuming this is safe to instantiate once
+    
+    //@Published var activeTourID: String = "" {
+    @AppStorage("activeTourID") var activeTourID: String = "" {
+        didSet {
+            userSettings.activeTourID = activeTourID
+            LogEvent.print(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
+            LocationHandler.shared.loadTourData(for: activeTourID)
+        }
+    }
+    
+    @Published var catalogToursCache: [CatalogToursData] = []
+    
+    /// Optional key-value store for less common data
+    ///
+    private var storage: [String: Any] = [:]
+    
+    func setValue<T>(_ key: String, value: T) {
+        storage[key] = value
+        objectWillChange.send()
+    }
+
+    func getValue<T>(_ key: String, as type: T.Type) -> T? {
+        guard let value = storage[key] as? T else {
+            LogEvent.print(module: "AppEnvironment", message: "Type mismatch for key: \(key)")
+            return nil
+        }
+        return value
+    }
+
+    func removeValue(forKey key: String) {
+        storage[key] = nil
+    }
 }

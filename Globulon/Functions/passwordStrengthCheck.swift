@@ -1,9 +1,9 @@
 //
 //  passwordStrengthCheck.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 2/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import Foundation
@@ -58,4 +58,5 @@ public func passwordStrengthCheck(string: String) -> (value: Int, image: String,
     
     return (value, image, label)
 }
+
 

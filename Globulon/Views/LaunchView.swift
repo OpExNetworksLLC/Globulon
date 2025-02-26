@@ -1,22 +1,27 @@
 //
 //  LaunchView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/13/24.
+//  Created by David Holeman on 8/2/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
+import SwiftData
+import BackgroundTasks
 
 struct LaunchView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
+    @EnvironmentObject var userSettings: UserSettings
+    @EnvironmentObject var appEnvironment: AppEnvironment
+    
     @State private var scale: CGFloat = 1.0
     @State private var isProcessing = true
     
     var body: some View {
-
+        
         ZStack {
             // Background color or other content
             //Color.viewBackgroundColorLoginBegin.edgesIgnoringSafeArea(.all)
@@ -30,29 +35,50 @@ struct LaunchView: View {
                         Image(colorScheme == .dark ? "appLogoDarkMode" : "appLogoTransparent")
                             .resizable()
                             .frame(width: 100, height: 100)
-                        Text(AppValues.appName)
-                            .font(.headline)
-                            //.foregroundColor(.white)
-                            .padding(.top, 150)
+                        Text(AppSettings.appName)
+                            .font(.system(size: 24))
+                            .padding(.top, 130)
                         ProgressView()
                             .padding(.top, 150)
                             .scaleEffect(1.75)
                             .progressViewStyle(CircularProgressViewStyle(tint: Color.gray))
                     }
-                    .padding(.bottom, 8)
-
+                    .padding(.top, -14)
+                    
                     /// Spacer below the graphic
                     Spacer()
                     
-                    Text("Copyright © 2024 OpEx Networks, LLC. All rights reserved.")
+                    Text(AppSettings.appCopyright)
                         .font(.system(size: 12))
-                        //.foregroundColor(.white)
-                }
-
-                .task {
+                        .padding(.bottom, 4) // This ensures a consistent distance from the bottom
+                        .frame(maxWidth: .infinity, alignment: .center)
                     
-                    //await processTask()
-                    LogEvent.print(module: "LaunchView.task", message: "starting...")
+                    //.foregroundColor(.white)
+                }
+                
+                .task {
+                    LogEvent.print(module: "LaunchView.task", message: "▶️ starting...")
+                    
+                    //_ = networkHandler.isConnected
+                    _ = NetworkHandler.shared.isConnected
+                    
+                    /// OPTION: this is here for testing if you want to clear out the aritcles data
+                    ///
+                    /// `Articles.deleteArticles()
+                    /// `UserSettings.init().articlesDate = DateInfo.zeroDate
+                    
+                    
+                    // TODO:  Just wiping the data store clean for testing
+//                    let container = SharedModelContainer.shared.container
+//                    Task {
+//                        do {
+//                            try ModelContainer.resetPersistentStore()
+//                            print("Persistent store successfully reset.")
+//                        } catch {
+//                            print("Error resetting persistent store: \(error)")
+//                        }
+//                    }
+//
                     
                     /// Load the help articles if needed
                     ///
@@ -60,12 +86,58 @@ struct LaunchView: View {
                         LogEvent.print(module: "LaunchView.task", message: message)
                     }
                     
-                    /// We do this here early so that we can reflect the lastest in the scores based on processed trips
-                    ///
-                    await processTrips()
+                    /// CATALOG
                     
-                    // TODO: Uncomment to resume deleting processed trips
-                    //_ = deleteAllProcessedGPSJournalSD()
+                    /// Delete all the catalog tours for a clean start
+                    await CatalogToursDataManager.deleteAllTourData()
+                    
+                    /// Step 0:  Load catalog
+                    let (_, _) = await CatalogToursDataManager.load(source: "catalog_tours_test_1.json")
+                    
+                    await CatalogToursDataManager.printTourDataForAll()
+                    
+                    appEnvironment.activeTourID = userSettings.activeTourID
+                    
+                    // TODO: Print to check that the data was loaded
+//                    TourDataManager.printTourDataForAll()
+                    
+//                    if let metadata = TourDataManager.fetchMetadata(for: "1001") {
+//                        let created_on = metadata.created_on
+//                        print("✅ created_on: \(created_on)")
+//                    } else {
+//                        print("❌ No metadata found for the provided tour_id: 1001")
+//                    }
+                    
+                    
+//                    await GitHubDownloader.downloadGitHubFiles(owner: "OpExNetworks", repo: "Apps", appName: AppSettings.appName, urlString: "https://opexnetworks.github.io/Apps/GeoGato/Tours/1002/")
+
+                    
+                    /// OPTION: Schedule any apps you want scheduled when the app starts
+                    ///
+                    ///`BackgroundTaskHandler.shared.scheduleAppRefresh()
+                    ///`BackgroundTaskHandler.shared.scheduleProcessingTask()
+                    
+                    /*
+                    /// Launch an async process that completes based on priority..
+                    /// Status can be checked by checking published variables.
+                    /// OPTION: Set the level of priority you want this task to have.  The higher the level
+                    /// the more impact on the user experience as they are entering the app.
+                    ///
+                    /// `Task(priority: .background)`
+                    ///
+                    let processor = AsyncProcessor()
+                    Task(priority: .low) {
+                        if !processor.isProcessing {
+                            LogEvent.print(module: "LaunchView.task", message: "starting AsyncProcessor()...")
+                            
+                            await processor.performAsyncTask()
+                            
+                            LogEvent.print(module: "LaunchView.task", message: "...finished AsyncProcessor()")
+                        } else {
+                            LogEvent.print(module: "LaunchView.task", message: "AsyncProcessor() is processing")
+                        }
+                    }
+                    */
                     
                     sleep(1)
                     
@@ -73,64 +145,48 @@ struct LaunchView: View {
                     ///
                     isProcessing.toggle()
                     
-                    LogEvent.print(module: "LaunchView.task", message: "...finished")
-
+                    LogEvent.print(module: "LaunchView.task", message: "⏹️ ...finished")
+                    
                 }
-
+                
             } else {
-                Image(colorScheme == .dark ? "appLogoDarkMode" : "appLogoTransparent")
-                    .resizable()
-                    .frame(width: 100, height: 100)
-                    .scaleEffect(scale)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now()) {
-                            withAnimation(.easeInOut(duration: 3)) {
-                                // Update the binding value to trigger animation
-                                self.scale = self.scale == 1.0 ? 200 : 1.0
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                    NotificationCenter.default.post(name: Notification.Name("isLaunchCompleted"), object: nil)
+                VStack {
+                    Spacer()
+                    ZStack {
+                        Image(colorScheme == .dark ? "appLogoDarkMode" : "appLogoTransparent")
+                            .resizable()
+                            .frame(width: 100, height: 100)
+                            .scaleEffect(scale)
+                            .onAppear {
+                                DispatchQueue.main.asyncAfter(deadline: .now()) {
+                                    withAnimation(.easeInOut(duration: 3)) {
+                                        // Update the binding value to trigger animation
+                                        self.scale = self.scale == 1.0 ? 200 : 1.0
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                                            NotificationCenter.default.post(name: Notification.Name("isLaunchCompleted"), object: nil)
+                                        }
+                                        self.presentationMode.wrappedValue.dismiss()
+                                    }
                                 }
-                                self.presentationMode.wrappedValue.dismiss()
-                                
                             }
-                        }
+                            .padding(.top, -14)
                     }
+                    
+                    /// Spacer below the graphic
+                    Spacer()
+                    
+                    Text(AppSettings.appCopyright)
+                        .font(.system(size: 12))
+                        .padding(.bottom, 4) // This ensures a consistent distance from the bottom
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
+ 
             }
         }
     }
-    
-    /// Process Task
-    ///
-    /// Using .task vs .onAppear will will wait for async tasks to complete before continuing.
-    ///
-//    func processTask() async {
-//        
-//        LogEvent.print(module: "LaunchView.processTask", message: "starting...")
-//        
-//        /// Load the help articles if needed
-//        ///
-//        Articles.load { success, message in
-//            LogEvent.print(module: "LaunchView.processTask", message: message)
-//        }
-//        
-//        /// We do this here early so that we can reflect the lastest in the scores based on processed trips
-//        /// 
-//        await processTrips()
-//        
-//        /// Flush out processed GPS data
-//        ///
-//        _ = deleteAllProcessedGPSJournalSD()
-//        
-//        /// Change the status when done to exit the LaunchView
-//        ///
-//        isProcessing.toggle()
-//        
-//        LogEvent.print(module: "LaunchView.processTask", message: "...finished")
-//
-//    }
 }
+
 
 #Preview {
     LaunchView()
 }
-

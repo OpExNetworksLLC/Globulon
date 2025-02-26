@@ -12,8 +12,6 @@ import SwiftUI
 ///
 class AppStatus: ObservableObject {
     
-    /// Set the current xxxPageView from the relevant Enum
-    ///
     @Published var currentOnboardPageView: OnboardPageView = .onboardStartView
     @Published var currentIntroPageView: IntroPageView = .introStartView
     
@@ -21,14 +19,3 @@ class AppStatus: ObservableObject {
     @Published var selectedTab: Int = 0
     
 }
-
-class TripManager: ObservableObject {
-    
-    @Published var monthDatestamp: String?
-    @Published var originationTimestamp: Date?
-    @Published var journalEntryTimestamp: Date?
-    
-    @Published var latitude: Double?
-    @Published var longitude: Double?
-}
-

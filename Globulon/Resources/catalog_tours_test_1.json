@@ -1,0 +1,51 @@
+{
+    "metadata": {
+        "application": "GeoGato",
+        "version": "0.1.0",
+        "catalog_id": "C-1001",
+        "created_on": "2025-01-12T15:48:52Z",
+        "updated_on": "2025-01-14T15:48:52Z",
+        "author": "David Holeman",
+        "title":"title",
+        "sub_title":"sub_title",
+        "desc": "Catalog of availalbe tours."
+    },
+    "tours": [
+        {
+            "tour_id": "1001",
+            "tour_file":"1001.json",
+            "tour_directory":"Tours/1001",
+            "order_index": 1,
+            "title": "Apple Simulator - Driving",
+            "sub_title": "Test POI using Apple simulator",
+            "desc": "Test POI using Apple simulator in driving mode."
+        },
+        {
+            "tour_id": "1002",
+            "tour_file": "1002.json",
+            "tour_directory": "Tours/1002/",
+            "order_index": 2,
+            "title": "Diablo West",
+            "sub_title": "Greenbelt tour",
+            "desc": "Locations around the Diablo West greenbelt."
+        },
+        {
+            "tour_id": "1003",
+            "tour_file": "1003.json",
+            "tour_directory": "Tours/1003/",
+            "order_index": 3,
+            "title": "Danville, CA",
+            "sub_title": "Points of interest in Danville",
+            "desc": "Points of interest in Danville."
+        },
+        {
+            "tour_id": "1004",
+            "tour_file": "1004.json",
+            "tour_directory": "Tours/1004/",
+            "order_index": 4,
+            "title": "Apple Simulator - Running",
+            "sub_title": "Test POI using Apple simulator",
+            "desc": "Test POI using Apple simulator in running mode."
+        }
+    ]
+}

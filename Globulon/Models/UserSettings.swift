@@ -1,10 +1,17 @@
 //
 //  UserSettings.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/13/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
+
+/**
+ - Version: 1.0.0 (2025-02-25)
+ - Note:
+    - Version: 1.0.0 (2025-02-25)
+        - (created)
+ */
 
 import SwiftUI
 
@@ -21,7 +28,7 @@ import SwiftUI
 ///   appSettings.isTracking = true
 ///   appSettings.landingPage = .home
 ///   ```
-///   
+///
 ///   ```
 ///   init() {
 ///     UserSettings.init().userMode = .development
@@ -35,28 +42,30 @@ import SwiftUI
 ///   ```
 ///   let value = appSettings.username
 ///   ```
-///   
+///
 ///   ```
 ///   UserSettings.init().landingPage.description
 ///   ```
-///
+///   
+
 class UserSettings: ObservableObject {
     
     init() {
         self.username = UserDefaults.standard.object(forKey: "username") as? String ?? ""
         
         self.isIntroduced = UserDefaults.standard.object(forKey: "isIntroduced") as? Bool ?? false
-        self.isTracking = UserDefaults.standard.object(forKey: "isTracking") as? Bool ?? false
+        self.isPermissions = UserDefaults.standard.object(forKey: "isPermissions") as? Bool ?? false
         self.isOnboarded = UserDefaults.standard.object(forKey: "isOnboarded") as? Bool ?? false
         self.isTerms = UserDefaults.standard.object(forKey: "isTerms") as? Bool ?? false
         self.isWelcomed = UserDefaults.standard.object(forKey: "isWelcomed") as? Bool ?? false
         self.isAccount = UserDefaults.standard.object(forKey: "isAccount") as? Bool ?? false
         self.isPrivacy = UserDefaults.standard.object(forKey: "isPrivacy") as? Bool ?? false
         self.isLicensed = UserDefaults.standard.object(forKey: "isLicensed") as? Bool ?? false
-        self.isTracking = UserDefaults.standard.object(forKey: "isTracking") as? Bool ?? false
+        self.isGDPRConsent = UserDefaults.standard.object(forKey: "isGDPRConsent") as? Bool ?? false
 
+        self.isAutoLogin = UserDefaults.standard.object(forKey: "isAutoLogin") as? Bool ?? false
         self.isAutoBiometricLogin = UserDefaults.standard.object(forKey: "isAutoBiometricLogin") as? Bool ?? false
-        
+
         self.isBiometricID = UserDefaults.standard.object(forKey: "isBiometricID") as? Bool ?? false
         
         self.landingPage = LandingPageEnum(rawValue: UserDefaults.standard.integer(forKey: "landingPage")) ?? .home
@@ -78,20 +87,37 @@ class UserSettings: ObservableObject {
         
         self.articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
         
+        self.activeTourID = UserDefaults.standard.object(forKey: "activeTourID") as? String ?? ""
+        
         self.userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
+        self.authMode = AuthModeEnum(rawValue: UserDefaults.standard.integer(forKey: "authMode")) ?? .none
 
         /// GPS Tracking
         self.trackingSampleRate = UserDefaults.standard.object(forKey: "trackingSampleRate") as? Int ?? AppDefaults.gps.sampleRate
+        self.gpsSampleRate = UserDefaults.standard.object(forKey: "gpsSampleRate") as? Int ?? AppDefaults.gps.sampleRate
+
+        /// Region monitoring
+        self.regionRadius = UserDefaults.standard.object(forKey: "regionRadius") as? Double ?? AppDefaults.region.radius
+        
+        /// Tour POI
+        self.poiRadius = UserDefaults.standard.object(forKey: "poiRadius") as? Double ?? AppDefaults.tour.poiRadius
+        
+        /// Trip
         self.trackingTripSeparator = UserDefaults.standard.object(forKey: "trackingTripSeparator") as? Int ?? AppDefaults.gps.tripSeparator
         self.trackingSpeedThreshold = UserDefaults.standard.object(forKey: "trackingSpeedThreshold") as? Double ?? AppDefaults.gps.speedThreshold
         self.trackingTripEntriesMin = UserDefaults.standard.object(forKey: "trackingTripEntriesMin") as? Int ?? AppDefaults.gps.tripEntriesMin
         self.tripGPSHistoryLimit = UserDefaults.standard.object(forKey: "tripGPSHistoryLimit") as? Int ?? AppDefaults.gps.tripGPSHistoryLimit
         self.tripHistoryLimit = UserDefaults.standard.object(forKey: "tripHistoryLimit") as? Int ?? AppDefaults.gps.tripHistoryLimit
-
         self.isTripReprocessingAllowed = UserDefaults.standard.object(forKey: "isTripReprocessingAllowed") as? Bool ?? true
 
         /// Firebase
         self.firebaseInstallationID = UserDefaults.standard.object(forKey: "firebaseInstallationID") as? String ?? ""
+        
+        self.lastAuth = UserDefaults.standard.object(forKey: "lastAuth") as? Date ?? DateInfo.zeroDate
+        
+        self.isGDPRConsentGranted = UserDefaults.standard.object(forKey: "isGDPRConsentGranted") as? Bool ?? false
+
+
     }
     
     @Published var username: String {
@@ -142,10 +168,24 @@ class UserSettings: ObservableObject {
             logChange(forKey: "isIntroduced", value: isIntroduced)
         }
     }
-    @Published var isTracking: Bool {
+    @Published var isPermissions: Bool {
         didSet {
-            UserDefaults.standard.set(isTracking, forKey: "isTracking")
-            logChange(forKey: "isTracking", value: isTracking)
+            UserDefaults.standard.set(isPermissions, forKey: "isPermissions")
+            logChange(forKey: "isPermissions", value: isPermissions)
+        }
+    }
+    
+    @Published var isGDPRConsent: Bool {
+        didSet {
+            UserDefaults.standard.set(isGDPRConsent, forKey: "isGDPRConsent")
+            logChange(forKey: "isGDPRConsent", value: isGDPRConsent)
+        }
+    }
+    
+    @Published var isGDPRConsentGranted: Bool {
+        didSet {
+            UserDefaults.standard.set(isGDPRConsentGranted, forKey: "isGDPRConsentGranted")
+            logChange(forKey: "isGDPRConsentGranted", value: isGDPRConsentGranted)
         }
     }
 
@@ -155,6 +195,12 @@ class UserSettings: ObservableObject {
         didSet {
             UserDefaults.standard.set(trackingSampleRate, forKey: "trackingSampleRate")
             logChange(forKey: "trackingSampleRate", value: trackingSampleRate)
+        }
+    }
+    @Published var gpsSampleRate: Int {
+        didSet {
+            UserDefaults.standard.set(gpsSampleRate, forKey: "gpsSampleRate")
+            logChange(forKey: "gpsSampleRate", value: gpsSampleRate)
         }
     }
     @Published var trackingTripSeparator: Int {
@@ -198,7 +244,31 @@ class UserSettings: ObservableObject {
     }
     /// end Tracking
     
-    // TODO: AutoLogin
+    /// Region
+    @Published var regionRadius: Double {
+        didSet {
+            UserDefaults.standard.set(regionRadius, forKey: "regionRadius")
+            logChange(forKey: "regionRadius", value: regionRadius)
+        }
+    }
+    
+    /// POI
+    @Published var poiRadius: Double {
+        didSet {
+            UserDefaults.standard.set(poiRadius, forKey: "poiRadius")
+            logChange(forKey: "poiRadius", value: poiRadius)
+        }
+    }
+    
+    /// Login:
+    ///
+    @Published var isAutoLogin: Bool {
+        didSet {
+            UserDefaults.standard.set(isAutoLogin, forKey: "isAutoLogin")
+            logChange(forKey: "isAutoLogin", value: isAutoLogin)
+        }
+    }
+    
     @Published var isAutoBiometricLogin: Bool {
         didSet {
             UserDefaults.standard.set(isAutoBiometricLogin, forKey: "isAutoBiometricLogin")
@@ -212,6 +282,7 @@ class UserSettings: ObservableObject {
             logChange(forKey: "isBiometricID", value: isBiometricID)
         }
     }
+    /// end Login
     
     @Published var isFaqExpanded: Bool {
         didSet {
@@ -280,6 +351,13 @@ class UserSettings: ObservableObject {
             logChange(forKey: "articlesLocation", value: articlesLocation)
         }
     }
+    
+    @Published var activeTourID: String {
+        didSet {
+            UserDefaults.standard.set(activeTourID, forKey: "activeTourID")
+            logChange(forKey: "activeTourID", value: activeTourID)
+        }
+    }
 
     @Published var landingPage: LandingPageEnum {
         didSet {
@@ -295,21 +373,38 @@ class UserSettings: ObservableObject {
         }
     }
     
+    @Published var authMode: AuthModeEnum {
+        didSet {
+            UserDefaults.standard.set(authMode.rawValue, forKey: "authMode")
+            logChange(forKey: "authMode", value: authMode)
+        }
+    }
+    
     /// Firebase
     @Published var firebaseInstallationID: String {
         didSet {
             UserDefaults.standard.set(firebaseInstallationID, forKey: "firebaseInstallationID")
-            logChange(forKey: "firebaseIntallationID", value: firebaseInstallationID)
+            logChange(forKey: "firebaseInstallationID", value: maskString(firebaseInstallationID))
         }
     }
 
-    func logChange(forKey: String, value: Any) {
+    /// Other
+    @Published var lastAuth: Date {
+        didSet {
+            UserDefaults.standard.set(lastAuth, forKey: "lastAuth")
+            logChange(forKey: "lastAuth", value: lastAuth)
+        }
+    }
+    
+    //MARK: Local functions
+    private func logChange(forKey: String, value: Any) {
         LogEvent.print(module: "UserSettings", message: "Saving: \(forKey) = \(value)")
     }
    
-    static var appLogo = "appLogo"
-    static var appLogoBlack = "appLogoBlack"
-    static var appLogoWhite = "appLogoWhite"
-    static var appLogoDarkMode = "appLogoDarkMode"
-    static var appLogoTransparent = "appLogoTransparent"
+    //TODO:  Can I get rid of this
+    static let appLogo = "appLogo"
+    static let appLogoBlack = "appLogoBlack"
+    static let appLogoWhite = "appLogoWhite"
+    static let appLogoDarkMode = "appLogoDarkMode"
+    static let appLogoTransparent = "appLogoTransparent"
 }

@@ -9,3 +9,6 @@
 import Foundation
 
 // eg: typealias LocationManager = LocationManagerV1
+typealias LocationHandler = LocationHandlerV1
+typealias TravelView = TravelViewV3
+typealias LoginView = LoginViewV2

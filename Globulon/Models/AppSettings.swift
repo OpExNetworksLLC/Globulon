@@ -1,30 +1,77 @@
 //
 //  AppSettings.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/19/24.
+//  Created by David Holeman on 02/25/25.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
 
-/// These settings control the behavior of the app.  It is here that we set which features are enabled or disabled.
-/// 
-class AppSettings: ObservableObject {
-    static var isIntroductionEnabled: Bool = true
-    static var isOnboardingEnabled: Bool = true
-    static var isTermsEnabled: Bool = true
-    static var isWelcomeEnabled: Bool = true
-    static var isLoginEnabled: Bool = true
-    // TODO:  More ?
+struct AppSettings {
+    static let appName = "GeoGato"
+    static let appCopyright = "Copyright © 2025 OpEx Networks, LLC. All rights reserved."
     
-    struct login {
-        static let isKeychainLoginEnabled:  Bool = true
-        static let isFirebaseLoginEnabled:  Bool = false
+    static let supportEmail = "support+GeoGato@opexnetworks.com"
+    
+    // Articles
+    static let pinnedTag = "*|PINNED|*"
+    static let pinnedUnicode = "\u{2605}"
+
+    struct articlesLocation {
+        static let remote = "https://opexnetworks.github.io/Apps/GeoGato/Articles.json"
+        static let local = "Articles"
+        static let error = "NoArticles"
     }
+    
+    // Hosted up on github
+    static let licenseURL = "https://opexnetworks.github.io/Apps/GeoGato/License.html"
+    static let privacyURL = "https://opexnetworks.github.io/Apps/GeoGato/Privacy.html"
+    
+    /// A local HTML file with full disclosure on what exact events and data is collected
+    static let analyticsConsentURL = "AnalyticsConsentDetails.html"
+    
+    struct GitHub {
+        static let owner = "opexnetworks"
+        static let repo = "Apps"
+        static let appName = "GeoGato"
+    }
+    
+    struct feature {
+        static let isIntroductionEnabled: Bool = true
+        static let isOnboardingEnabled: Bool = true
+        static let isTermsEnabled: Bool = true
+        static let isWelcomeEnabled: Bool = true
+        static let isLoginEnabled: Bool = true
+        static let isLoginBiometricEnabled: Bool = true
+        static let isGDPRConsentEnabled: Bool = true
+    }
+    
+    struct log {
+        static let isPasswordMaskEnabled: Bool = true
+        static let isUsernameMaskEnabled: Bool = false
+        static let isEmailMaskEnabled: Bool = false
+        static let isStringMaskEnabled: Bool = true
+        static let filename = "EventLog.txt"
+
+    }
+    
+    struct sideMenu {
+        static let menuWidth: CGFloat = 225
+        static let isSideMenuDraggable: Bool = false
+    }
+    
     struct pallet {
         static let primaryLight = Color(red: 232/255, green: 196/255, blue: 104/255)
         static let primary = Color(red: 245/255, green: 164/255, blue: 98/255)
         static let primaryDark = Color(red: 232/255, green: 111/255, blue: 81/255)
     }
+    
+    struct symLogo {
+        //static let primaryLight = Color(red: 0/255, green: 0/255, blue: 0/255)   // 100% Black
+        static let primaryLight = Color(red: 0.4, green: 0.4, blue: 0.4)           //  60% Black
+        static let primary = Color(red: 255/255, green: 255/255, blue: 255/255)    // 100% White
+        static let primaryDark = Color(red: 232/255, green: 111/255, blue: 81/255) // Custom Orange
+    }
+    
 }

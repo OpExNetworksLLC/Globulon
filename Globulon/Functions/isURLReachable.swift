@@ -1,20 +1,20 @@
 //
-//  isUrLReachable.swift
-//  ViDrive
+//  isURLReachable.swift
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 2/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
 
 // MARK: is URL reachable
-func isURLReachable(url: URL, completion: @escaping (Bool) -> Void) {
+func isURLReachable(url: URL, completion: @escaping @Sendable (Bool) -> Void) {
     let session = URLSession.shared
     var request = URLRequest(url: url)
     request.httpMethod = "HEAD" // Use HEAD request to check for the existence of the resource without downloading the entire content
     
-    let task = session.dataTask(with: request) { (data, response, error) in
+    let task = session.dataTask(with: request) { data, response, error in
         if let httpResponse = response as? HTTPURLResponse {
             // Check if the status code indicates success
             print("* no error reaching url \(httpResponse.statusCode)")

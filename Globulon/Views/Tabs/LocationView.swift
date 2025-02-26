@@ -2,10 +2,11 @@
 //  LocationView.swift
 //  Globulon
 //
-//  Created by David Holeman on 7/7/24.
+//  Created by David Holeman on 02/25/25.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+import Foundation
 import SwiftUI
 import MapKit
 
@@ -13,14 +14,13 @@ struct LocationView: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationHandler = LocationHandler.shared
-    @StateObject private var activityHandler = ActivityHandler.shared
     @StateObject var networkHandler = NetworkHandler.shared
     
     @State var isShowHelp = false
     
-    @State private var mapSpan: Double = 0.004
+    @State private var mapSpan: Double = 0.003
     private let mapSpanMinimum: Double = 0.002
-    private let mapSpanIncrement: Double = 0.004
+    private let mapSpanIncrement: Double = 0.002
     
     @State private var cameraPosition: MapCameraPosition = .region(MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
@@ -30,31 +30,37 @@ struct LocationView: View {
     var body: some View {
         // Top menu
         NavigationStack {
-            VStack(spacing: 0) {
+            VStack() {
+                
                 VStack(alignment: .leading) {
                     HStack {
-                        Text("Lat, Lng:")
+                        Text("Lat/Lng:")
                         Spacer()
                         Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
+                    }
+                    HStack {
+                        Text("Speed:")
+                        Spacer()
+                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .padding()
                 Divider()
+                
                 Spacer()
                 
-                /// Add stuff here...
-                ///
-
-                Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                    Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.lastLocation.coordinate.latitude), longitude: (locationHandler.lastLocation.coordinate.longitude)))
+                VStack {
+                    Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
+                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.lastLocation.coordinate.latitude), longitude: (locationHandler.lastLocation.coordinate.longitude)))
+                    }
+                    .onAppear {
+                        updateCameraPosition()
+                    }
+                    .onChange(of: locationHandler.lastLocation) {
+                        updateCameraPosition()
+                    }
                 }
-                .onAppear {
-                    updateCameraPosition()
-                }
-                .onChange(of: locationHandler.lastLocation) {
-                    updateCameraPosition()
-                }
-                .padding()
+ 
 
                 HStack() {
                     Button("Zoom Out") {
@@ -82,77 +88,20 @@ struct LocationView: View {
                 .onAppear {
                     CLLocationManager().requestWhenInUseAuthorization()
                 }
-                
-                
-                Spacer()
             }
-            
-            .navigationBarTitle("", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        isShowSideMenu.toggle()
-                    }) {
-                        Image(systemName: "square.leftthird.inset.filled")
-                            .font(.system(size: 26, weight: .ultraLight))
-                            .frame(width: 35, height: 35)
-                            .foregroundColor(AppSettings.pallet.primaryLight)
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    if networkHandler.isConnected {
-                        Circle()
-                            .fill(Color.green)
-                            .frame(width: 10, height: 10)
-                    } else {
-                        Circle()
-                            .fill(Color.red)
-                            .frame(width: 10, height: 10)
-                    }
-                }
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        isShowHelp.toggle()
-                    }) {
-                        Image(systemName: "questionmark")
-                            .font(.system(size: 22, weight: .light))
-                            .foregroundColor(AppSettings.pallet.primaryLight)
-                            .frame(width: 35, height: 35)
-                    }
-                }
-                ToolbarItem(placement: .principal) {
-                    Image("appLogoTransparent")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 38, height: 38)
-                        .foregroundColor(AppSettings.pallet.primaryLight)
-                }
+            .onAppear {
+                UIApplication.shared.isIdleTimerDisabled = true
             }
-            .fullScreenCover(isPresented: $isShowHelp) {
-                NavigationView {
-                    ArticlesSearchView()
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button(action: {
-                                    isShowHelp.toggle()
-                                }) {
-                                    ImageNavCancel()
-                                }
-                            }
-                            ToolbarItem(placement: .principal) {
-                                Text("search")
-                            }
-                        }
-                }
+            .onDisappear {
+                UIApplication.shared.isIdleTimerDisabled = false
             }
         }
+        
     }
+    
     func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.siftLocation.coordinate.latitude,
-                                              longitude: locationHandler.siftLocation.coordinate.longitude)
+        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
+                                              longitude: locationHandler.lastLocation.coordinate.longitude)
         let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }

@@ -2,9 +2,16 @@
 //  ActivityHandlerClass.swift
 //  Globulon
 //
-//  Created by David Holeman on 8/12/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
+
+/**
+ - Version: 1.0.0 (2025-02-25)
+ - Note:
+    - Version: 1.0.0 (2025-02-25)
+        - (created)
+*/
 
 import Foundation
 import CoreMotion
@@ -12,16 +19,6 @@ import CoreLocation
 import Combine
 import SceneKit
 
-// MARK: - AccelerationData
-struct AccelerationData: Identifiable {
-    let id = UUID()
-    let timestamp: Date
-    let x: Double
-    let y: Double
-    let z: Double
-}
-
-// MARK: - ActivityHandler
 @MainActor
 class ActivityHandler: ObservableObject {
     
@@ -37,54 +34,61 @@ class ActivityHandler: ObservableObject {
 
     @Published var isActivity = false
     @Published var isActivityMonitoringOn = false
+    @Published var isAuthorized = false
+    @Published var isAvailable = false
+    
     @Published var activityState: ActivityState = .stationary
-    @Published var updatesStarted: Bool {
+    @Published var updatesLive: Bool {
         didSet {
-            UserDefaults.standard.set(updatesStarted, forKey: "activityUpdatesStarted")
-            LogEvent.print(module: "ActivityHandler.updatesStarted", message: "\(updatesStarted ? "Activity updates started ..." : "... stopped activity updates")")
+            UserDefaults.standard.set(updatesLive, forKey: "activityUpdatesLive")
+            LogEvent.print(module: "ActivityHandler.updatesLive", message: "\(updatesLive ? "Activity updates started ..." : "... stopped activity updates")")
         }
     }
 
     private let motionActivityManager = CMMotionActivityManager()
-    private var locationHandler: LocationHandler {
-        return LocationHandler.shared
-    }
+    
+//    private var locationHandler: LocationHandler {
+//        return LocationHandler.shared
+//    }
     
     private let activityDataBufferLimit = 25
     @Published var activityDataBuffer: [ActivityDataBuffer] = []
 
     private init() {
-        self.updatesStarted = UserDefaults.standard.bool(forKey: "activityUpdatesStarted")
+        self.updatesLive = UserDefaults.standard.bool(forKey: "activityUpdatesLive")
+        
+        // Initialize the properties based on current states
+        self.isAvailable = CMMotionActivityManager.isActivityAvailable()
+        self.isAuthorized = CMMotionActivityManager.authorizationStatus() == .authorized
+
     }
 
-    class func getMotionActivityPermission(completion: @escaping (Bool) -> Void) {
+    func getMotionActivityPermission(completion: @escaping (Bool) -> Void) {
         let isAuthorized = CMMotionActivityManager.authorizationStatus() == .authorized
-        LogEvent.print(module: "MotionManager.getMotionTrackingPermission()",
-                       message: "Motion tracking permission is: \(isAuthorized ? "true" : "false").")
+        //LogEvent.print(module: "MotionManager.getMotionTrackingPermission()", message: "Motion tracking permission is: \(isAuthorized ? "true" : "false").")
+        self.isAuthorized = isAuthorized
         completion(isAuthorized)
     }
-
-    func getMotionActivityStatus(completion: @escaping (Bool) -> Void) {
-        if CMMotionActivityManager.isActivityAvailable() {
-            let status = CMMotionActivityManager.authorizationStatus()
-            switch status {
-            case .authorized:
-                completion(true)
-            default:
-                completion(false)
-            }
-        } else {
-            completion(false)
-        }
+    
+    /// Get motion device availability
+    func getMotionActivityAvailability(completion: @escaping (Bool) -> Void) {
+        let status = CMMotionActivityManager.isActivityAvailable()
+        self.isAvailable = status
+        completion(status)
     }
 
+    /// Get motion device monitoring status.  Used to check from a function call outside a view
+    func getActivityMonitoringStatus(completion: @escaping (Bool) -> Void) {
+        completion(self.isActivityMonitoringOn)
+    }
+    
     class func requestMotionActivityPermission(completion: @escaping (Bool) -> Void) {
         let motionActivityManager = CMMotionActivityManager()
         motionActivityManager.startActivityUpdates(to: .main) { _ in
             LogEvent.print(module: "ActivityHandler.requestMotionActivityPermission()", message: "Motion activity updates have started...")
         }
         
-        getMotionActivityPermission(completion: completion)
+        //getMotionActivityPermission(completion: completion)
     }
 
     func startActivityUpdates() {
@@ -92,22 +96,23 @@ class ActivityHandler: ObservableObject {
             LogEvent.print(module: "** ActivityHandler.startActivityUpdates()", message: "Activity data is not available on this device.")
             return
         }
+        self.isAvailable = true
         
-        self.updatesStarted = true
+        self.updatesLive = true
         self.isActivityMonitoringOn = true
         LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "started ...")
 
         motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
             guard let self = self, let activity = activity else { return }
             self.updateActivityState(activity)
-            self.updateActivityDataBuffer(location: self.locationHandler.lastLocation)
+            //self.updateActivityDataBuffer(location: self.locationHandler.lastLocation)
         }
     }
 
     func stopActivityUpdates() {
         motionActivityManager.stopActivityUpdates()
         isActivityMonitoringOn = false
-        updatesStarted = false
+        updatesLive = false
         LogEvent.print(module: "ActivityHandler.stopActivityUpdates()", message: "Stopping activity updates")
     }
 

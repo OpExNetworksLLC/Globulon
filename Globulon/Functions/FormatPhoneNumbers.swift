@@ -1,9 +1,9 @@
 //
 //  FormatPhoneNumbers.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 2/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import Foundation
@@ -27,6 +27,7 @@ func formattedNumber(number: String, mask: String, char: Character) -> String {
     }
     return result
 }
+
 // MARK:  Return unformatted phone number.  Just the digits.
 func unformattedNumber(number: String) -> String {
     return number.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()

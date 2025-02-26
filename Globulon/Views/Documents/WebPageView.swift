@@ -1,9 +1,9 @@
 //
 //  WebPageView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/19/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
@@ -35,7 +35,8 @@ struct WebPageView: View {
                     .padding(.bottom, 24)
                 
                 //----
-                SwiftUIWebView(url: URL(string: webURL))
+                //SwiftUIWebView(url: URL(string: webURL))
+                SwiftUIWebView(localHTMLFileName: nil, url: URL(string: webURL))
                     .padding(8)
                     //.border(colorScheme == .dark ? .white : .black)
                     .border(.gray)
@@ -75,5 +76,5 @@ struct WebPageView: View {
 }
 
 #Preview {
-    WebPageView(title: "title", subtitle: "subtitle", webURL: AppValues.licenseURL, isReviewed: .constant(false))
+    WebPageView(title: "title", subtitle: "subtitle", webURL: AppSettings.licenseURL, isReviewed: .constant(false))
 }

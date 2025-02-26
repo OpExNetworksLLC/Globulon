@@ -1,130 +1,480 @@
 //
 //  MainView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/13/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainView: View {
+    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.colorScheme) var colorScheme
     
-    @StateObject var locationHandler = LocationHandler.shared
-    @StateObject var activityHandler = ActivityHandler.shared
-    @StateObject var motionHandler = MotionHandler.shared
-    
-    @StateObject var appStatus = AppStatus()
+    @EnvironmentObject var appVariables: AppStatus
+    @EnvironmentObject var userSettings: UserSettings
+
     @StateObject var networkHandler = NetworkHandler.shared
     
+    @State private var showNetworkAlert = false
+    
+    @State var isShowView = false
+    
+    @State var avatar: UIImage = UserSettings.init().avatar
+    @State var alias: String = UserSettings.init().alias
+    @State var aliasDisplayed: String = AppDefaults.alias
+    
+    @State private var isShowProfileView = false
+    @State private var isShowAccountView = false
+    @State private var isShowSettingsView = false
+    @State private var isShowSupportView = false
+    @State private var isShowDeveloperView = false
+    @State private var isShowSystemStatusView = false
+    
+    
+    @State private var isShowHelp = false
+    @State private var isShowVersionSheet = false
+    
     @State var currentTab =  UserSettings.init().landingPage
+    @State var lastTab =  UserSettings.init().landingPage.description
+    
+    /// Menu states
+    @State private var isShowAnimatedSideMenu: Bool = false // State toggles based on if menu is showing or not
+    @State private var rotateWhenExpands: Bool = true       // Does the main screen rotate to show the menu show flat
+    @State private var disablesInteractions: Bool = false   // Disables menu option click action
+    @State private var disableCorners: Bool = false         // Rounded or square corners on the main screen
     
     var body: some View {
-        ZStack {
-            TabView(selection: $currentTab) {
-                HomeView(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "house")
-                        Text("Home")
-                    }
-                    .tag(LandingPageEnum.home)
-                /*
-                LocationView(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "location")
-                        Text("Location")
-                    }
-                    .tag(LandingPageEnum.location)
-                */
-                ActivityView(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "arrow.triangle.pull")
-                        Text("Activity")
-                    }
-                    .tag(LandingPageEnum.activity)
-                MotionView(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "circle.dotted.and.circle")
-                        Text("Motion")
-                    }
-                    .tag(LandingPageEnum.motion)
-                TripsViewV3(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "map")
-                        Text("Trips")
-                    }
-                    .tag(LandingPageEnum.trips)
-                HistoryView(isShowSideMenu: $appStatus.isShowSideMenu)
-                    .tabItem {
-                        Image(systemName: "archivebox.fill")
-                        Text("History")
-                    }
-                    .tag(LandingPageEnum.history)
-            }
+        AnimatedSideBar(
+            rotatesWhenExpands: rotateWhenExpands,
+            disablesInteraction: disablesInteractions,
+            sideMenuWidth: AppSettings.sideMenu.menuWidth,
+            cornerRadius: disableCorners ? 0 : 25,
+            showMenu: $isShowAnimatedSideMenu
+        ) { safeArea in
+            
+            /// Start the NavigationStack
+            ///
+            NavigationStack {
+                
+                /// Identify your Tabs here
+                ///
+                TabView(selection: $currentTab) {
+                    HomeView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image("symHome")
+                            Text("Home")
+                        }
+                        .tag(LandingPageEnum.home)
+                    
+                    /// Since the using the center logo with .principal forces a space this is what we do to work back around that
+                    /// start ...
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    /// ... end
+                    
+                    ToursView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "map")
+                            Text("Tours")
+                        }
+                        .tag(LandingPageEnum.tours)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
+                    MyToursView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "purchased")
+                            Text("My Tours")
+                        }
+                        .tag(LandingPageEnum.myTours)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
+                    TravelView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "steeringwheel")
+                            Text("Travel")
+                        }
+                        .tag(LandingPageEnum.travel)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
+                    /*
+                    LocationView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "location")
+                            Text("Location")
+                        }
+                        .tag(LandingPageEnum.location)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    */
+                    
+                    /*
+                    StatusView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "stethoscope")
+                            Text("Status")
+                        }
+                        .tag(LandingPageEnum.status)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    */
+                    
+                    BluetoothView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "antenna.radiowaves.left.and.right")
+                            Text("Bluetooth")
+                        }
+                        .tag(LandingPageEnum.bluetooth)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
+                }
+                .onChange(of: currentTab) {
+                    /// actively set these tabs  to rotate the view when showing the side menu if the default is set to true:
+                    ///
+                    ///`rotateWhenExpands = [.home, .status, .bluetooth].contains(currentTab)
+                    ///
+                    /// or since the default is true to rotate the side menu set to false for identified tabs
+                    ///
+                    rotateWhenExpands = ![.travel].contains(currentTab)
 
-            .overlay(
-                Group {
-                    if appStatus.isShowSideMenu {
-                        Color.clear
-                            .contentShape(Rectangle()) // This line makes the clear color tappable, blocking interaction with the view below.
-                            .onTapGesture {
-                                // Add action if needed when tapping on the overlay, for example, closing the side menu.
-                                appStatus.isShowSideMenu = false
+                }
+                .toolbar {
+                    
+                    /// Side Menu
+                    ///
+                    ToolbarItem(placement: .topBarLeading) {
+                        Button(action: { isShowAnimatedSideMenu.toggle() }) {
+                            Image(systemName: isShowAnimatedSideMenu ? "xmark" : "square.leftthird.inset.filled")
+                                .font(.system(size: 26, weight: .ultraLight))
+                                .frame(width: 32, height:32)
+                                .foregroundColor(AppSettings.pallet.primaryLight)
+                                .contentTransition(.symbolEffect)
+                        }
+                    }
+                    
+                    /// App logo
+                    ///
+                    ToolbarItem(placement: .principal) {
+                        Image("symLogo")
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(AppSettings.symLogo.primaryLight, AppSettings.symLogo.primary, AppSettings.symLogo.primaryDark)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 42, height: 42)
+                    }
+                    
+                    /// Show the network connectivity status only on the home tab
+                    ///
+                    if currentTab == .home {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            if networkHandler.isConnected {
+                                Circle()
+                                    .fill(Color.green)
+                                    .frame(width: 10, height: 10)
+                            } else {
+                                Circle()
+                                    .fill(Color.red)
+                                    .frame(width: 10, height: 10)
+                            }
+                        }
+                    }
+                    
+                    /// Help
+                    ///
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            isShowHelp.toggle()
+                        }) {
+                            Image(systemName: "questionmark")
+                                .font(.system(size: 22, weight: .light))
+                                .foregroundColor(AppSettings.pallet.primaryLight)
+                                .frame(width: 35, height: 35)
+                        }
+                    }
+                }
+                .navigationBarTitleDisplayMode(.inline) // Gets rid of other views adding a line after the toolbar
+                .fullScreenCover(isPresented: $isShowHelp) {
+                    NavigationView {
+                        ArticlesSearchView()
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    Button(action: {
+                                        isShowHelp.toggle()
+                                    }) {
+                                        ImageNavCancel()
+                                    }
+                                }
+                                ToolbarItem(placement: .principal) {
+                                    Text("search")
+                                }
                             }
                     }
                 }
-            )
-            /// Show an alert if network status changes
-            /// 
-            .alert("No Internet Connection!", isPresented: .constant(!networkHandler.isConnected)) {
-                    Button("OK", role: .cancel) {}
-                } message: {
-                    Text("Please check your internet connection.")
-                }
-            
-            if appStatus.isShowSideMenu {
-                SideMenuView()
-
-                    .transition(.move(edge: .leading))
-                    .zIndex(1) // Ensures SideMenuView is on top
-                    .environmentObject(appStatus)
             }
+            /// end nav stack
             
-        }
-        .animation(.easeInOut, value: appStatus.isShowSideMenu)
-//        .onAppear {
-//            DispatchQueue.main.asyncAfter(deadline: .now()) {
-//                processOnAppear()
-//            }
-//        }
-        .task {
-            LogEvent.print(module: "MainView.task", message: "starting...")
-            
-            /// Do stuff...
-            
-            /// Force start location updates if they were manually stopped by the user
-            ///
-            if locationHandler.updatesStarted == false {
-                locationHandler.startLocationUpdates()
-            }
-
-            /// Force start activity updates if they were manually stopped by the user
-            /// 
-            if activityHandler.updatesStarted == false {
-                activityHandler.startActivityUpdates()
-            }
-            
-            ///TODO: OPTION Turn on if you want these to the  automaticallly start when the user opens the app
-//            if motionHandler.updatesStarted == false {
-//                motionHandler.startMotionUpdates()
-//            }
-            
-            LogEvent.print(module: "MainView.task", message: "...finished")
+        } menuView: { safeArea in
+            SideBarMenuView(safeArea)
+        } background: {
+            Rectangle()
+                .fill(Color("sideMenuBackgroundColor"))
         }
     }
+    
+    @ViewBuilder
+    func SideBarMenuView(_ safeArea: UIEdgeInsets) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            
+            
+            /// Profile
+            ///
+            VStack() {
+                HStack {
+                    Spacer()
+                    
+                    Button(action: {
+                        isShowProfileView.toggle()
+                    }) {
+                        VStack {
+                            Image(uiImage: avatar)
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+                                .frame(width: 64, height: 64, alignment: .center)
+                                .padding(.bottom, 0)
+                            /* TODO: Not used
+                             .onAppear {
+                             let avatar = UserSettings.init().alias
+                             }
+                             */
+                            
+                            Text(aliasDisplayed)
+                                .font(.system(size: 18, weight: .regular, design: .default))
+                                .onAppear {
+                                    if alias == "" { aliasDisplayed = AppDefaults.alias } else {aliasDisplayed = alias}
+                                }
+                                .onChange(of: alias) { alias, value in
+                                    if value == "" { aliasDisplayed = AppDefaults.alias } else {aliasDisplayed = value}
+                                }
+                        }
+                        .foregroundColor(.primary)
+                    }
+                    .fullScreenCover(isPresented: $isShowProfileView, content: {
+                        //destinationView.environment(\.managedObjectContext, self.viewContext)
+                        UserProfileView(avatar: $avatar, alias: $alias)
+                    })
+                    
+                    Spacer()
+                }
+            }
+            .frame(height: 125)
+            
+            Rectangle()
+            //.fill(colorScheme == .dark ? .black : .white)
+                .fill(.primary)
+                .frame(height: 0.5)
+                .edgesIgnoringSafeArea(.horizontal)
+            
+            /// Account
+            ///
+            Button(action: {
+                withAnimation {
+                    isShowAccountView.toggle()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "creditcard")
+                        .font(.title3)
+                    
+                    Text("Account")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowAccountView) {
+                UserAccountView()
+            }
+            
+            /// Settings
+            ///
+            Button(action: {
+                withAnimation {
+                    isShowSettingsView.toggle()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3)
+                    
+                    Text("Settings")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowSettingsView) {
+                UserSettingsView()
+            }
+            
+            /// Support
+            ///
+            Button(action: {
+                withAnimation {
+                    isShowSupportView.toggle()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "lifepreserver")
+                        .font(.title3)
+                    
+                    Text("Support")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowSupportView) {
+                UserSupportView()
+            }
+            
+            /// Developer
+            ///
+            Button(action: {
+                withAnimation {
+                    isShowDeveloperView.toggle()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "slider.horizontal.3")
+                        .font(.title3)
+                    
+                    Text("Developer")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowDeveloperView) {
+                DeveloperSettingsView()
+            }
+            
+            /// System Status
+            ///
+            Button(action: {
+                withAnimation {
+                    isShowSystemStatusView.toggle()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "stethoscope")
+                        .font(.title3)
+                    
+                    Text("Status")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowSystemStatusView) {
+                SystemStatusView()
+            }
+            
+            /// Logout
+            ///
+            Button(action: {
+                withAnimation {
+                    DispatchQueue.main.asyncAfter(deadline: .now()) {
+                        NotificationCenter.default.post(name: Notification.Name("isLoggedOut"), object: nil)
+                    }
+                    
+                    self.presentationMode.wrappedValue.dismiss()
+                }
+            }, label: {
+                HStack(spacing: 12) {
+                    Image(systemName: "rectangle.portrait.and.arrow.forward")
+                        .font(.title3)
+                    
+                    Text("Logout")
+                        .font(.callout)
+                    
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 10)
+                .contentShape(.rect)
+                .foregroundStyle(Color.primary)
+            })
+            .fullScreenCover(isPresented: $isShowView) {
+                DeveloperSettingsView()
+            }
+            
+            Spacer(minLength: 0)
+            
+            /// Version info
+            VStack(spacing: 0) {
+                Rectangle()
+                    .frame(height: 0.5)
+                    .edgesIgnoringSafeArea(.horizontal)
+                    .padding(.bottom, 4)
+                HStack() {
+                    Button {
+                        isShowVersionSheet.toggle()
+                    } label: {
+                        Text("version: \(AppInfo.version) (\(AppInfo.build))")
+                            .font(.system(size: 12, weight: .regular, design: .default))
+                    }
+                    .sheet(isPresented: $isShowVersionSheet, content: {
+                        VersionSheetView(isShowVersionSheet: $isShowVersionSheet)
+                    })
+                    Spacer()
+                    
+                }
+                .foregroundColor(.primary)
+            }
+            
+            //SideBarButton(.logout)
+        }
+        .padding(.horizontal, 15)
+        .padding(.vertical, 20)
+        .padding(.top, safeArea.top)
+        .padding(.bottom, safeArea.bottom)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .environment(\.colorScheme, .dark)
+    }
+    
 }
+
 
 #Preview {
     MainView()
+        .environmentObject(AppStatus())
         .environmentObject(UserSettings())
 }
