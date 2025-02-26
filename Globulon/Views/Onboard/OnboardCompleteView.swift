@@ -1,16 +1,14 @@
 //
 //  OnboardCompleteView.swift
-//  ViDrive
+//  OpExShellV1
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 8/3/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
 
 struct OnboardCompleteView: View {
-    
-    //let myDevice = BiometricAuthType()
     
     @Environment(\.presentationMode) var presentationMode
     
@@ -62,7 +60,7 @@ struct OnboardCompleteView: View {
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("next")
-                            .foregroundColor(Color("btnNextOnboarding"))
+                            .foregroundColor(Color("txtNextOnboarding"))
                         Image(systemName: "arrow.right")
                             .resizable()
                             .foregroundColor(.white)

@@ -1,11 +1,10 @@
 //
 //  IntroAcceptTermsView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 3/13/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/26/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
-
 
 import SwiftUI
 
@@ -40,7 +39,8 @@ struct IntroAcceptTermsView: View {
                     .padding(.bottom, 24)
                 
                 //----
-                SwiftUIWebView(url: URL(string: webURL))
+                //SwiftUIWebView(url: URL(string: webURL))
+                SwiftUIWebView(localHTMLFileName: nil, url: URL(string: webURL))
                     .padding(8)
                     //.border(colorScheme == .dark ? .white : .black)
                     .border(.gray)
@@ -57,7 +57,6 @@ struct IntroAcceptTermsView: View {
                         /// Set these becaue in the onboard flow someone can go backwards and decline
                         isTerms = false
                         userSettings.isTerms = false
-                        /// TODO:  bail here if the user declines.   confirm they want to bail?  An alert pop up maybe
                         DispatchQueue.main.asyncAfter(deadline: .now()) {
                             NotificationCenter.default.post(name: Notification.Name("isReset"), object: nil)
                         }
@@ -126,5 +125,5 @@ struct IntroAcceptTermsView: View {
 // end struct
 
 #Preview {
-    IntroAcceptTermsView(title: "Terms & Conditions ELUA", subtitle: "User assumes all risk and responsibilty", webURL: AppValues.licenseURL, isAccepted: .constant(true))
+    IntroAcceptTermsView(title: "Terms & Conditions ELUA", subtitle: "User assumes all risk and responsibilty", webURL: AppSettings.licenseURL, isAccepted: .constant(true))
 }

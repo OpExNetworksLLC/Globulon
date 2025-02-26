@@ -1,9 +1,9 @@
 //
 //  IntroStartView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/23/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/26/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
@@ -24,19 +24,19 @@ struct IntroStartView: View {
             VStack(alignment: .leading) {
                 
               Spacer().frame(height: 60)
-                Image(colorScheme == .dark ? AppValues.logos.appLogoDarkMode : AppValues.logos.appLogoTransparent)
+                Image(colorScheme == .dark ? .appLogoDarkMode : .appLogoTransparent)
                 //Image(AppValue.appLogo)
                     .resizable()
                     .frame(width: 124, height: 124, alignment: .center)
                     .offset(x: 8)
                     .padding(.bottom, 16)
-                Text("Intro to \(AppValues.appName)")
+                Text("Intro to \(AppSettings.appName)")
                     .font(.system(size: 24))
                     //.fontWeight(.regular)
                     .padding(.bottom, 16)
-                Text("Thank you for chosing to use the \(AppValues.appName) app.  We hope you will enjoy using it.")
+                Text("Thank you for chosing to use the \(AppSettings.appName) app.  We hope you will enjoy using it.")
                     .padding(.bottom, 16)
-                Text("This is a proof of concept application to validate the private collection of location data soley for the purposes of demonstrating the phones ability to collect, process and score data. None of this data leaves your phone.")
+                Text("This is a proof of concept application.")
                     .padding(.bottom, 16)
 
                 Spacer()

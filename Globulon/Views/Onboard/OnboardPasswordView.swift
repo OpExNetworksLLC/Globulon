@@ -2,8 +2,8 @@
 //  OnboardPasswordView.swift
 //  Globulon
 //
-//  Created by David Holeman on 7/3/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/26.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
@@ -31,8 +31,6 @@ struct OnboardPasswordView: View {
     @State var isPasswordVerified: Bool = false
     @State var isPasswordVerifiedImage: String = "imgVerifyOff"
     
-    @FocusState private var focusedField: InputOnboardPasswordField?
-    
     @State var isHidePassword = true
     
     @State var showKeychainAddUserFailedAlert: Bool = false
@@ -45,6 +43,7 @@ struct OnboardPasswordView: View {
     
     var email: String = UserSettings.init().email
     
+    @FocusState private var focusedField: InputOnboardPasswordField?
     enum InputOnboardPasswordField: Hashable {
         case passwordEntry
         case passwordVerify
@@ -210,7 +209,7 @@ struct OnboardPasswordView: View {
                             .disableAutocorrection(true)
                             .autocapitalization(.none)
                             .focused($focusedField, equals: .passwordVerify)
-                            .submitLabel(.next)
+                            .submitLabel(.done)
 //                            .onSubmit {
 //                                focusedField = nil
 //                            }
@@ -282,20 +281,19 @@ struct OnboardPasswordView: View {
 //                            _ = Authentication.keychain.addUser(username: email, password: passwordVerify)
 //                        }
                         
-                        if AppSettings.login.isKeychainLoginEnabled {
+                        #if KEYCHAIN_ENABLED
                             
-                            //TODO:  Delete keychain user
+                            // Delete user for clean up
                             Authentication.keychain.deleteUser(username: email) { success, error in
                                 if success {
                                     LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
                                     
                                 } else {
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "xError deleting old account \(error!)")
+                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
                                 }
                             }
                             
-                            
-                            
+                            // Add user to keychain
                             Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
                                 if success {
                                     /// do stuff
@@ -310,20 +308,81 @@ struct OnboardPasswordView: View {
 
                                 }
                             }
-                        }
+                        //}
+                        #endif
                         
-                        if AppSettings.login.isFirebaseLoginEnabled {
+                        #if FIREBASE_ENABLED
+                        //if AppSettings.login.isFirebaseLoginEnabled {
                             Authentication.firebase.addUser(email: email, password: passwordVerify) {
                                 success, userID, error in
                                 if success {
-                                    /// Do stuff
                                     LogEvent.print(module: "LoginView.Authentication.firebase.addUser", message: "\(email) added toKeychain")
+                                    
+                                    /// Do additional stuff
+                                    
+                                    
+                                    /// TODO: Storing firebase credentials:  Adding to local keychain
+                                    /// TODO:  Make this driven by a dev or app flag to turn on or off.
+                                    /// Delete user for clean up
+                                    Authentication.keychain.deleteUser(username: email) { success, error in
+                                        if success {
+                                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
+                                            
+                                        } else {
+                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                                        }
+                                    }
+                                    
+                                    /// Add user to keychain
+                                    Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
+                                        if success {
+                                            /// do stuff
+                                            LogEvent.print(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
+                                            /// On to the next view
+                                            appStatus.currentOnboardPageView = .onboardCompleteView
+
+                                        } else {
+                                            /// Handle failure to add user
+                                            showKeychainAddUserFailedMessage = error?.localizedDescription ?? ""
+                                            showKeychainAddUserFailedAlert = true
+
+                                        }
+                                    }
+                            
                                     /// On to the next view
                                     appStatus.currentOnboardPageView = .onboardCompleteView
 
                                 } else {
                                     
                                     print("** email address already in use: \(String(describing: error))")
+                                    
+                                    /// TODO: Storing firebase credentials:  Adding to local keychain
+                                    /// TODO:  Make this driven by a dev or app flag to turn on or off.
+                                    /// Delete user for clean up
+                                    Authentication.keychain.deleteUser(username: email) { success, error in
+                                        if success {
+                                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
+                                            
+                                        } else {
+                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                                        }
+                                    }
+                                    
+                                    /// Add user to keychain
+                                    Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
+                                        if success {
+                                            /// do stuff
+                                            LogEvent.print(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
+                                            /// On to the next view
+                                            appStatus.currentOnboardPageView = .onboardCompleteView
+
+                                        } else {
+                                            /// Handle failure to add user
+                                            showKeychainAddUserFailedMessage = error?.localizedDescription ?? ""
+                                            showKeychainAddUserFailedAlert = true
+
+                                        }
+                                    }
 
                                     // check for this error first
                                     if String(describing: error).contains("ERROR_EMAIL_ALREADY_IN_USE") {
@@ -339,7 +398,8 @@ struct OnboardPasswordView: View {
                                 }
                             }
 
-                        }
+                        //}
+                        #endif
                         
                     }) {
                         Text("Next")

@@ -1,9 +1,9 @@
 //
 //  TextNavCancel.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/20/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/26/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
@@ -13,8 +13,8 @@ struct TextNavCancel: View {
     var body: some View {
         Text("Cancel")
             .foregroundStyle(
-                colorScheme == .dark ? AppValues.pallet.primaryLight : AppValues.pallet.primary,
-                colorScheme == .dark ? AppValues.pallet.primaryLight : AppValues.pallet.primary
+                colorScheme == .dark ? AppSettings.pallet.primaryLight : AppSettings.pallet.primary,
+                colorScheme == .dark ? AppSettings.pallet.primaryLight : AppSettings.pallet.primary
             )
     }
 }

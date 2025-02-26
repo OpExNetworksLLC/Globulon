@@ -1,11 +1,10 @@
 //
 //  IntroCompleteView.swift
-//  ViDrive
+//  Globulon
 //
-//  Created by David Holeman on 2/23/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/26/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
-
 
 import SwiftUI
 

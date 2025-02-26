@@ -1,794 +1,48 @@
 //
 //  DeveloperSettingsView.swift
-//  Globulon
+//  GeoGato
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 12/4/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
+
 import SwiftUI
-import SwiftData
 
-/// # DeveloperSettingsView
-/// Display current trips
-///
-/// # Version History
-/// ### 0.1.0.62
-/// # - update deleteGpsJournalSD to return and handle count in alert messages
-/// # - update deleteTripSummariesSD to return and handle count in alert messages
-/// # - *Date*: 07/13/24
-
+/** #Version History
+- Version: 1.0.1
+- Date: 2025-01-23
+- Note: - Added POI
+ 
+- Version: 1.0.0
+- Date: 12-04-2024
+- Note: This version uses sub views for the various sections to take the pressure off the limited capacity of a Form
+*/
 struct DeveloperSettingsView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
-    
-    @EnvironmentObject var userSettings: UserSettings
-   
-    @State var isIntroduced: Bool = false
-    @State var isTracking: Bool = false
-    @State var isOnboarded: Bool = false
-    @State var isTerms: Bool = false
-    @State var isWelcomed: Bool = false
-    @State var isAccount: Bool = false
-    @State var isPrivacy: Bool = false
-    @State var isLicensed: Bool = false
 
-    @State var isTripReprocessingAllowed: Bool = false
-
-    @State var showAlertDeleteAllArticles: Bool = false
-    @State var showAlertDeleteAllSettings: Bool = false
-    @State var showAlertDeleteUserSettings: Bool = false
-    @State var showAlertLoadArticlesSuccess: Bool = false
-    @State var showAlertLoadArticlesMessage: String = ""
-    
-    @State var showAlertDeleteAllGPSDataConfirm: Bool = false
-    @State var showAlertDeleteAllGPSDataSuccess: Bool = false
-    @State var showAlertDeleteAllGPSDataMessage: String = ""
-
-    @State var showAlertDeleteAllTripsConfirm: Bool = false
-    @State var showAlertDeleteAllTripsSuccess: Bool = false
-    @State var showAlertDeleteAllTripsMessage: String = ""
-    
-    @State var showAlertDeleteAllProcessedGPSDataConfirm: Bool = false
-    @State var showAlertDeleteAllProcessedGPSDataSuccess: Bool = false
-    @State var showAlertDeleteAllProcessedGPSDataMessage: String = ""
-
-    @State var showAlertDedupSuccess: Bool = false
-    @State var showAlertDedupMessage: String = ""
-    
-    @State var showAlertDeprocessSuccess: Bool = false
-    @State var showAlertDeprocessMessage: String = ""
-
-    @State var showAlertTripPurgeLimitConfirm: Bool = false
-    @State var showAlertTripPurgeLimitSuccess: Bool = false
-    @State var showAlertTripPurgeLimitMessage: String = ""
-    
-    @State var showAlertGPSDeleteTripLimitConfirm: Bool = false
-    @State var showAlertGPSDeleteTripLimitSuccess: Bool = false
-    @State var showAlertGPSDeleteTripLimitMessage: String = ""
-    
-    @State var showAlertDeleteJournalSDConfirm: Bool = false
-    @State var showAlertDeleteJournalSDSuccess: Bool = false
-    @State var showAlertDeleteJournalSDMessage: String = ""
-    
-    @State var showAlertLoadSampleGPSDataSuccess: Bool = false
-    @State var showAlertLoadSampleGPSDataMessage: String = ""
-
-    @State var trackingTripSeparator = UserSettings.init().trackingTripSeparator
-    @State var trackingTripEntriesMin = UserSettings.init().trackingTripEntriesMin
-    @State var trackingSampleRate = TrackingSampleRateEnum(rawValue: UserDefaults.standard.integer( forKey: "trackingSampleRate")) ?? .five
-    @State var trackingSpeedThreshold = TrackingSpeedThresholdEnum(rawValue: UserDefaults.standard.double( forKey: "trackingSpeedThreshold")) ?? .mph05
-    
-    @State var tripGPSHistoryLimit = UserSettings.init().tripGPSHistoryLimit
-    @State var tripHistoryLimit = UserSettings.init().tripHistoryLimit
-
-    @State var articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
-    @State var userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
-    
-    init() {
-        // Do stuff if needed
-    }
-    
     var body: some View {
-        
         NavigationView {
             VStack {
-                /* start stuff within our area */
                 Form {
-                    VStack(alignment: .leading) {
-                        Text("Developer Settings!")
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundColor(.primary)
-                            .padding([.leading, .trailing], 16)
-                            .padding(.bottom, 1)
-                        Text("These settings control the behavior of the app...")
-                            .font(.system(size: 14))
-                            .foregroundColor(.primary)
-                            .padding([.leading, .trailing], 16)
-                        Spacer()
-                    }
-                    .frame(width: AppValues.screen.width - 36, height: 120, alignment: .leading)
-                    
-                    /// APP SETTINGS
-                    ///
-                    Section(header: Text("APP Settings")) {
-                        
-                        /// Introduced
-                        Toggle(isOn: self.$isIntroduced) {
-                            Text("Introduced")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isIntroduced = userSettings.isIntroduced
-                        }
-                        .onChange(of: isIntroduced) {
-                            userSettings.isIntroduced = isIntroduced
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isTracking) {
-                            Text("Tracking")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isTracking = userSettings.isTracking
-                        }
-                        .onChange(of: isTracking) {
-                            userSettings.isTracking = isTracking
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isOnboarded) {
-                            Text("Onboarded")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isOnboarded = userSettings.isOnboarded
-                        }
-                        .onChange(of: isOnboarded) {
-                            userSettings.isOnboarded = isOnboarded
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isTerms) {
-                            Text("Terms")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isTerms = userSettings.isTerms
-                        }
-                        .onChange(of: isTerms) {
-                            userSettings.isTerms = isTerms
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isWelcomed) {
-                            Text("Welcomed")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isWelcomed = userSettings.isWelcomed
-                        }
-                        .onChange(of: isWelcomed) {
-                            userSettings.isWelcomed = isWelcomed
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isAccount) {
-                            Text("Account")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isAccount = userSettings.isAccount
-                        }
-                        .onChange(of: isAccount) {
-                            userSettings.isAccount = isAccount
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isPrivacy) {
-                            Text("Privacy")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isPrivacy = userSettings.isPrivacy
-                        }
-                        .onChange(of: isPrivacy) {
-                            userSettings.isPrivacy = isPrivacy
-                        }
-                        .padding(.trailing, -8)
-                        
-                        Toggle(isOn: self.$isLicensed) {
-                            Text("License")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isLicensed = userSettings.isLicensed
-                        }
-                        .onChange(of: isLicensed) {
-                            userSettings.isLicensed = isLicensed
-                        }
-                        .padding(.trailing, -8)
-                        
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: -8)
-                    .padding(.trailing, -8)
-                    // end form
-                    
-                    /// SCORING:
-                    ///
-                    Section(header: Text("Scoring").offset(x: -16)) {
-                        
-                        Picker(selection: $trackingSampleRate, label: Text("Sample every").offset(x: -16 ).foregroundColor(.primary)) {
-                            ForEach(TrackingSampleRateEnum.allCases, id: \.self) { rate in
-                                Text(rate.description).tag(rate)
-                            }
-                        }
-                        .onChange(of: trackingSampleRate) {                            UserSettings.init().trackingSampleRate = trackingSampleRate.rawValue
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                        .padding(.trailing, -8)
-                        
-                        Stepper(
-                            value: $trackingTripEntriesMin,
-                            in: 1...25,
-                            step: 1) {
-                                Text("Min samples per trip: ").foregroundColor(.primary) + Text("\(trackingTripEntriesMin)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                            }
-                            .onChange(of: trackingTripEntriesMin) {
-                                userSettings.trackingTripEntriesMin = trackingTripEntriesMin
-                            }
-                            .foregroundColor(.primary)
-                            .padding(.leading, -16)
-                            .padding(.trailing, -8)
-                                                
-                        Stepper(
-                            value: $trackingTripSeparator,
-                            in: 30...360,
-                            step: 30) {
-                                Text("Trip separator seconds: ").foregroundColor(.primary) + Text("\(trackingTripSeparator)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                            }
-                            .onChange(of: trackingTripSeparator) {
-                                userSettings.trackingTripSeparator = trackingTripSeparator
-                            }
-                            .foregroundColor(.primary)
-                            .padding(.leading, -16)
-                            .padding(.trailing, -8)
-                        
-
-                        Picker(selection: $trackingSpeedThreshold, label: Text("Minium tracking speed").offset(x: -16 ).foregroundColor(.primary)) {
-                            ForEach(TrackingSpeedThresholdEnum.allCases, id: \.self) { rate in
-                                Text(rate.description).tag(rate)
-                            }
-                        }
-                        .onChange(of: trackingSampleRate) {                            UserSettings.init().trackingSpeedThreshold = trackingSpeedThreshold.rawValue
-                        }
-                        .pickerStyle(MenuPickerStyle())
-                        .padding(.trailing, -8)
-
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: 8)
-                    .padding(.trailing, 8)
-                    
-                    /// TRIP DATA:
-                    ///
-                    Section(header: Text("Trip Data").offset(x: -16)) {
-                        
-                        /// Export all GPS data
-                        ///
-                        VStack {
-                            Button(action: {
-                                /// Peform the export
-                                ///
-                                _  = exportAllGPSData()
-                            }
-                            ) {
-                                HStack {
-                                    Text("Export all GPS data").offset(x: -16)
-                                        .foregroundColor(.blue)
-                                    Spacer()
-                                    Image(systemName: "minus.circle")
-                                        .imageScale(.large)
-                                }
-                                .padding(.trailing, -16)
-                            }
-                        .padding(.trailing, 8)
-                        }
-                        
-                        /// Dellete all trips
-                        ///
-                        VStack {
-                            Button(action: {
-                                showAlertDeleteAllTripsConfirm = true
-                            }
-                            ) {
-                                HStack {
-                                    Text("Delete all trips").offset(x: -16)
-                                        .foregroundColor(.blue)
-                                    Spacer()
-                                    Image(systemName: "minus.circle")
-                                        .imageScale(.large)
-                                }
-                                .padding(.trailing, -16)
-                            }
-                            .padding(.trailing, 8)
-                            .alert("Warning!", isPresented: $showAlertDeleteAllTripsConfirm) {
-                                Button("Continue", role: .destructive) {
-                                    let result = deleteTripSummariesSD()
-                                    showAlertDeleteAllTripsMessage = "\(result) trips were deleted"
-                                    showAlertDeleteAllTripsSuccess = true
-                                }
-                                Button("Cancel", role: .cancel) {}
-                            } message: {
-                                Text("Are you sure you want to delete all trips?")
-                            }
-                            .alert("Delete Completed", isPresented: $showAlertDeleteAllTripsSuccess) {
-                                Button("OK", role: .cancel) {}
-                            } message: {
-                                Text(showAlertDeleteAllTripsMessage)
-                            }
-                        }
-                        
-                        
-                        
-                        /// Dedup GPS Data
-                        Button(action: {
-                            let result = dedupGpsJournalSD()
-                            showAlertDedupSuccess = true
-                            showAlertDedupMessage = "Removed \(result) duplicates from GPS data"
-
-                        }) {
-                            HStack {
-                                Text("Dedup GPS Data").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertDedupSuccess) {
-                            return Alert(title: Text("Dedup GPS data"),
-                                message: Text(showAlertDedupMessage),
-                                dismissButton: .default(Text("OK")))
-                        }
-                        .padding(.trailing, 8)
-                        
-                        /// Deprocess GPS Data
-                        ///
-                        Button(action: {
-                            let result = deprocessGpsJournalSD()
-                            showAlertDeprocessSuccess = true
-                            showAlertDeprocessMessage = "Deprocessed \(result) GPS data entries"
-
-                        }) {
-                            HStack {
-                                Text("Deprocess GPS data").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertDeprocessSuccess) {
-                            return Alert(title: Text("Deprocess GPS data"),
-                                message: Text(showAlertDeprocessMessage),
-                                dismissButton: .default(Text("OK")))
-                        }
-                        .padding(.trailing, 8)
-                        
-                        /// Delete all GPS Data
-                        ///
-                        Button(action: {
-                            showAlertDeleteAllGPSDataConfirm = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Delete All GPS data").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .padding(.trailing, 8)
-                        /*
-                        .alert(isPresented: $showAlertDeleteAllGPSData, content: {
-                            let firstButton = Alert.Button.default(Text("Cancel"))
-                            let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                
-                                //TODO: Delete the GPS data here...
-                                //
-                                deleteGpsJournalSD()
-                                showAlertDeleteAllGPSData = false
-                            }
-                            return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All GPS Data?"), primaryButton: firstButton, secondaryButton: secondButton)
-                        })
-                        .padding(.trailing, 8)
-                        */
-                        .alert("Warning!", isPresented: $showAlertDeleteAllGPSDataConfirm) {
-                            Button("Continue", role: .destructive) {
-                            
-                                let result = deleteGpsJournalSD()
-                                showAlertDeleteAllGPSDataMessage = "\(result) GPS Journal entries\n were deleted"
-                                showAlertDeleteAllGPSDataSuccess = true
-                            }
-                            Button("Cancel", role: .cancel) {}
-                        } message: {
-                            Text("Are you sure you want to delete all processed GPS Journal entries?")
-                        }
-                        .alert("Delete Completed", isPresented: $showAlertDeleteAllGPSDataSuccess) {
-                            Button("OK", role: .cancel) {}
-                        } message: {
-                            Text(showAlertDeleteAllGPSDataMessage)
-                        }
-                        
-                        
-                        /// Delete all processed GPS Data
-                        ///
-                        Button(action: {
-                            showAlertDeleteAllProcessedGPSDataConfirm = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Delete All processed GPS data").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .padding(.trailing, 8)
-                        .alert("Warning!", isPresented: $showAlertDeleteAllProcessedGPSDataConfirm) {
-                            Button("Continue", role: .destructive) {
-                                // TODO: create delete function
-                                let result = deleteAllProcessedGPSJournalSD()
-                                showAlertDeleteAllProcessedGPSDataMessage = "\(result) processed GPS Journal entries\n were deleted"
-                                showAlertDeleteAllProcessedGPSDataSuccess = true
-                            }
-                            Button("Cancel", role: .cancel) {}
-                        } message: {
-                            Text("Are you sure you want to delete all processed GPS Journal entries?")
-                        }
-                        .alert("Delete Completed", isPresented: $showAlertDeleteAllProcessedGPSDataSuccess) {
-                            Button("OK", role: .cancel) {}
-                        } message: {
-                            Text(showAlertDeleteAllProcessedGPSDataMessage)
-                        }
-                        
-                        /// GPS History Trip Limit
-                        ///
-                        Stepper(
-                            value: $tripGPSHistoryLimit,
-                            in: 5...100,
-                            step: 5) {
-                                Text("GPS Trip history limit: ").foregroundColor(.primary) + Text("\(tripGPSHistoryLimit)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                            }
-                            .onChange(of: tripGPSHistoryLimit) {
-                                userSettings.tripGPSHistoryLimit = tripGPSHistoryLimit
-                            }
-                        .foregroundColor(.primary)
-                        .padding(.leading, -16)
-                        .padding(.trailing, -8)
-                        
-                        /// Purge GPS history to limit
-                        ///
-                        Button(action: {
-                            showAlertGPSDeleteTripLimitConfirm = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Purge to GPS Trip history limit").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .padding(.trailing, 8)
-                        .alert("Warning!", isPresented: $showAlertGPSDeleteTripLimitConfirm) {
-                            Button("Continue", role: .destructive) {
-                                let limit = UserSettings.init().tripGPSHistoryLimit
-                                let result = purgeGPSJournalSDbyCount(tripLimit: limit)
-                                showAlertGPSDeleteTripLimitMessage = "\(result) GPS trips were purged"
-                                showAlertGPSDeleteTripLimitSuccess = true
-                            }
-                            Button("Cancel", role: .cancel) {}
-                        } message: {
-                            Text("Are you sure you want to purge to the GPS trip history limit of \(UserSettings.init().tripGPSHistoryLimit) trips?")
-                        }
-                        .alert("Purge Completed", isPresented: $showAlertGPSDeleteTripLimitSuccess) {
-                            Button("OK", role: .cancel) {}
-                        } message: {
-                            Text(showAlertGPSDeleteTripLimitMessage)
-                        }
-
-                        /// Trip history limit
-                        ///
-                        Stepper(
-                            value: $tripHistoryLimit,
-                            in: 5...100,
-                            step: 5) {
-                                Text("Trip history limit: ").foregroundColor(.primary) + Text("\(tripHistoryLimit)").foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                            }
-                            .onChange(of: tripHistoryLimit) {
-                                userSettings.tripHistoryLimit = tripHistoryLimit
-                            }
-                        .foregroundColor(.primary)
-                        .padding(.leading, -16)
-                        .padding(.trailing, -8)
-                        
-                        
-                        /// Purge to trip limit
-                        ///
-                        Button(action: {
-                            showAlertTripPurgeLimitConfirm = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Purge to Trip history limit").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .padding(.trailing, 8)
-                        .alert("Warning!", isPresented: $showAlertTripPurgeLimitConfirm) {
-                            Button("Continue", role: .destructive) {
-                                let limit = UserSettings.init().tripHistoryLimit
-                                let result = purgeTripSummariesSDbyCount(tripLimit: limit)
-                                showAlertTripPurgeLimitMessage = "\(result) trips were purged"
-                                showAlertTripPurgeLimitSuccess = true
-                            }
-                            Button("Cancel", role: .cancel) {}
-                        } message: {
-                            Text("Are you sure you want to purge to the trip history limit of \(UserSettings.init().tripHistoryLimit) trips?")
-                        }
-                        .alert("Purge Completed", isPresented: $showAlertTripPurgeLimitSuccess) {
-                            Button("OK", role: .cancel) {}
-                        } message: {
-                            Text(showAlertTripPurgeLimitMessage)
-                        }
-
-                        ///  Load sample trips
-                        ///
-                        Button(action: {
-                            showAlertLoadSampleGPSDataSuccess = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Load sample GPS data").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "plus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertLoadSampleGPSDataSuccess, content: {
-                            let firstButton = Alert.Button.default(Text("Cancel"))
-                            let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                
-                                /// Start Load sample trips
-                                ///
-                                _ = loadSampleTripFromAssets(file: "SampleTrip01")
-                                _ = loadSampleTripFromAssets(file: "SampleTrip02")
-                                _ = loadSampleTripFromAssets(file: "SampleTrip03")
-                                _ = loadSampleTripFromAssets(file: "SampleTrip04")
-                                _ = loadSampleTripFromAssets(file: "SampleTrip05")
-
-
-                                /// ... end Load sample trips
-
-                            }
-                            return Alert(title: Text("Warning!"), message: Text("Are you sure you add sample GPS data?"), primaryButton: firstButton, secondaryButton: secondButton)
-                        })
-                        .padding(.trailing, 8)
-                        
-                        /// Trip reprocessing
-                        Toggle(isOn: self.$isTripReprocessingAllowed) {
-                            Text("Trip reprocessing allowed")
-                                .foregroundColor(.primary)
-                        }
-                        .onAppear {
-                            isTripReprocessingAllowed = userSettings.isTripReprocessingAllowed
-                        }
-                        .onChange(of: isTripReprocessingAllowed) {
-                            userSettings.isTripReprocessingAllowed = isTripReprocessingAllowed
-                        }
-                        .foregroundColor(.secondary)
-                        .offset(x: -16)
-                        .padding(.trailing, -24)
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: 8)
-                    .padding(.trailing, 8)
-
-                    
-                    
-                    /// ARTICLES"
-                    ///
-                    Section(header: Text("Articles").offset(x: -16)) {
-                        /// Delete all articles
-                        Button(action: {
-                            showAlertDeleteAllArticles = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Delete all articles").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertDeleteAllArticles, content: {
-                            let firstButton = Alert.Button.default(Text("Cancel"))
-                            let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                performDeleteAllArticles()
-                                showAlertDeleteAllArticles = false
-                            }
-                            return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All Articles?"), primaryButton: firstButton, secondaryButton: secondButton)
-                        })
-                        .padding(.trailing, 8)
-                        
-                        /// Articles location
-                        Picker(selection: $articlesLocation, label: Text("Location").offset(x: -16 ).foregroundColor(.primary)) {
-                            ForEach(ArticleLocations.allCases, id: \.self) { location in
-                                Text(location.description)
-                            }
-                        }
-                        .padding(.trailing, -8)
-                        .onChange(of: articlesLocation) {
-                            UserSettings.init().articlesLocation = articlesLocation
-                        }
-                        
-                        /// Load articles
-                        Button(action: {
-                            //TODO: replace with production load
-                            Articles.load { success, message in
-                                showAlertLoadArticlesMessage = message
-                                showAlertLoadArticlesSuccess = true
-                            }
-                        }
-                        ) {
-                            HStack {
-                                Text("Load articles").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "plus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertLoadArticlesSuccess) {
-                            return Alert(title: Text("Load Articles"),
-                                message: Text(showAlertLoadArticlesMessage),
-                                dismissButton: .default(Text("OK")))
-                        }
-                        .padding(.trailing, 8)
-                        
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: 8)
-                    .padding(.trailing, 8)
-                    
-                    // Mode
-                    Section(header: Text("Mode").offset(x: -16)) {
-
-                        
-                        /// User mode
-                        Picker(selection: $userMode, label: Text("User mode").offset(x: -16 ).foregroundColor(.primary)) {
-                            ForEach(UserModeEnum.allCases, id: \.self) { userMode in
-                                Text(userMode.description)
-                            }
-                        }
-                        .padding(.trailing, -8)
-                        .onChange(of: userMode) {
-                            UserSettings.init().userMode = userMode
-                        }
-                        
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: 8)
-                    .padding(.trailing, 8)
-                    
-                    Section(header: Text("Settings").offset(x: -16)) {
-                        
-                        /// Delete All Settings Button
-                        Button(action: {
-                            showAlertDeleteAllSettings = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Delete all settings").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertDeleteAllSettings, content: {
-                            let firstButton = Alert.Button.default(Text("Cancel"))
-                            let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                performDeleteAllSettings()
-                                showAlertDeleteAllSettings = false
-                            }
-                            return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All Settings?"), primaryButton: firstButton, secondaryButton: secondButton)
-                        })
-                        .padding(.trailing, 8)
-                        
-                        
-                        /// Delete User Settings Button
-                        Button(action: {
-                            showAlertDeleteUserSettings = true
-                        }
-                        ) {
-                            HStack {
-                                Text("Delete user settings").offset(x: -16)
-                                    .foregroundColor(.blue)
-                                Spacer()
-                                Image(systemName: "minus.circle")
-                                    .imageScale(.large)
-                            }
-                            .padding(.trailing, -16)
-                        }
-                        .alert(isPresented: $showAlertDeleteUserSettings, content: {
-                            let firstButton = Alert.Button.default(Text("Cancel"))
-                            let secondButton = Alert.Button.destructive(Text("Continue")) {
-                                performDeleteUserSettings()
-                                showAlertDeleteUserSettings = false
-                            }
-                            return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete your User Settings information?"), primaryButton: firstButton, secondaryButton: secondButton)
-                        })
-                        .padding(.trailing, 8)
-                        
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: 8)
-                    .padding(.trailing, 8)
-
-                    
-                    // Start System Info
-                    Section(header: Text("System")) {
-                        NavigationLink(destination: SystemInfoView()) {
-                            HStack {
-                                Text("System info")
-                                    .foregroundColor(.primary)
-                            }
-                        }
-                        NavigationLink(
-                            destination: SettingsInfoView()) {
-                                HStack {
-                                    Text("Review settings")
-                                        .foregroundColor(.primary)
-                                }
-                            }
-                    }
-                    .foregroundColor(.secondary)
-                    .offset(x: -8)
-                    .padding(.trailing, -8)
-                    // end System Info
-                    
+                    HeaderView()
+                    ModeSettingsView()
+                    GPSDataView()
+                    RegionSettingsView()
+                    AppSettingsView()
+                    ArticlesView()
+                    SettingsView()
+                    SystemView()
                 }
                 .padding(.top, -16)
                 .clipped()
-                // end form
                 
                 /* end stuff within our area */
                 Spacer()
                 Spacer().frame(height: 30)
             }
+            .foregroundColor(.primary)
             .background(Color(UIColor.systemGroupedBackground))
             .listStyle(GroupedListStyle())
             .navigationBarTitle("Developer")
@@ -812,7 +66,6 @@ struct DeveloperSettingsView: View {
                         self.presentationMode.wrappedValue.dismiss()
                     }) {
                         Text("Done")
-                            .foregroundColor(.blue)
                     }
                 }
             })
@@ -823,60 +76,538 @@ struct DeveloperSettingsView: View {
         }
     }
     
-    func performDeleteUserSettings() {
-  
-        userSettings.firstname = ""
-        userSettings.lastname = ""
-        userSettings.email = ""
-        userSettings.avatar = AppDefaults.avatar
-        userSettings.alias = ""
-        userSettings.phoneCell = ""
-        
-        LogEvent.print(module: "DeveloperSettingsView:peformDeleteUserSettings", message: "Deleting all user settings...")
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            NotificationCenter.default.post(name: Notification.Name("isLoggedOut"), object: nil)
+    struct HeaderView: View {
+        var body: some View {
+            VStack(alignment: .leading) {
+                Text("Developer Settings!")
+                    .font(.system(size: 24, weight: .bold))
+                    .padding([.leading, .trailing], 16)
+                    .padding(.bottom, 1)
+                Text("These settings control the behavior of the app...")
+                    .font(.system(size: 14))
+                    .padding([.leading, .trailing], 16)
+                Spacer()
+            }
+            .frame(width: UIScreen.main.bounds.width - 36, height: 120, alignment: .leading)
         }
-        presentationMode.wrappedValue.dismiss()
+    }
+
+    struct ModeSettingsView: View {
+        //@State var userMode: UserModeEnum = .development
+        @State var userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
+        var body: some View {
+            Section(header: Text("Mode").offset(x: -16)) {
+
+                /// Articles location
+                Picker(selection: $userMode, label: Text("User Mode").offset(x: -16 )) {
+                    ForEach(UserModeEnum.allCases, id: \.self) { userMode in
+                        Text(userMode.description)
+                    }
+                }
+                .padding(.trailing, -8)
+                .onChange(of: userMode) {
+                    UserSettings.init().userMode = userMode
+                }
+                
+            }
+            .offset(x: 8)
+            .padding(.trailing, 8)
+        }
     }
     
-    func performDeleteAllSettings() {
-        // delete core data for these entities
+    struct GPSDataView: View {
         
-        userSettings.firstname = ""
-        userSettings.lastname = ""
-        userSettings.email = ""
-        userSettings.avatar = AppDefaults.avatar
-        userSettings.alias = ""
-        userSettings.phoneCell = ""
+        enum GPSSampleRateEnum: Int, CaseIterable, Equatable {
+            
+            case one   = 1
+            case two   = 2
+            case three = 3
+            case four  = 4
+            case five  = 5
+            
+            var id: Self { self }
+            
+            var description: String {
+                //return String(self.rawValue)
+                switch self {
+                case .one   : return "1 sec"
+                case .two   : return "2 sec"
+                case .three : return "3 sec"
+                case .four  : return "4 sec"
+                case .five  : return "5 sec"
+                }
+            }
+        }
         
-        userSettings.isIntroduced = false
-        userSettings.isTracking = false
-        userSettings.isOnboarded = false
-        userSettings.isTerms = false
-        userSettings.isWelcomed = false
-        userSettings.isAccount = false
-        userSettings.isPrivacy = false
-        userSettings.isLicensed = false
-        userSettings.trackingSampleRate = AppDefaults.gps.sampleRate
-        userSettings.trackingSpeedThreshold = AppDefaults.gps.speedThreshold
-        userSettings.trackingTripSeparator = AppDefaults.gps.tripSeparator
-        userSettings.trackingTripEntriesMin = AppDefaults.gps.tripEntriesMin
-        
-        userSettings.articlesDate = DateInfo.zeroDate
-        
-        LogEvent.print(module: "DeveloperSettingsView:peformDeleteAllSettings", message: "Deleting all settings...")
+        @State var gpsSampleRate = GPSSampleRateEnum(rawValue: UserDefaults.standard.integer(forKey: "gpsSampleRate")) ?? .five
 
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            NotificationCenter.default.post(name: Notification.Name("isReset"), object: nil)
+        @State var showGPSDataPurgeAllConfirm: Bool = false
+        @State var showGPSDataPurgeAllSuccess: Bool = false
+        @State var showGPSDataPurgeAllMessage: String = ""
+        
+        var body: some View {
+            
+            Section(header: Text("GPS Data")) {
+                VStack {
+                    Button(action: {
+                        showGPSDataPurgeAllConfirm = true
+                    }
+                    ) {
+                        HStack {
+                            Text("Purge All GPS data:").offset(x: -16)
+                                .foregroundColor(.blue)
+                            Text("\(countGPSDataAll())").offset(x: -16)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            Image(systemName: "minus.circle")
+                                .imageScale(.large)
+                        }
+                        .padding(.trailing, -16)
+                        
+                        Picker(selection: $gpsSampleRate, label: Text("Sample every").offset(x: -16 ).foregroundColor(.primary)) {
+                            ForEach(GPSSampleRateEnum.allCases, id: \.self) { rate in
+                                Text(rate.description).tag(rate)
+                            }
+                        }
+                        .onChange(of: gpsSampleRate) {
+                            UserSettings.init().gpsSampleRate = gpsSampleRate.rawValue
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .padding(.trailing, -8)
+                    
+                    }
+                    .padding(.trailing, 8)
+                    .alert("Warning!", isPresented: $showGPSDataPurgeAllConfirm) {
+                        Button("Continue", role: .destructive) {
+                            
+                            let result = purgeGPSData()
+                            showGPSDataPurgeAllMessage = "\(result) GPS Journal entries\n were purged"
+                            showGPSDataPurgeAllSuccess = true
+                        }
+                        Button("Cancel", role: .cancel) {}
+                    } message: {
+                        Text("Are you sure you want to purge all \n\(countGPSDataAll()) GPS Journal entries?")
+                    }
+                    .alert("Purge Completed", isPresented: $showGPSDataPurgeAllSuccess) {
+                        Button("OK", role: .cancel) {}
+                    } message: {
+                        Text(showGPSDataPurgeAllMessage)
+                    }
+                }
+                .padding(.leading, 16)
+            }
+            .offset(x: -8)
+            .padding(.trailing, -8)
         }
-        presentationMode.wrappedValue.dismiss()
     }
     
-    func performDeleteAllArticles() {
-        Articles.deleteArticles()
-        userSettings.articlesDate = DateInfo.zeroDate
+    struct RegionSettingsView: View {
+        
+        enum RegionRadiusEnum: Double, CaseIterable, Equatable {
+            case meters05 = 5
+            case meters10 = 10
+            case meters15 = 15
+            case meters20 = 20
+            case meters25 = 25
+            case meters30 = 30
+            
+            var id: Self { self }
+            var description: String {
+                switch self {
+                case .meters05: return "5 meters"
+                case .meters10: return "10 meters"
+                case .meters15: return "15 meters"
+                case .meters20: return "20 meters"
+                case .meters25: return "25 meters"
+                case .meters30: return "30 meters"
+                }
+            }
+        }
+        
+        
+        @State var regionRadius = RegionRadiusEnum(rawValue: UserDefaults.standard.double(forKey: "regionRadius")) ?? .meters15
+        
+        @State var poiRadius = RegionRadiusEnum(rawValue: UserDefaults.standard.double(forKey: "poiRadius")) ?? .meters05
+        
+        var body: some View {
+            Section(header: Text("Region").offset(x: -16)) {
+                Picker(selection: $regionRadius, label: Text("Region radius").offset(x: -16 ).foregroundColor(.primary)) {
+                    ForEach(RegionRadiusEnum.allCases, id: \.self) { distance in
+                        Text(distance.description).tag(distance)
+                    }
+                }
+                .onChange(of: regionRadius) {
+                    UserSettings.init().regionRadius = regionRadius.rawValue
+                }
+                .pickerStyle(MenuPickerStyle())
+                .padding(.trailing, -8)
+                
+                /// POI Radius
+                Picker(selection: $poiRadius, label: Text("POI radius").offset(x: -16 ).foregroundColor(.primary)) {
+                    ForEach(RegionRadiusEnum.allCases, id: \.self) { distance in
+                        Text(distance.description).tag(distance)
+                    }
+                }
+                .onChange(of: poiRadius) {
+                    UserSettings.init().poiRadius = poiRadius.rawValue
+                }
+                .pickerStyle(MenuPickerStyle())
+                .padding(.trailing, -8)
+            }
+            .offset(x: 8)
+            .padding(.trailing, 8)
+        }
+    }
+    
+    struct AppSettingsView: View {
+        @State var isIntroduced:    Bool = false
+        @State var isPermissions:   Bool = false
+        @State var isOnboarded:     Bool = false
+        @State var isTerms:         Bool = false
+        @State var isWelcomed:      Bool = false
+        @State var isAccount:       Bool = false
+        @State var isPrivacy:       Bool = false
+        @State var isLicensed:      Bool = false
+        @State var isGDPRConsent:   Bool = false
+        
+        var body: some View {
+            Section(header: Text("APP Settings")) {
+                
+                /// Introduced
+                Toggle(isOn: self.$isIntroduced) {
+                    Text("Introduced")
+                        .foregroundColor(.primary)
+                }
+                .onAppear {
+                    isIntroduced = UserSettings.init().isIntroduced
+                }
+                .onChange(of: isIntroduced) {
+                    UserSettings.init().isIntroduced = isIntroduced
+                }
+                .padding(.trailing, -8)
+                
+                /// Permissions
+                ///
+                Toggle(isOn: self.$isPermissions) {
+                    Text("Permissions")
+                        .foregroundColor(.primary)
+                }
+                .onAppear {
+                    isPermissions = UserSettings.init().isPermissions
+                }
+                .onChange(of: isPermissions) {
+                    UserSettings.init().isPermissions = isPermissions
+                }
+                .padding(.trailing, -8)
+                
+                /// Onboarded
+                ///
+                Toggle(isOn: self.$isOnboarded) {
+                    Text("Onboarded")
+                }
+                .onAppear {
+                    isOnboarded = UserSettings.init().isOnboarded
+                }
+                .onChange(of: isOnboarded) {
+                    UserSettings.init().isOnboarded = isOnboarded
+                }
+                .padding(.trailing, -8)
+                
+                /// Terms
+                ///
+                Toggle(isOn: self.$isTerms) {
+                    Text("Terms")
+                }
+                .onAppear {
+                    isTerms = UserSettings.init().isTerms
+                }
+                .onChange(of: isTerms) {
+                    UserSettings.init().isTerms = isTerms
+                }
+                .padding(.trailing, -8)
+                
+                /// Welcomed
+                ///
+                Toggle(isOn: self.$isWelcomed) {
+                    Text("Welcomed")
+                }
+                .onAppear {
+                    isWelcomed = UserSettings.init().isWelcomed
+                }
+                .onChange(of: isWelcomed) {
+                    UserSettings.init().isWelcomed = isWelcomed
+                }
+                .padding(.trailing, -8)
+                
+                /// Account
+                ///
+                Toggle(isOn: self.$isAccount) {
+                    Text("Account")
+                }
+                .onAppear {
+                    isAccount = UserSettings.init().isAccount
+                }
+                .onChange(of: isAccount) {
+                    UserSettings.init().isAccount = isAccount
+                }
+                .padding(.trailing, -8)
+                
+                /// Privacy
+                Toggle(isOn: self.$isPrivacy) {
+                    Text("Privacy")
+                        .foregroundColor(.primary)
+                }
+                .onAppear {
+                    isPrivacy = UserSettings.init().isPrivacy
+                }
+                .onChange(of: isPrivacy) {
+                    UserSettings.init().isPrivacy = isPrivacy
+                }
+                .padding(.trailing, -8)
+                
+                /// License
+                Toggle(isOn: self.$isLicensed) {
+                    Text("License")
+                }
+                .onAppear {
+                    isLicensed = UserSettings.init().isLicensed
+                }
+                .onChange(of: isLicensed) {
+                    UserSettings.init().isLicensed = isLicensed
+                }
+                .padding(.trailing, -8)
+                
+                /// GDPR
+                Toggle(isOn: self.$isGDPRConsent) {
+                    Text("GDPR Consent")
+                        .foregroundColor(.primary)
+                }
+                .onAppear {
+                    isGDPRConsent = UserSettings.init().isGDPRConsent
+                }
+                .onChange(of: isGDPRConsent) {
+                    UserSettings.init().isGDPRConsent = isGDPRConsent
+                }
+                .padding(.trailing, -8)
+                
+            }
+            .offset(x: -8)
+            .padding(.trailing, -8)
+        }
+    }
+    
+    struct ArticlesView: View {
+        @State var articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
+        @State var showAlertDeleteAllArticles: Bool = false
+        @State var showAlertLoadArticlesSuccess: Bool = false
+        @State var showAlertLoadArticlesMessage: String = ""
+        var body: some View {
+            Section(header: Text("Articles").offset(x: -16)) {
+                /// Delete all articles
+                Button(action: {
+                    showAlertDeleteAllArticles = true
+                }
+                ) {
+                    HStack {
+                        Text("Delete All Articles").offset(x: -16)
+                        Spacer()
+                        Image(systemName: "minus.circle")
+                            .imageScale(.large)
+                    }
+                    .padding(.trailing, -16)
+                }
+                .alert(isPresented: $showAlertDeleteAllArticles, content: {
+                    let firstButton = Alert.Button.default(Text("Cancel"))
+                    let secondButton = Alert.Button.destructive(Text("Continue")) {
+                        performDeleteAllArticles()
+                        showAlertDeleteAllArticles = false
+                    }
+                    return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All Articles?"), primaryButton: firstButton, secondaryButton: secondButton)
+                })
+                .padding(.trailing, 8)
+                
+                /// Articles location
+                Picker(selection: $articlesLocation, label: Text("Location").offset(x: -16 )) {
+                    ForEach(ArticleLocations.allCases, id: \.self) { location in
+                        Text(location.description)
+                    }
+                }
+                .padding(.trailing, -8)
+                .onChange(of: articlesLocation) {
+                    UserSettings.init().articlesLocation = articlesLocation
+                }
+                
+                /// Load articles
+                Button(action: {
+                    Articles.load { success, message in
+                        /*
+                        Task { @MainActor in
+                            showAlertLoadArticlesMessage = message
+                            showAlertLoadArticlesSuccess = true
+                        }
+                        */
+                        DispatchQueue.main.async {
+                            showAlertLoadArticlesMessage = message
+                            showAlertLoadArticlesSuccess = true
+                        }
+                    }
+                }
+                ) {
+                    HStack {
+                        Text("Load Articles").offset(x: -16)
+                        Spacer()
+                        Image(systemName: "plus.circle")
+                            .imageScale(.large)
+                    }
+                    .padding(.trailing, -16)
+                }
+                .alert(isPresented: $showAlertLoadArticlesSuccess) {
+                    return Alert(title: Text("Load Articles"),
+                        message: Text(showAlertLoadArticlesMessage),
+                        dismissButton: .default(Text("OK")))
+                }
+                .padding(.trailing, 8)
+                
+            }
+            .offset(x: 8)
+            .padding(.trailing, 8)
+            
+            
+        }
+        func performDeleteAllArticles() {
+            Articles.deleteArticles()
+            UserSettings.init().articlesDate = DateInfo.zeroDate
+        }
+    }
+    
+    struct SettingsView: View {
+        @Environment(\.presentationMode) var presentationMode
+        
+        @State var showAlertDeleteAllSettings: Bool = false
+        @State var showAlertDeleteUserSettings: Bool = false
+        
+        var body: some View {
+            
+            Section(header: Text("Settings").offset(x: -16)) {
+                
+                /// Delete All Settings Button
+                Button(action: {
+                    showAlertDeleteAllSettings = true
+                }
+                ) {
+                    HStack {
+                        Text("Delete All Settings").offset(x: -16)
+                        Spacer()
+                        Image(systemName: "minus.circle")
+                            .imageScale(.large)
+                    }
+                    .padding(.trailing, -16)
+                }
+                .alert(isPresented: $showAlertDeleteAllSettings, content: {
+                    let firstButton = Alert.Button.default(Text("Cancel"))
+                    let secondButton = Alert.Button.destructive(Text("Continue")) {
+                        performDeleteAllSettings()
+                        showAlertDeleteAllSettings = false
+                    }
+                    return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete All Settings?"), primaryButton: firstButton, secondaryButton: secondButton)
+                })
+                .padding(.trailing, 8)
+                
+                
+                /// Delete User Settings Button
+                Button(action: {
+                    showAlertDeleteUserSettings = true
+                }
+                ) {
+                    HStack {
+                        Text("Delete User Settings").offset(x: -16)
+                        Spacer()
+                        Image(systemName: "minus.circle")
+                            .imageScale(.large)
+                    }
+                    .padding(.trailing, -16)
+                }
+                .alert(isPresented: $showAlertDeleteUserSettings, content: {
+                    let firstButton = Alert.Button.default(Text("Cancel"))
+                    let secondButton = Alert.Button.destructive(Text("Continue")) {
+                        performDeleteUserSettings()
+                        showAlertDeleteUserSettings = false
+                    }
+                    return Alert(title: Text("Warning!"), message: Text("Are you sure you want to delete your User Settings information?"), primaryButton: firstButton, secondaryButton: secondButton)
+                })
+                .padding(.trailing, 8)
+                
+            }
+            .offset(x: 8)
+            .padding(.trailing, 8)
+            
+        }
+        func performDeleteUserSettings() {
+      
+            UserSettings.init().firstname = ""
+            UserSettings.init().lastname = ""
+            //UserSettings.init().email = ""
+            UserSettings.init().avatar = AppDefaults.avatar
+            UserSettings.init().alias = ""
+            UserSettings.init().phoneCell = ""
+            
+            LogEvent.print(module: "DeveloperSettingsView:peformDeleteUserSettings", message: "Deleting all user settings...")
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                NotificationCenter.default.post(name: Notification.Name("isLoggedOut"), object: nil)
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }
+        
+        func performDeleteAllSettings() {
+            
+            UserSettings.init().firstname = ""
+            UserSettings.init().lastname = ""
+            UserSettings.init().email = ""
+            UserSettings.init().avatar = AppDefaults.avatar
+            UserSettings.init().alias = ""
+            UserSettings.init().phoneCell = ""
+            
+            UserSettings.init().isOnboarded = false
+            UserSettings.init().isTerms = false
+            UserSettings.init().isWelcomed = false
+            UserSettings.init().isAccount = false
+            UserSettings.init().isPrivacy = false
+            UserSettings.init().isLicensed = false
+            
+            UserSettings.init().articlesDate = DateInfo.zeroDate
+            
+            LogEvent.print(module: "DeveloperSettingsView:peformDeleteAllSettings", message: "Deleting all settings...")
+
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                NotificationCenter.default.post(name: Notification.Name("isReset"), object: nil)
+            }
+            self.presentationMode.wrappedValue.dismiss()
+        }
+    }
+    
+    struct SystemView: View {
+        
+        var body: some View {
+            
+            Section(header: Text("System")) {
+                NavigationLink(destination: SystemInfoView()) {
+                    HStack {
+                        Text("System Info")
+                    }
+                }
+                NavigationLink(
+                    destination: SettingsInfoView()) {
+                        HStack {
+                            Text("Review Settings")
+                        }
+                    }
+            }
+            .offset(x: -8)
+            .padding(.trailing, -8)
+        }
     }
 
 }

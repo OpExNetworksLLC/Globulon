@@ -1,8 +1,8 @@
 //
 //  SettingsInfoView.swift
-//  ViDrive
+//  OpExShellV1
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 8/2/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -19,7 +19,6 @@ struct SettingsInfoView: View {
             HStack() {
                 Text("User Settings")
                     .font(.title)
-                    .foregroundColor(.primary)
                 Spacer()
             }
         }
@@ -32,11 +31,13 @@ struct SettingsInfoView: View {
                 Spacer()
             }
             .padding(.bottom, 8)
-            HStack() {
-                Text("authMode.........:")
-                Text(AppSettings.login.isKeychainLoginEnabled ? "local" : "remote")
-                Spacer()
-            }
+            
+//            HStack() {
+//                Text("authMode.........:")
+//                Text(AppSettings.login.isKeychainLoginEnabled ? "local" : "remote")
+//                Spacer()
+//            }
+        
             HStack() {
                 Text("isBiometricID....:")
                 Text(String(UserSettings.init().isBiometricID))
@@ -88,31 +89,11 @@ struct SettingsInfoView: View {
             }
             HStack() {
                 Text("articlesDate.....:")
-                Text(formatDateUS(date: UserSettings.init().articlesDate))
-                Spacer()
-            }
-            .padding(.bottom, 8)
-            HStack() {
-                Text("sampleRate.......:")
-                Text(String(UserSettings.init().trackingSampleRate))
-                Spacer()
-            }
-            HStack() {
-                Text("minSamples.......:")
-                Text(String(UserSettings.init().trackingTripEntriesMin))
-                Spacer()
-            }
-            HStack() {
-                Text("tripSeparator....:")
-                Text(String(UserSettings.init().trackingTripSeparator))
-                Spacer()
-            }
-            HStack() {
-                Text("speedThreshold...:")
-                Text(String(format: "%.2f", UserSettings.init().trackingSpeedThreshold))
+                Text(formatDate(date: UserSettings.init().articlesDate))
                 Spacer()
             }
 
+            .padding(.bottom, 8)
 
             Spacer()
             
@@ -129,8 +110,7 @@ struct SettingsInfoView: View {
                         .padding()
                         .background(Color("btnPrev"))
                         .cornerRadius(30)
-                    Text("Exit")
-                        .foregroundColor(.blue)
+                    Text("Exit").foregroundColor(.blue)
                     Spacer()
                 }
             }
@@ -138,8 +118,8 @@ struct SettingsInfoView: View {
             Spacer().frame(height: 30)
 
         }
-        .foregroundColor(.primary)
         .font(.system(size: 14, design: .monospaced))
+        .foregroundColor(.primary)
         .padding(.top, 8)
         .padding(.leading, 16)
 

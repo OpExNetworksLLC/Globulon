@@ -1,8 +1,8 @@
 //
 //  UserProfileView.swift
-//  ViDrive
+//  OpExShellV1
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 8/2/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ struct UserProfileView: View {
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.colorScheme) var colorScheme
     
-    //@EnvironmentObject var globalVariables: AppStatus
+    @EnvironmentObject var globalVariables: AppStatus
     @EnvironmentObject var userSettings: UserSettings
     
     @Binding var avatar: UIImage
@@ -38,9 +38,8 @@ struct UserProfileView: View {
                                 .padding([.leading, .trailing], 16)
                             Spacer()
                         }
-                        .foregroundColor(.primary)
-                        .frame(width: AppValues.screen.width - 36, height: 120, alignment: .leading)
-                        
+                        .frame(width: UIScreen.main.bounds.width - 36, height: 120, alignment: .leading)
+
                         /// Set the users AVATAR
                         ///
                         Section(header: Text("Avatar")) {
@@ -57,11 +56,9 @@ struct UserProfileView: View {
                                         }
                                         .offset(x: 16)
                                     Text("Select image from photos")
-                                        .foregroundColor(.primary)
                                 }
                             }
                         }
-                        .foregroundColor(.secondary)
                         .offset(x: -8)
                         .padding(.trailing, -8)
                         // end section
@@ -69,13 +66,11 @@ struct UserProfileView: View {
                         /// User entered ALIAS
                         ///
                         Section(header: Text("alias"), footer: Text("Your public name")) {
-                            TextField("name", text: $alias)
-                                .foregroundColor(.primary)
+                            TextField("your online identifier", text: $alias)
                         }
                         .onChange(of: alias) {
                             if alias != userSettings.alias { isChanged = true }
                         }
-                        .foregroundColor(.secondary)
                         .offset(x: -8)
                         .padding(.trailing, -8)
                         // end section
@@ -85,7 +80,6 @@ struct UserProfileView: View {
                         ///
                         Section(header: Text("Birthday")) {
                             DatePicker(selection: $birthday, in: ...Date(), displayedComponents: .date, label: { Text("Birthday") })
-                                .foregroundColor(.primary)
                                 .datePickerStyle(CompactDatePickerStyle())
                                 .onAppear {
                                     // set the birthday to today if zero date value  TODO: reset zero if today
@@ -95,7 +89,6 @@ struct UserProfileView: View {
                                     if birthday != userSettings.birthday { isChanged = true }
                                 }
                         }
-                        .foregroundColor(.secondary)
                         .offset(x: -8)
                         .padding(.trailing, -8)
                         // end section
@@ -108,6 +101,7 @@ struct UserProfileView: View {
                     Spacer()
                     Spacer().frame(height: 30)
                 }
+                .foregroundColor(.primary)
                 .background(Color(UIColor.systemGroupedBackground))
                 .listStyle(GroupedListStyle())
                 .navigationBarTitle("Profile")
@@ -128,7 +122,6 @@ struct UserProfileView: View {
                             self.presentationMode.wrappedValue.dismiss()
                         }) {
                             Text(isChanged ? "Save" : "Done" )
-                                .foregroundColor(.blue)
                         }
                     }
             })

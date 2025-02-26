@@ -1,10 +1,11 @@
 //
 //  SystemInfoView.swift
-//  ViDrive
+//  OpExShellV1
 //
-//  Created by David Holeman on 2/20/24.
+//  Created by David Holeman on 8/2/24.
 //  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
 //
+
 
 import SwiftUI
 
@@ -19,7 +20,6 @@ struct SystemInfoView: View {
             HStack() {
                 Text("System Information")
                     .font(.title)
-                    .foregroundColor(.primary)
                 Spacer()
             }
         }
@@ -78,5 +78,4 @@ struct SystemInfoView: View {
 
 #Preview {
     SystemInfoView()
-        .environmentObject(UserSettings())
 }

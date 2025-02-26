@@ -2,9 +2,11 @@
 //  OnboardEmailView.swift
 //  Globulon
 //
-//  Created by David Holeman on 7/3/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/26/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
+
+
 import SwiftUI
 
 struct OnboardEmailView: View {
@@ -174,7 +176,7 @@ struct OnboardEmailView: View {
                         .textContentType(.emailAddress)
                         .foregroundColor(Color.primary)
                         .focused($focusedField, equals: .email2)
-//                        .submitLabel(.done)
+                        .submitLabel(.done)
 //                        .onSubmit {
 //                            focusedField = nil
 //                        }

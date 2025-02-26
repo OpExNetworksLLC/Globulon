@@ -2,13 +2,11 @@
 //  OnboardAccountView.swift
 //  Globulon
 //
-//  Created by David Holeman on 7/3/24.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Created by David Holeman on 02/25/26.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI
-
-
 
 struct OnboardAccountView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -108,6 +106,7 @@ struct OnboardAccountView: View {
                             .submitLabel(.done)
 //                            .onSubmit {
 //                                focusedField = nil
+//                                //dismissKeyboard()
 //                            }
                             .onTapGesture {
                                 focusedField = .lastName
@@ -175,7 +174,12 @@ struct OnboardAccountView: View {
         }
         
     } // end view
-} // end struc_
+    
+    private func dismissKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+    
+} // end struc
 
 
 struct OnboardAccountView_Previews: PreviewProvider {
