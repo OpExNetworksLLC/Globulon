@@ -15,8 +15,8 @@ struct ImageNavCancel: View {
             .resizable()
             .renderingMode(.template)
             .foregroundStyle(
-                colorScheme == .dark ? AppValues.pallet.primaryLight : AppValues.pallet.primary,
-                colorScheme == .dark ? AppValues.pallet.primaryLight : AppValues.pallet.primary
+                colorScheme == .dark ? AppSettings.pallet.primaryLight : AppSettings.pallet.primary,
+                colorScheme == .dark ? AppSettings.pallet.primaryLight : AppSettings.pallet.primary
             )
             .aspectRatio(contentMode: .fit)
     }

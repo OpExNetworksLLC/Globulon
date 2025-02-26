@@ -189,4 +189,6 @@ struct LaunchView: View {
 
 #Preview {
     LaunchView()
+        .environmentObject(UserSettings())
+        .environmentObject(AppEnvironment())
 }
