@@ -228,6 +228,7 @@ struct MainView: View {
             
         } menuView: { safeArea in
             SideBarMenuView(safeArea)
+
         } background: {
             Rectangle()
                 .fill(Color("sideMenuBackgroundColor"))
@@ -477,4 +478,5 @@ struct MainView: View {
     MainView()
         .environmentObject(AppStatus())
         .environmentObject(UserSettings())
+        .environmentObject(AppEnvironment())
 }
