@@ -250,14 +250,20 @@ struct MainView: View {
                     
                     /// Help
                     ///
-                    ToolbarItem(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            isShowHelp.toggle()
-                        }) {
-                            Image(systemName: "questionmark")
-                                .font(.system(size: 22, weight: .light))
-                                .foregroundColor(AppSettings.pallet.primaryLight)
-                                .frame(width: 35, height: 35)
+                    /// Define the tabs where the help button should be hidden
+                    let excludedTabs: [LandingPageEnum] = [.motion]
+
+                    /// Conditionally include the ToolbarItem only if currentTab is NOT in excludedTabs
+                    if !excludedTabs.contains(currentTab) {
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                isShowHelp.toggle()
+                            }) {
+                                Image(systemName: "questionmark")
+                                    .font(.system(size: 22, weight: .light))
+                                    .foregroundColor(AppSettings.pallet.primaryLight)
+                                    .frame(width: 35, height: 35)
+                            }
                         }
                     }
                 }
