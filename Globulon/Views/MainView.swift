@@ -18,6 +18,9 @@ struct MainView: View {
 
     @StateObject var networkHandler = NetworkHandler.shared
     
+    @StateObject var motionHandler = MotionHandler.shared
+    @State private var isRecording = false
+    
     @State private var showNetworkAlert = false
     
     @State var isShowView = false
@@ -129,13 +132,24 @@ struct MainView: View {
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
                     */
-                    
+                    /*
                     BluetoothView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
                             Image(systemName: "antenna.radiowaves.left.and.right")
                             Text("Bluetooth")
                         }
                         .tag(LandingPageEnum.bluetooth)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    */
+                    
+                    MotionView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "circle.dotted.and.circle")
+                            Text("Motion")
+                        }
+                        .tag(LandingPageEnum.motion)
                         .safeAreaPadding(.top, 100)
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
@@ -188,6 +202,48 @@ struct MainView: View {
                                 Circle()
                                     .fill(Color.red)
                                     .frame(width: 10, height: 10)
+                            }
+                        }
+                    }
+                    
+                    if currentTab == .motion {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            if motionHandler.isMotionMonitoringOn {
+                                Rectangle()
+                                    .fill(Color.green)
+                                    .frame(width: 10, height: 10)
+                            } else {
+                                Rectangle()
+                                    .fill(Color.red)
+                                    .frame(width: 10, height: 10)
+                            }
+                        }
+                        ToolbarItem(placement: .navigationBarTrailing) {
+                            Button(action: {
+                                isRecording.toggle()
+                                if isRecording {
+                                    motionHandler.startMotionUpdates()
+                                } else {
+                                    motionHandler.stopMotionUpdates()
+                                }
+                            }) {
+                                if isRecording {
+                                    Image(systemName: "record.circle")
+                                        .font(.system(size: 24, weight: .light))
+                                        .foregroundColor(Color.red)
+                                        .frame(width: 35, height: 35)
+                                    Text("recording")
+                                        .foregroundColor(Color.red)
+
+                                } else {
+                                    Image(systemName: "record.circle")
+                                        .font(.system(size: 24, weight: .light))
+                                        .foregroundColor(AppSettings.pallet.primaryLight)
+                                        .foregroundColor(Color.red)
+                                        .frame(width: 35, height: 35)
+                                    Text("record")
+                                        .foregroundColor(AppSettings.pallet.primaryLight)
+                                }
                             }
                         }
                     }

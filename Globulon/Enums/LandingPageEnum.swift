@@ -14,7 +14,7 @@ enum LandingPageEnum: Int, CaseIterable, Equatable {
     case travel     = 1
     case tours      = 2
     case myTours    = 3
-    case bluetooth  = 4
+    case motion     = 4
     
     var description: String {
         switch self {
@@ -23,7 +23,7 @@ enum LandingPageEnum: Int, CaseIterable, Equatable {
         case .travel    : return "travel"
         case .tours      : return "tours"
         case .myTours   : return "myTours"
-        case .bluetooth : return "bluetooth"
+        case .motion : return "motion"
         }
     }
 }
