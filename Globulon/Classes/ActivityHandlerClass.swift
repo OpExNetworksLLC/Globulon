@@ -19,6 +19,17 @@ import CoreLocation
 import Combine
 import SceneKit
 
+struct ActivityDataBuffer: Codable, Hashable {
+    var timestamp: Date
+    var latitude: Double
+    var longitude: Double
+    var speed: Double
+    var state: String
+    var processed: Bool
+    var code: String
+    var note: String
+}
+
 @MainActor
 class ActivityHandler: ObservableObject {
     
@@ -40,7 +51,7 @@ class ActivityHandler: ObservableObject {
     @Published var activityState: ActivityState = .stationary
     @Published var updatesLive: Bool {
         didSet {
-            UserDefaults.standard.set(updatesLive, forKey: "activityUpdatesLive")
+            UserDefaults.standard.set(updatesLive, forKey: "activityupdatesLive")
             LogEvent.print(module: "ActivityHandler.updatesLive", message: "\(updatesLive ? "Activity updates started ..." : "... stopped activity updates")")
         }
     }
@@ -55,7 +66,7 @@ class ActivityHandler: ObservableObject {
     @Published var activityDataBuffer: [ActivityDataBuffer] = []
 
     private init() {
-        self.updatesLive = UserDefaults.standard.bool(forKey: "activityUpdatesLive")
+        self.updatesLive = UserDefaults.standard.bool(forKey: "activityupdatesLive")
         
         // Initialize the properties based on current states
         self.isAvailable = CMMotionActivityManager.isActivityAvailable()
@@ -144,6 +155,7 @@ class ActivityHandler: ObservableObject {
             latitude: location.coordinate.latitude,
             longitude: location.coordinate.longitude,
             speed: location.speed,
+            state: activityState.rawValue,
             processed: false,
             code: "",
             note: "buffer:" + " " + "activity: \(isActivity ? "active" : "inactive")" + " / " + "\(activityState)"
