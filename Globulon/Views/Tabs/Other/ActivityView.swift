@@ -136,47 +136,6 @@ struct ActivityView: View {
 
                 Spacer()
             }
-            
-            .navigationBarTitle("", displayMode: .inline)
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        isShowSideMenu.toggle()
-                    }) {
-                        Image(systemName: "square.leftthird.inset.filled")
-                            .font(.system(size: 26, weight: .ultraLight))
-                            .frame(width: 35, height: 35)
-                            .foregroundColor(AppSettings.pallet.primaryLight)
-                    }
-                }
-
-
-                ToolbarItem(placement: .principal) {
-                    Image("appLogoTransparent")
-                        .resizable()
-                        .renderingMode(.template)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 38, height: 38)
-                        .foregroundColor(AppSettings.pallet.primaryLight)
-                }
-            }
-            .fullScreenCover(isPresented: $isShowHelp) {
-                NavigationView {
-                    ArticlesSearchView()
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button(action: {
-                                    isShowHelp.toggle()
-                                }) {
-                                    ImageNavCancel()
-                                }
-                            }
-                            ToolbarItem(placement: .principal) {
-                                Text("search")
-                            }
-                        }
-                }
-            }
         }
     }
     

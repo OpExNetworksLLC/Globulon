@@ -132,17 +132,17 @@ struct MainView: View {
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
                     */
-                    /*
-                    BluetoothView(isShowSideMenu: $appVariables.isShowSideMenu)
+                    
+                    ActivityView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
-                            Image(systemName: "antenna.radiowaves.left.and.right")
-                            Text("Bluetooth")
+                            Image(systemName: "arrow.triangle.pull")
+                            Text("Activity")
                         }
-                        .tag(LandingPageEnum.bluetooth)
+                        .tag(LandingPageEnum.activity)
                         .safeAreaPadding(.top, 100)
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
-                    */
+                    
                     
                     MotionView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
@@ -153,6 +153,18 @@ struct MainView: View {
                         .safeAreaPadding(.top, 100)
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
+                    
+                    
+                    BluetoothView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "antenna.radiowaves.left.and.right")
+                            Text("Bluetooth")
+                        }
+                        .tag(LandingPageEnum.bluetooth)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
                     
                 }
                 .onChange(of: currentTab) {
