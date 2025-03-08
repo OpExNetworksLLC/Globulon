@@ -10,22 +10,24 @@ import Foundation
 
 enum LandingPageEnum: Int, CaseIterable, Equatable {
     case home       = 0
-    case travel     = 1
-    case tours      = 2
-    case myTours    = 3
-    case activity   = 4
-    case motion     = 5
-    case bluetooth  = 6
+    case tours      = 1
+    case travel     = 2
+    case motion     = 3
+    case more       = 4
+//    case travel     = 5
+//    case activity   = 6
+//    case bluetooth  = 7
     
     var description: String {
         switch self {
         case .home      : return "home"
+        case .tours     : return "tours"
         case .travel    : return "travel"
-        case .tours      : return "tours"
-        case .myTours   : return "myTours"
-        case .activity  : return "activity"
-        case .motion : return "motion"
-        case .bluetooth : return "bluetooth"
+        case .motion    : return "travel"
+        case .more      : return "more"
+//        case .travel    : return "travel"
+//        case .activity  : return "activity"
+//        case .bluetooth : return "bluetooth"
         }
     }
 }

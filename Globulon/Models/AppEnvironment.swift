@@ -21,16 +21,13 @@ class AppEnvironment: ObservableObject {
     
     private let userSettings = UserSettings() // Assuming this is safe to instantiate once
     
-    //@Published var activeTourID: String = "" {
-    @AppStorage("activeTourID") var activeTourID: String = "" {
-        didSet {
-            userSettings.activeTourID = activeTourID
-            LogEvent.print(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
-            LocationHandler.shared.loadTourData(for: activeTourID)
-        }
-    }
-    
-    @Published var catalogToursCache: [CatalogToursData] = []
+//    @AppStorage("activeTourID") var activeTourID: String = "" {
+//        didSet {
+//            userSettings.activeTourID = activeTourID
+//            LogEvent.print(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
+//            LocationHandler.shared.loadTourData(for: activeTourID)
+//        }
+//    }
     
     /// Optional key-value store for less common data
     ///

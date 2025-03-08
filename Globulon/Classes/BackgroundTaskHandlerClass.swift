@@ -12,10 +12,10 @@
 
  # Force background execution in simulator
  This command can be executed when the app is paused at 11db prompt to force the background task to execute:
-    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.GeoGato.backgroundTask"]
-    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.GeoGato.appRefreshTask"]
+    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.Globulon.backgroundTask"]
+    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.Globulon.appRefreshTask"]
  - Ensure the pinfo.list is updated:
-    - `Permitted background task scheduler identifiers = "com.opexnetworks.GeoGato.backgroundTask"
+    - `Permitted background task scheduler identifiers = "com.opexnetworks.Globulon.backgroundTask"
  */
 
 import BackgroundTasks

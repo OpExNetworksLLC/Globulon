@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct AppSettings {
-    static let appName = "GeoGato"
+    static let appName = "Globulon"
     static let appCopyright = "Copyright © 2025 OpEx Networks, LLC. All rights reserved."
     
-    static let supportEmail = "support+GeoGato@opexnetworks.com"
+    static let supportEmail = "support+Globulon@opexnetworks.com"
     
     // Articles
     static let pinnedTag = "*|PINNED|*"
@@ -34,7 +34,7 @@ struct AppSettings {
     struct GitHub {
         static let owner = "opexnetworks"
         static let repo = "Apps"
-        static let appName = "GeoGato"
+        static let appName = "GitHub"
     }
     
     struct feature {

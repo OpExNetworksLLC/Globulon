@@ -86,31 +86,6 @@ struct LaunchView: View {
                         LogEvent.print(module: "LaunchView.task", message: message)
                     }
                     
-                    /// CATALOG
-                    
-                    /// Delete all the catalog tours for a clean start
-                    await CatalogToursDataManager.deleteAllTourData()
-                    
-                    /// Step 0:  Load catalog
-                    let (_, _) = await CatalogToursDataManager.load(source: "catalog_tours_test_1.json")
-                    
-                    await CatalogToursDataManager.printTourDataForAll()
-                    
-                    appEnvironment.activeTourID = userSettings.activeTourID
-                    
-                    // TODO: Print to check that the data was loaded
-//                    TourDataManager.printTourDataForAll()
-                    
-//                    if let metadata = TourDataManager.fetchMetadata(for: "1001") {
-//                        let created_on = metadata.created_on
-//                        print("✅ created_on: \(created_on)")
-//                    } else {
-//                        print("❌ No metadata found for the provided tour_id: 1001")
-//                    }
-                    
-                    
-//                    await GitHubDownloader.downloadGitHubFiles(owner: "OpExNetworks", repo: "Apps", appName: AppSettings.appName, urlString: "https://opexnetworks.github.io/Apps/GeoGato/Tours/1002/")
-
                     
                     /// OPTION: Schedule any apps you want scheduled when the app starts
                     ///

@@ -95,7 +95,7 @@ class SharedModelContainer: @unchecked Sendable {
                     LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Removed persistent store file: \(file.lastPathComponent)")
                 } catch {
                     throw NSError(
-                        domain: "com.GeoGato.ModelContainer",
+                        domain: "com." + AppSettings.appName + ".ModelContainer",
                         code: 1,
                         userInfo: [NSLocalizedDescriptionKey: "Failed to remove file: \(file.lastPathComponent)"]
                     )

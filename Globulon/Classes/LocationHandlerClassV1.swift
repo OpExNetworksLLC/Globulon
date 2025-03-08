@@ -25,7 +25,6 @@ import Combine
     private let manager: CLLocationManager
     private var background: CLBackgroundActivitySession?
     
-    private var activeTourData: TourData?
     private var poiRegions: [CLCircularRegion] = []
     // Dictionary to track entered/exited states per region
     private var regionStates: [String: Bool] = [:]
@@ -238,30 +237,6 @@ import Combine
         }
         */
         
-        // Check proximity to POIs
-        if !poiRegions.isEmpty {
-            for region in poiRegions {
-                let regionID = region.identifier
-                let distance = loc.distance(from: CLLocation(latitude: region.center.latitude, longitude: region.center.longitude))
-
-                // Handle entry
-                if distance <= region.radius, regionStates[regionID] != true {
-                    if let poi = TourDataManager.fetchTourDataPOI(tourID: AppEnvironment.shared.activeTourID, poiID: "\(regionID)") {
-                        PostNotification.sendNotification(title: "Point Of Interest", body: "\(poi.title)\n\(poi.sub_title)")
-                    } else {
-                        LogEvent.print(module: "LocationHandler.locationManager()", message: "tourID: \(AppEnvironment.shared.activeTourID) regionID not found: \(regionID)")
-                    }
-
-                    LogEvent.print(module: "LocationHandler.locationManager()", message: "Entered POI: \(regionID)")
-                    regionStates[regionID] = true // Mark region as entered
-                }
-                // Handle exit, but only if the POI has been entered before
-                else if distance > region.radius, regionStates[regionID] == true {
-                    LogEvent.print(module: "LocationHandler.locationManager()", message: "Exited POI: \(regionID)")
-                    regionStates[regionID] = false // Mark region as exited
-                }
-            }
-        }
     }
     
     
@@ -490,69 +465,6 @@ import Combine
             self.authorizedDescription = "Unknown Status"
             completion("Unknown Status")
         }
-    }
-    
-    // MARK: - Tour region capture
-    func switchToTour(with tourID: String) {
-        
-        /// Clear existing regions
-        stopRegionMonitoring()
-        
-        /// Load tour
-        loadTourData(for: tourID)
-        LogEvent.print(module: "LocationHandler.switchToTour()", message: "✅ Switched to tour ID: \(tourID)")
-    }
-    
-    func loadTourData(for tourID: String?) {
-        LogEvent.print(module: "LocationHandler.loadTourData():", message: "▶️ starting...")
-        
-        // Clear any previous data
-        self.activeTourData = nil
-        self.poiRegions.removeAll()
-        self.regionStates.removeAll()
-        
-        // Ensure the tourID is valid
-        guard let tourID = tourID, !tourID.isEmpty else {
-            LogEvent.print(module: "LocationHandler.loadTourData()", message: "Invalid or blank tourID. Clearing lingering data.")
-            return
-        }
-        
-        LogEvent.print(module: "LocationHandler.loadTourData()", message: "Loading tour data for ID: \(tourID)...")
-
-        // Ensure you have a valid model context
-        let context = ModelContext(SharedModelContainer.shared.container)
-
-        // Define a fetch descriptor for filtering
-        let descriptor = FetchDescriptor<TourData>(
-            predicate: #Predicate { $0.tour_id == tourID }
-        )
-
-        do {
-            // Use the fetch descriptor to fetch tour data
-            let results = try context.fetch(descriptor)
-            if let tourData = results.first {
-                self.activeTourData = tourData
-                LogEvent.print(module: "LocationHandler.loadTourData()", message: "Loaded tour data for tour ID: \(tourID)")
-                createRegions(for: tourData.toTourPOI ?? [])
-            } else {
-                LogEvent.print(module: "LocationHandler.loadTourData()", message: "No tour data found for tour ID: \(tourID).")
-            }
-        } catch {
-            LogEvent.print(module: "LocationHandler.loadTourData()", message: "Error fetching tour data: \(error.localizedDescription).")
-        }
-        
-        LogEvent.print(module: "LocationHandler.loadTourData()", message: "⏹️ ...finished")
-    }
-
-    private func createRegions(for tourPOIs: [TourPOIData]) {
-        poiRegions = tourPOIs.map {
-            let coordinate = CLLocationCoordinate2D(latitude: $0.latitude, longitude: $0.longitude)
-            let region = CLCircularRegion(center: coordinate, radius: 5.0, identifier: $0.id)
-            region.notifyOnEntry = true
-            region.notifyOnExit = true
-            return region
-        }
-        LogEvent.print(module: "LocationHandler.createRegions()", message: "Created \(poiRegions.count) regions for POIs")
     }
     
     // MARK: - Date functions

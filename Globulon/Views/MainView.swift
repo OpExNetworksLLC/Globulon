@@ -79,26 +79,6 @@ struct MainView: View {
                         .ignoresSafeArea()
                     /// ... end
                     
-                    ToursView(isShowSideMenu: $appVariables.isShowSideMenu)
-                        .tabItem {
-                            Image(systemName: "map")
-                            Text("Tours")
-                        }
-                        .tag(LandingPageEnum.tours)
-                        .safeAreaPadding(.top, 100)
-                        .safeAreaPadding(.bottom, 83)
-                        .ignoresSafeArea()
-                    
-                    MyToursView(isShowSideMenu: $appVariables.isShowSideMenu)
-                        .tabItem {
-                            Image(systemName: "purchased")
-                            Text("My Tours")
-                        }
-                        .tag(LandingPageEnum.myTours)
-                        .safeAreaPadding(.top, 100)
-                        .safeAreaPadding(.bottom, 83)
-                        .ignoresSafeArea()
-                    
                     TravelView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
                             Image(systemName: "steeringwheel")
@@ -108,41 +88,6 @@ struct MainView: View {
                         .safeAreaPadding(.top, 100)
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
-                    
-                    /*
-                    LocationView(isShowSideMenu: $appVariables.isShowSideMenu)
-                        .tabItem {
-                            Image(systemName: "location")
-                            Text("Location")
-                        }
-                        .tag(LandingPageEnum.location)
-                        .safeAreaPadding(.top, 100)
-                        .safeAreaPadding(.bottom, 83)
-                        .ignoresSafeArea()
-                    */
-                    
-                    /*
-                    StatusView(isShowSideMenu: $appVariables.isShowSideMenu)
-                        .tabItem {
-                            Image(systemName: "stethoscope")
-                            Text("Status")
-                        }
-                        .tag(LandingPageEnum.status)
-                        .safeAreaPadding(.top, 100)
-                        .safeAreaPadding(.bottom, 83)
-                        .ignoresSafeArea()
-                    */
-                    
-                    ActivityView(isShowSideMenu: $appVariables.isShowSideMenu)
-                        .tabItem {
-                            Image(systemName: "arrow.triangle.pull")
-                            Text("Activity")
-                        }
-                        .tag(LandingPageEnum.activity)
-                        .safeAreaPadding(.top, 100)
-                        .safeAreaPadding(.bottom, 83)
-                        .ignoresSafeArea()
-                    
                     
                     MotionView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
@@ -154,6 +99,26 @@ struct MainView: View {
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
                     
+                    MoreView()
+                        .tabItem {
+                            Image(systemName: "ellipsis")
+                            Text("More")
+                        }
+                        .tag(LandingPageEnum.more)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
+                    
+                    /*
+                    ActivityView(isShowSideMenu: $appVariables.isShowSideMenu)
+                        .tabItem {
+                            Image(systemName: "arrow.triangle.pull")
+                            Text("Activity")
+                        }
+                        .tag(LandingPageEnum.activity)
+                        .safeAreaPadding(.top, 100)
+                        .safeAreaPadding(.bottom, 83)
+                        .ignoresSafeArea()
                     
                     BluetoothView(isShowSideMenu: $appVariables.isShowSideMenu)
                         .tabItem {
@@ -164,6 +129,8 @@ struct MainView: View {
                         .safeAreaPadding(.top, 100)
                         .safeAreaPadding(.bottom, 83)
                         .ignoresSafeArea()
+                     
+                    */
                     
                     
                 }
@@ -174,7 +141,7 @@ struct MainView: View {
                     ///
                     /// or since the default is true to rotate the side menu set to false for identified tabs
                     ///
-                    rotateWhenExpands = ![.travel].contains(currentTab)
+                    //rotateWhenExpands = ![.travel].contains(currentTab)
 
                 }
                 .toolbar {

@@ -24,7 +24,6 @@ struct HomeView: View {
             VStack {
                 Spacer()
                 Text("Home View!")
-                Text("activeTour: \(appEnvironment.activeTourID)")
                 Spacer()
             }
         }

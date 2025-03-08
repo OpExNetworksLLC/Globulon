@@ -28,10 +28,6 @@ enum ModelSchemaV1: VersionedSchema {
             HelpArticle.self,
             HelpSection.self,
             GPSData.self,
-            TourData.self,
-            TourPOIData.self,
-            CatalogToursData.self,
-            CatalogTourData.self
         ]
     }
     
@@ -101,109 +97,5 @@ enum ModelSchemaV1: VersionedSchema {
         }
     }
     
-    @Model
-    class TourData {
-        @Attribute(.unique) var tour_id: String
-        var isActive: Bool
-        var application: String
-        var version: String
-        var created_on: Date
-        var updated_on: Date
-        var author: String
-        var title: String
-        var sub_title: String
-        var desc: String
-        @Relationship(deleteRule: .cascade) var toTourPOI: [TourPOIData]?
-
-        init(tour_id: String, isActive: Bool, application: String, version: String, created_on: Date, updated_on: Date, author: String, title: String, sub_title: String, desc: String) {
-            self.tour_id = tour_id
-            self.isActive = isActive
-            self.application = application
-            self.version = version
-            self.created_on = created_on
-            self.updated_on = updated_on
-            self.author = author
-            self.title = title
-            self.sub_title = sub_title
-            self.desc = desc
-        }
-    }
-
-    @Model
-    class TourPOIData {
-        @Attribute(.unique) var id: String
-        var order_index: Int
-        var title: String
-        var sub_title: String
-        var desc: String
-        var latitude: Double
-        var longitude: Double
-        @Relationship(inverse: \TourData.toTourPOI) var toTourData: TourData?
-
-        init(id: String, order_index: Int, title: String, sub_title: String, desc: String, latitude: Double, longitude: Double) {
-            self.id = id
-            self.order_index = order_index
-            self.title = title
-            self.sub_title = sub_title
-            self.desc = desc
-            self.latitude = latitude
-            self.longitude = longitude
-        }
-    }
-    
-    // final means it can be subclassed and Sendable means that the structure can be trusted outside persistence
-    @Model
-    final class CatalogToursData: Sendable {
-        @Attribute(.unique) var catalog_id: String
-        var isActive: Bool
-        var application: String
-        var version: String
-        var created_on: Date
-        var updated_on: Date
-        var author: String
-        var title: String
-        var sub_title: String
-        var desc: String
-
-        @Relationship(deleteRule: .cascade) var toCatalogTour: [CatalogTourData]?
-
-        init(catalog_id: String, isActive: Bool, application: String, version: String, created_on: Date, updated_on: Date, author: String, title: String, sub_title: String, desc: String) {
-            self.catalog_id = catalog_id
-            self.isActive = isActive
-            self.application = application
-            self.version = version
-            self.created_on = created_on
-            self.updated_on = updated_on
-            self.author = author
-            self.title = title
-            self.sub_title = sub_title
-            self.desc = desc
-        }
-    }
-
-    @Model
-    final class CatalogTourData: Sendable {
-        @Attribute(.unique) var tour_id: String
-        var isActive: Bool
-        var tour_file: String
-        var tour_directory: String
-        var order_index: Int
-        var title: String
-        var sub_title: String
-        var desc: String
-
-        @Relationship(inverse: \CatalogToursData.toCatalogTour) var toCatalogTours: CatalogToursData?
-
-        init(tour_id: String, isActive: Bool, tour_file: String, tour_directory: String, order_index: Int, title: String, sub_title: String, desc: String) {
-            self.tour_id = tour_id
-            self.isActive = isActive
-            self.tour_file = tour_file
-            self.tour_directory = tour_directory
-            self.order_index = order_index
-            self.title = title
-            self.sub_title = sub_title
-            self.desc = desc
-        }
-    }
 }
 

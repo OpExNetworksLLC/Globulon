@@ -15,9 +15,7 @@
 import SwiftUI
 
 struct BluetoothView: View {
-    
-    @Binding var isShowSideMenu: Bool
-    
+        
     @StateObject var networkHandler = NetworkHandler.shared
     @StateObject private var bluetoothHandler = BluetoothHandler.shared
     
@@ -54,9 +52,10 @@ struct BluetoothView: View {
                 //bluetoothHandler.stopBluetoothUpdates()
             }
         }
+        .navigationTitle("Bluetooth")
     }
 }
 
 #Preview {
-    BluetoothView(isShowSideMenu: .constant(false))
+    BluetoothView()
 }

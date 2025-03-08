@@ -14,7 +14,3 @@ import Foundation
 typealias HelpSection = ModelSchemaV1.HelpSection
 typealias HelpArticle = ModelSchemaV1.HelpArticle
 typealias GPSData = ModelSchemaV1.GPSData
-typealias TourData = ModelSchemaV1.TourData
-typealias TourPOIData = ModelSchemaV1.TourPOIData
-typealias CatalogToursData = ModelSchemaV1.CatalogToursData
-typealias CatalogTourData = ModelSchemaV1.CatalogTourData
