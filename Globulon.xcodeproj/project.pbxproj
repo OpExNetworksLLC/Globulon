@@ -20,6 +20,7 @@
 		6E48E7E42BA0E8480052B3EB /* PermissionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E48E7E32BA0E8480052B3EB /* PermissionsView.swift */; };
 		6E54AD982BA7A03500A502DC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54AD972BA7A03500A502DC /* Extensions.swift */; };
 		6E5928832BA1FFCF00CE0B8F /* AddressClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */; };
+		6E5DDDA22D7BDEB60018F250 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6E5DDDA12D7BDEB60018F250 /* .gitignore */; };
 		6E680D3A2D7BC89C002F7F43 /* ConeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D382D7BC89C002F7F43 /* ConeView.swift */; };
 		6E680D3B2D7BC89C002F7F43 /* TravelViewV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D392D7BC89C002F7F43 /* TravelViewV3.swift */; };
 		6E680D5F2D7BC8C5002F7F43 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D5E2D7BC8C5002F7F43 /* MoreView.swift */; };
@@ -160,6 +161,7 @@
 		6E48E7E32BA0E8480052B3EB /* PermissionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsView.swift; sourceTree = "<group>"; };
 		6E54AD972BA7A03500A502DC /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressClass.swift; sourceTree = "<group>"; };
+		6E5DDDA12D7BDEB60018F250 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6E680D382D7BC89C002F7F43 /* ConeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConeView.swift; sourceTree = "<group>"; };
 		6E680D392D7BC89C002F7F43 /* TravelViewV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelViewV3.swift; sourceTree = "<group>"; };
 		6E680D5E2D7BC8C5002F7F43 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
@@ -395,6 +397,7 @@
 		6E94F6E82B7C563C00AFA97F = {
 			isa = PBXGroup;
 			children = (
+				6E5DDDA12D7BDEB60018F250 /* .gitignore */,
 				6ECF91862D6E46B6007B8F1F /* README.md */,
 				6ECF91882D6E46F3007B8F1F /* DEV_NOTES.md */,
 				6E94F6F32B7C563C00AFA97F /* Globulon */,
@@ -730,6 +733,7 @@
 				6EB56D1E2B855B7700C106F0 /* NoArticles.json in Resources */,
 				6EB56D1C2B855B5800C106F0 /* Articles.json in Resources */,
 				6ECF91872D6E46B6007B8F1F /* README.md in Resources */,
+				6E5DDDA22D7BDEB60018F250 /* .gitignore in Resources */,
 				6ECEC4052C27740200232E80 /* GoogleService-Info.plist in Resources */,
 				6ECF927D2D6E66E6007B8F1F /* AnalyticsConsentDetails.html in Resources */,
 				6E94F6FE2B7C563D00AFA97F /* Preview Assets.xcassets in Resources */,
