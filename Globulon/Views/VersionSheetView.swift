@@ -47,7 +47,7 @@ struct VersionSheetView: View {
                     
                     #if FIREBASE_ENABLED
                     /// This setting was dione directly for testing purposes so not part of userSettings.
-                    Text("firebaseInstallationID: \(UserSettings.init().firebaseInstallationID)")
+                    Text("firebaseInstallationID: \(userSettings.firebaseInstallationID)")
                         .font(.system(size: 14, design: .monospaced))
                     #endif
 
@@ -70,14 +70,13 @@ struct VersionSheetView: View {
                 }
                 .alert("Change UserMode", isPresented: $isThresholdReached) {
                     Button("Production", role: .cancel) {
-                        UserSettings.init().userMode = .production
-                        
+                        userSettings.userMode = .production
                     }
                     Button("Development", role: .none) {
-                        UserSettings.init().userMode = .development
+                        userSettings.userMode = .development
                     }
                     Button("Test", role: .none) {
-                        UserSettings.init().userMode = .test
+                        userSettings.userMode = .test
                     }
                 } message: {
                     Text("Please choose an option to proceed.")
@@ -117,7 +116,7 @@ struct VersionSheetView: View {
     }
 
     private func resetTapTracking() {
-        Task { @MainActor in
+        Task {
             tapCount = 0
             timer?.invalidate()
             timer = nil
