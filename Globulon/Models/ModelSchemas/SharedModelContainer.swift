@@ -15,6 +15,11 @@ import Foundation
 import SwiftData
 import Combine
 
+
+typealias HelpSection = ModelSchemaV1.HelpSection
+typealias HelpArticle = ModelSchemaV1.HelpArticle
+typealias GPSData = ModelSchemaV1.GPSData
+
 protocol VersionedSchema {
     static var versionIdentifier: Schema.Version { get }
     static var models: [any PersistentModel.Type] { get }
