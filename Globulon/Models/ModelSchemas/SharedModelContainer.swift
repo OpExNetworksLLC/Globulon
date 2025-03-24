@@ -16,9 +16,9 @@ import SwiftData
 import Combine
 
 
-typealias HelpSection = ModelSchemaV01_00_01.HelpSection
-typealias HelpArticle = ModelSchemaV01_00_01.HelpArticle
-typealias GPSData = ModelSchemaV01_00_01.GPSData
+typealias HelpSection = ModelSchemaV01_00_00.HelpSection
+typealias HelpArticle = ModelSchemaV01_00_00.HelpArticle
+typealias GPSData = ModelSchemaV01_00_00.GPSData
 
 protocol VersionedSchema {
     static var versionIdentifier: Schema.Version { get }
@@ -183,8 +183,8 @@ class SharedModelContainer: @unchecked Sendable {
             if storedVersion < version {
                 LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Applying migration from version \(storedVersion) to \(version)...")
                 do {
-                    try migration()
-                    SharedModelContainer.setStoredSchemaVersion(version)
+                    //try migration()
+                    //SharedModelContainer.setStoredSchemaVersion(version)
                     LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Migration to version \(version) completed successfully.")
                 } catch {
                     LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Migration to version \(version) failed: \(error)")
