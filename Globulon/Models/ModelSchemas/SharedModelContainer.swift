@@ -16,9 +16,9 @@ import SwiftData
 import Combine
 
 
-typealias HelpSection = ModelSchemaV01_00_00.HelpSection
-typealias HelpArticle = ModelSchemaV01_00_00.HelpArticle
-typealias GPSData = ModelSchemaV01_00_00.GPSData
+typealias HelpSection = ModelSchemaV01_00_01.HelpSection
+typealias HelpArticle = ModelSchemaV01_00_01.HelpArticle
+typealias GPSData = ModelSchemaV01_00_01.GPSData
 
 protocol VersionedSchema {
     static var versionIdentifier: Schema.Version { get }
@@ -35,31 +35,36 @@ class SharedModelContainer: @unchecked Sendable {
     
     private let accessQueue = DispatchQueue(label: "com." + AppSettings.appName + ".SharedModelContainerQueue", attributes: .concurrent)
     
+    /// Migration Map.  The applyMigrations() function will cycle through this map and apply the upgrades
+    ///
+    private static let migrationMap: [Schema.Version: () throws -> Void] = [
+        Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
+        //,Schema.Version(2, 0, 0): {}
+    ]
+    
     private init() {
+        
+        /// Reset to the first version for testing
+        ///
+        SharedModelContainer.resetSchemaVersionForTesting()
+        
         do {
-            
             LogEvent.print(module: "SharedModelContainer()", message: "▶️ starting...")
             
-            // Step 1: Use a temporary container to locate and reset the persistent store
             let tempSchema = Schema(SharedModelContainer.getCurrentSchema().models)
             let tempContainer = try ModelContainer(
                 for: tempSchema,
                 configurations: [ModelConfiguration(schema: tempSchema, isStoredInMemoryOnly: false)]
             )
             
-            /// Set the parameter startFresh = true if you want to reset.
             try SharedModelContainer.resetPersistentStoreIfNeeded(startFresh: false, container: tempContainer)
 
-            // Step 2: Define the main schema
             let currentSchema = SharedModelContainer.getCurrentSchema()
             let schema = Schema(currentSchema.models)
-
-            // Step 3: Initialize the main container
             let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
             container = try ModelContainer(for: schema, configurations: [modelConfiguration])
             context = ModelContext(container)
             
-            // Step 4:
             try applyMigrations()
 
             LogEvent.print(module: "SharedModelContainer()", message: "⏹️ ...finished")
@@ -138,6 +143,8 @@ class SharedModelContainer: @unchecked Sendable {
         switch storedVersion {
         case Schema.Version(1, 0, 0):
             return ModelSchemaV01_00_00.self
+        case Schema.Version(1, 0, 1):
+            return ModelSchemaV01_00_01.self
         /*
         case Schema.Version(2, 0, 0):
             return ModelSchemaV2.self
@@ -156,7 +163,11 @@ class SharedModelContainer: @unchecked Sendable {
         // Save the new schema version to persistent storage
         UserDefaults.standard.set(version.stringValue, forKey: "SchemaVersion")
     }
-
+    
+    // Reset schema version to 1.0.0 for testing
+    private static func resetSchemaVersionForTesting() {
+        setStoredSchemaVersion(Schema.Version(1, 0, 0))
+    }
     
     /// Based on the stored version apply the right version based on conditions, usually to the next version
     ///
@@ -167,21 +178,59 @@ class SharedModelContainer: @unchecked Sendable {
         let storedVersion = SharedModelContainer.getStoredSchemaVersion()
         LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Current stored SwiftData schema: \(storedVersion)")
         
-        /*
-         
-        /// Apply migrations based on stored version
-        if storedVersion < ModelSchemaV2.versionIdentifier {
-            try migrateToVersion2()
+        // Iterate through migrations and apply those required
+        for (version, migration) in SharedModelContainer.migrationMap.sorted(by: { $0.key < $1.key }) {
+            if storedVersion < version {
+                LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Applying migration from version \(storedVersion) to \(version)...")
+                do {
+                    try migration()
+                    SharedModelContainer.setStoredSchemaVersion(version)
+                    LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Migration to version \(version) completed successfully.")
+                } catch {
+                    LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Migration to version \(version) failed: \(error)")
+                    throw error
+                }
+            }
         }
         
-        /// Update the stored schema version
-        SharedModelContainer.setStoredSchemaVersion(SharedModelContainer.getCurrentSchema().versionIdentifier)
-         
-        */
         LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "⏹️ ...finished")
     }
     
-    private func migrateToVersion2() throws {
+    private static func migrateV01_00_00_to_V01_00_01() throws {
+        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "starting...")
+
+        /// Perform migration logic to update schema to version
+        /// This might include data transformations, renaming attributes, etc.
+        /*
+        try accessContainerSync { container in
+            // Example: container.performMigrationTask()
+        }
+        */
+        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "⏹️ ...finished")
+
+    }
+//    private static func migrateV01_00_00_to_V01_00_01() throws {
+//        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Starting lightweight migration...")
+//
+//        // Perform migration by creating a new ModelContainer with the updated schema
+//        let newSchema = Schema(ModelSchemaV01_00_01.models)
+//        let newModelConfiguration = ModelConfiguration(schema: newSchema, isStoredInMemoryOnly: false)
+//
+//        do {
+//            let newContainer = try ModelContainer(for: newSchema, configurations: [newModelConfiguration])
+//
+//            // Replace the existing container
+//            SharedModelContainer.shared.container = newContainer
+//            SharedModelContainer.shared.context = ModelContext(newContainer)
+//
+//            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration completed successfully.")
+//        } catch {
+//            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration failed: \(error)")
+//            throw error
+//        }
+//    }
+    
+    private static func migrateToVersion2() throws {
         LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "starting...")
 
         /// Perform migration logic to update schema to version 2

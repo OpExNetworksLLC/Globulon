@@ -21,6 +21,7 @@
 		6E54AD982BA7A03500A502DC /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54AD972BA7A03500A502DC /* Extensions.swift */; };
 		6E54D2362D91C1A0002C04B8 /* DummySchemaV01_00_00.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54D2352D91C1A0002C04B8 /* DummySchemaV01_00_00.swift */; };
 		6E54D2382D91C7D0002C04B8 /* MigrationPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54D2372D91C7D0002C04B8 /* MigrationPlan.swift */; };
+		6E54D23A2D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E54D2392D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift */; };
 		6E5928832BA1FFCF00CE0B8F /* AddressClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */; };
 		6E5DDDA22D7BDEB60018F250 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6E5DDDA12D7BDEB60018F250 /* .gitignore */; };
 		6E680D3A2D7BC89C002F7F43 /* ConeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D382D7BC89C002F7F43 /* ConeView.swift */; };
@@ -164,6 +165,7 @@
 		6E54AD972BA7A03500A502DC /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		6E54D2352D91C1A0002C04B8 /* DummySchemaV01_00_00.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DummySchemaV01_00_00.swift; sourceTree = "<group>"; };
 		6E54D2372D91C7D0002C04B8 /* MigrationPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationPlan.swift; sourceTree = "<group>"; };
+		6E54D2392D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelSchemaV01_00_01.swift; sourceTree = "<group>"; };
 		6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressClass.swift; sourceTree = "<group>"; };
 		6E5DDDA12D7BDEB60018F250 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6E680D382D7BC89C002F7F43 /* ConeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConeView.swift; sourceTree = "<group>"; };
@@ -529,6 +531,7 @@
 				6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */,
 				6E94F70A2B7C577A00AFA97F /* ModelAliases.swift */,
 				6E94F70C2B7C57D200AFA97F /* ModelSchemaV01_00_00.swift */,
+				6E54D2392D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift */,
 				6E54D2352D91C1A0002C04B8 /* DummySchemaV01_00_00.swift */,
 				6ECF92702D6E5417007B8F1F /* SharedModelContainer.swift */,
 				6E54D2372D91C7D0002C04B8 /* MigrationPlan.swift */,
@@ -817,6 +820,7 @@
 				6E94F7152B7C701B00AFA97F /* LogEventClass.swift in Sources */,
 				6E94F7192B7C73EA00AFA97F /* MasterView.swift in Sources */,
 				6EB56CFA2B8531DF00C106F0 /* ZoomScrollView.swift in Sources */,
+				6E54D23A2D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift in Sources */,
 				6E88DC242B846FE400BBB4DD /* WelcomeView.swift in Sources */,
 				6E680D5F2D7BC8C5002F7F43 /* MoreView.swift in Sources */,
 				6ECF92992D6E9BBA007B8F1F /* BluetoothView.swift in Sources */,
