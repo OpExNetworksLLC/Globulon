@@ -16,9 +16,9 @@ import SwiftData
 import Combine
 
 
-typealias HelpSection = ModelSchemaV1.HelpSection
-typealias HelpArticle = ModelSchemaV1.HelpArticle
-typealias GPSData = ModelSchemaV1.GPSData
+typealias HelpSection = ModelSchemaV01_00_00.HelpSection
+typealias HelpArticle = ModelSchemaV01_00_00.HelpArticle
+typealias GPSData = ModelSchemaV01_00_00.GPSData
 
 protocol VersionedSchema {
     static var versionIdentifier: Schema.Version { get }
@@ -60,7 +60,7 @@ class SharedModelContainer: @unchecked Sendable {
             context = ModelContext(container)
             
             // Step 4:
-            //try applyMigrations()
+            try applyMigrations()
 
             LogEvent.print(module: "SharedModelContainer()", message: "⏹️ ...finished")
 
@@ -137,13 +137,13 @@ class SharedModelContainer: @unchecked Sendable {
         let storedVersion = getStoredSchemaVersion()
         switch storedVersion {
         case Schema.Version(1, 0, 0):
-            return ModelSchemaV1.self
+            return ModelSchemaV01_00_00.self
         /*
         case Schema.Version(2, 0, 0):
             return ModelSchemaV2.self
         */
         default:
-            return ModelSchemaV1.self
+            return ModelSchemaV01_00_00.self
         }
     }
 

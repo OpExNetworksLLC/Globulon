@@ -10,15 +10,7 @@ import Foundation
 import SwiftData
 import CoreLocation
 
-
-enum DummySchema: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        return Schema.Version(0, 0, 0)
-    }
-    static let models: [any PersistentModel.Type] = []
-}
-
-enum ModelSchemaV1: VersionedSchema {
+enum ModelSchemaV01_00_00: VersionedSchema {
     static var versionIdentifier: Schema.Version {
         return Schema.Version(1, 0, 0)
     }
