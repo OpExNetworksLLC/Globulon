@@ -183,7 +183,7 @@ class SharedModelContainer: @unchecked Sendable {
             if storedVersion < version {
                 LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Applying migration from version \(storedVersion) to \(version)...")
                 do {
-                    //try migration()
+                    try migration()
                     //SharedModelContainer.setStoredSchemaVersion(version)
                     LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Migration to version \(version) completed successfully.")
                 } catch {
