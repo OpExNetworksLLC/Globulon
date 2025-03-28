@@ -230,49 +230,49 @@ class SharedModelContainer: @unchecked Sendable {
 //        }
 //    }
     
-    private static func migrateToVersion2() throws {
-        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "starting...")
-
-        /// Perform migration logic to update schema to version 2
-        /// This might include data transformations, renaming attributes, etc.
-        /*
-        try accessContainerSync { container in
-            // Example: container.performMigrationTask()
-        }
-        */
-        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "⏹️ ...finished")
-
-    }
+//    private static func migrateToVersion2() throws {
+//        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "starting...")
+//
+//        /// Perform migration logic to update schema to version 2
+//        /// This might include data transformations, renaming attributes, etc.
+//        /*
+//        try accessContainerSync { container in
+//            // Example: container.performMigrationTask()
+//        }
+//        */
+//        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "⏹️ ...finished")
+//
+//    }
     
-    func performMigrationTask() throws {
-        /// Perform specific data transformations required for the migration
-        /// This might include:
-        /// - Renaming attributes
-        /// - Converting data formats
-        /// - Adding new attributes with default values
-        /// - Migrating relationships
-
-        /// Example: Renaming an attribute
-        ///
-        /*
-        let context = self.viewContext
-        let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "YourEntityName")
-        
-        do {
-            let results = try context.fetch(fetchRequest)
-            for object in results {
-                // Example: Renaming a field from oldField to newField
-                if let oldValue = object.value(forKey: "oldField") {
-                    object.setValue(oldValue, forKey: "newField")
-                    object.setValue(nil, forKey: "oldField")
-                }
-            }
-            try context.save()
-        } catch {
-            throw error
-        }
-        */
-    }
+//    func performMigrationTask() throws {
+//        /// Perform specific data transformations required for the migration
+//        /// This might include:
+//        /// - Renaming attributes
+//        /// - Converting data formats
+//        /// - Adding new attributes with default values
+//        /// - Migrating relationships
+//
+//        /// Example: Renaming an attribute
+//        ///
+//        /*
+//        let context = self.viewContext
+//        let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "YourEntityName")
+//        
+//        do {
+//            let results = try context.fetch(fetchRequest)
+//            for object in results {
+//                // Example: Renaming a field from oldField to newField
+//                if let oldValue = object.value(forKey: "oldField") {
+//                    object.setValue(oldValue, forKey: "newField")
+//                    object.setValue(nil, forKey: "oldField")
+//                }
+//            }
+//            try context.save()
+//        } catch {
+//            throw error
+//        }
+//        */
+//    }
 
 }
 
