@@ -42,7 +42,7 @@ class SharedModelContainer: @unchecked Sendable {
             let storedVersion = SharedModelContainer.getStoredSchemaVersion()
             LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Current stored SwiftData schema: \(storedVersion)")
         }
-        //Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
+        //,Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
         //,Schema.Version(2, 0, 0): {}
     ]
     
@@ -80,6 +80,25 @@ class SharedModelContainer: @unchecked Sendable {
         }
     }
 
+    /// Get the current schema based on the stored schema
+    /// - Returns: VersionedSchema
+    ///
+    static func getCurrentSchema() -> VersionedSchema.Type {
+        let storedVersion = getStoredSchemaVersion()
+        switch storedVersion {
+        case Schema.Version(1, 0, 0):
+            return ModelSchemaV01_00_00.self
+        case Schema.Version(1, 0, 1):
+            return ModelSchemaV01_00_01.self
+        /*
+        case Schema.Version(2, 0, 0):
+            return ModelSchemaV2.self
+        */
+        default:
+            return ModelSchemaV01_00_00.self
+        }
+    }
+    
     private static func getPersistentStoreURL(container: ModelContainer?) -> URL {
         if let container = container, let url = container.configurations.first?.url {
             return url
@@ -139,24 +158,6 @@ class SharedModelContainer: @unchecked Sendable {
         }
     }
     
-    /// Get the current schema based on the stored schema
-    /// - Returns: VersionedSchema
-    ///
-    static func getCurrentSchema() -> VersionedSchema.Type {
-        let storedVersion = getStoredSchemaVersion()
-        switch storedVersion {
-        case Schema.Version(1, 0, 0):
-            return ModelSchemaV01_00_00.self
-        case Schema.Version(1, 0, 1):
-            return ModelSchemaV01_00_01.self
-        /*
-        case Schema.Version(2, 0, 0):
-            return ModelSchemaV2.self
-        */
-        default:
-            return ModelSchemaV01_00_00.self
-        }
-    }
 
     private static func getStoredSchemaVersion() -> Schema.Version {
         // Retrieve the stored schema version from persistent storage
@@ -213,7 +214,10 @@ class SharedModelContainer: @unchecked Sendable {
 //        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "⏹️ ...finished")
 //
 //    }
+ 
     
+    /// This is pointed to from `migrationsMap()`
+    ///
     private static func migrateV01_00_00_to_V01_00_01() throws {
         LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Starting migration from V01_00_00 to V01_00_01...")
 
@@ -224,34 +228,39 @@ class SharedModelContainer: @unchecked Sendable {
             let newContainer = try ModelContainer(for: newSchema, configurations: [newModelConfiguration])
             let context = ModelContext(newContainer)
 
-            /*
-             
-            // Fetch old data and transform it
-            let fetchRequest = FetchDescriptor<OldModel>()
+            // Explicitly fetch and migrate old data
+            let fetchRequest = FetchDescriptor<ModelSchemaV01_00_00.GPSData>()
             let oldData = try context.fetch(fetchRequest)
-
+            
             for oldObject in oldData {
-                let newObject = NewModel(
-                    id: oldObject.id,
-                    newField: oldObject.oldField // Migrate value to the new field
+                let newObject = ModelSchemaV01_00_01.GPSData(
+                    timestamp: oldObject.timestamp,
+                    latitude: oldObject.latitude,
+                    longitude: oldObject.longitude,
+                    speed: oldObject.speed,
+                    processed: oldObject.processed,
+                    codes: oldObject.code,  // Manually migrate "code" → "codes"
+                    note: oldObject.note
                 )
+                
+                LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migrating old code: \(oldObject.code) to new codes: \(newObject.codes)")
+                
                 context.insert(newObject)
+                context.delete(oldObject) // Remove the old version
             }
-
-            // Delete old data if necessary
-            for oldObject in oldData {
-                context.delete(oldObject)
-            }
-
-            // Save changes
+            
             try context.save()
-             
-            */
-
+           
+ 
+            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migrated \(oldData.count) objects.")
+            
             // Replace the existing container with the new one
-            SharedModelContainer.shared.container = newContainer
-            SharedModelContainer.shared.context = context
-
+            // Postpone updating SharedModelContainer.shared until initialization is done
+            DispatchQueue.main.async {
+                SharedModelContainer.shared.container = newContainer
+                SharedModelContainer.shared.context = context
+            }
+            
             // Update stored schema version
             setStoredSchemaVersion(Schema.Version(1, 0, 1))
 
