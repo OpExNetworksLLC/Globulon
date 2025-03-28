@@ -25,8 +25,6 @@ protocol VersionedSchema {
     static var models: [any PersistentModel.Type] { get }
 }
 
-import Foundation
-
 class SharedModelContainer: @unchecked Sendable {
     static let shared = SharedModelContainer()
 

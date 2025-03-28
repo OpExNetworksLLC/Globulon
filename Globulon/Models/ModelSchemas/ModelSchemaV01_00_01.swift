@@ -11,9 +11,10 @@ import SwiftData
 import CoreLocation
 
 enum ModelSchemaV01_00_01: VersionedSchema {
-    static var versionIdentifier: Schema.Version {
-        return Schema.Version(1, 0, 1)
-    }
+//    static var versionIdentifier: Schema.Version {
+//        return Schema.Version(1, 0, 1)
+//    }
+    static var versionIdentifier: Schema.Version = .init(1, 0, 1)
     
     static var models: [any PersistentModel.Type] {
         return [
