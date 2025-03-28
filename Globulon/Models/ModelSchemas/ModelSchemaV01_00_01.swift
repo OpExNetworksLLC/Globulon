@@ -78,13 +78,13 @@ enum ModelSchemaV01_00_01: VersionedSchema {
         @Attribute(originalName: "code") var codes: String  //Rename the field
         var note: String
 
-        init(timestamp: Date, latitude: Double, longitude: Double, speed: Double, processed: Bool, codes: String, note: String) {
+        init(timestamp: Date, latitude: Double, longitude: Double, speed: Double, processed: Bool, code: String, note: String) {
             self.timestamp = timestamp
             self.latitude = latitude
             self.longitude = longitude
             self.speed = speed
             self.processed = processed
-            self.codes = codes  // The schema now uses has the new name "codes" in the model but the old code referenceing "code" is still out there
+            self.codes = code  // The schema now uses has the new name "codes" in the model but the old code referenceing "code" is still out there
             self.note = note
         }
     }

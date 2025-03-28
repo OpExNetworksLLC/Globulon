@@ -38,7 +38,11 @@ class SharedModelContainer: @unchecked Sendable {
     /// Migration Map.  The applyMigrations() function will cycle through this map and apply the upgrades
     ///
     private static let migrationMap: [Schema.Version: () throws -> Void] = [
-        Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
+        Schema.Version(1, 0, 0): {
+            let storedVersion = SharedModelContainer.getStoredSchemaVersion()
+            LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Current stored SwiftData schema: \(storedVersion)")
+        }
+        //Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
         //,Schema.Version(2, 0, 0): {}
     ]
     
@@ -196,19 +200,86 @@ class SharedModelContainer: @unchecked Sendable {
         LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "⏹️ ...finished")
     }
     
+//    private static func migrateV01_00_00_to_V01_00_01() throws {
+//        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "starting...")
+//
+//        /// Perform migration logic to update schema to version
+//        /// This might include data transformations, renaming attributes, etc.
+//        /*
+//        try accessContainerSync { container in
+//            // Example: container.performMigrationTask()
+//        }
+//        */
+//        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "⏹️ ...finished")
+//
+//    }
+    
     private static func migrateV01_00_00_to_V01_00_01() throws {
-        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "starting...")
+        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Starting migration from V01_00_00 to V01_00_01...")
 
-        /// Perform migration logic to update schema to version
-        /// This might include data transformations, renaming attributes, etc.
-        /*
-        try accessContainerSync { container in
-            // Example: container.performMigrationTask()
+        let newSchema = Schema(ModelSchemaV01_00_01.models)
+        let newModelConfiguration = ModelConfiguration(schema: newSchema, isStoredInMemoryOnly: false)
+
+        do {
+            let newContainer = try ModelContainer(for: newSchema, configurations: [newModelConfiguration])
+            let context = ModelContext(newContainer)
+
+            /*
+             
+            // Fetch old data and transform it
+            let fetchRequest = FetchDescriptor<OldModel>()
+            let oldData = try context.fetch(fetchRequest)
+
+            for oldObject in oldData {
+                let newObject = NewModel(
+                    id: oldObject.id,
+                    newField: oldObject.oldField // Migrate value to the new field
+                )
+                context.insert(newObject)
+            }
+
+            // Delete old data if necessary
+            for oldObject in oldData {
+                context.delete(oldObject)
+            }
+
+            // Save changes
+            try context.save()
+             
+            */
+
+            // Replace the existing container with the new one
+            SharedModelContainer.shared.container = newContainer
+            SharedModelContainer.shared.context = context
+
+            // Update stored schema version
+            setStoredSchemaVersion(Schema.Version(1, 0, 1))
+
+            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration completed successfully.")
+
+        } catch {
+            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration failed: \(error)")
+            throw error
         }
-        */
-        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "⏹️ ...finished")
-
+        
+//        do {
+//            let newContainer = try ModelContainer(for: newSchema, configurations: [newModelConfiguration])
+//
+//            // Replace the existing container with the new one
+//            SharedModelContainer.shared.container = newContainer
+//            SharedModelContainer.shared.context = ModelContext(newContainer)
+//
+//            // Update the stored schema version
+//            setStoredSchemaVersion(Schema.Version(1, 0, 1))
+//
+//            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration completed successfully.")
+//        } catch {
+//            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration failed: \(error)")
+//            throw error
+//        }
     }
+
+    
 //    private static func migrateV01_00_00_to_V01_00_01() throws {
 //        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Starting lightweight migration...")
 //
