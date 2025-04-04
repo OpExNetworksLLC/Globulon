@@ -15,12 +15,19 @@ import Foundation
 import SwiftData
 import Combine
 
+// MARK: - Type aliases
+
+/// Specify the current model schema and it will uipdate the other typealias's.
+///
 typealias CurrentModelSchema = ModelSchemaV01_00_00
 
+/// If your migratation adds new tables or renames them then add and change as required.
+///
 typealias HelpSection = CurrentModelSchema.HelpSection
 typealias HelpArticle = CurrentModelSchema.HelpArticle
 typealias GPSData = CurrentModelSchema.GPSData
 
+// MARK: - Model Container Provider
 final class ModelContainerProvider {
     static let shared: ModelContainer = {
         do {
@@ -63,8 +70,12 @@ final class ModelContainerProvider {
     }()
 }
 
+// MARK: - Data migration plan
+
 enum DataMigrationPlan: SchemaMigrationPlan {
     
+    /// Identify your schemas
+    ///
     static var schemas: [any VersionedSchema.Type] {
         [
             ModelSchemaV01_00_00.self
@@ -72,12 +83,16 @@ enum DataMigrationPlan: SchemaMigrationPlan {
         ]
     }
     
+    /// Identify your migration stages
+    ///
     static var stages: [MigrationStage] {
         [
             //migrateV01_00_00toV01_00_01
         ]
     }
     
+    /// Migrate - from:  ModelSchemaV01_00_00  to:  ModelSchemaV01_00_01
+    ///
     static let migrateV01_00_00toV01_00_01 = MigrationStage.custom(
         fromVersion: ModelSchemaV01_00_00.self,
         toVersion: ModelSchemaV01_00_01.self,
@@ -95,7 +110,8 @@ enum DataMigrationPlan: SchemaMigrationPlan {
     )
 }
 
-// MARK: - Schema store
+// MARK: - Schema version store
+
 struct SchemaVersionStore {
     private static let key = "lastSchemaVersion"
 
@@ -110,6 +126,8 @@ struct SchemaVersionStore {
         return Schema.Version(components[0], components[1], components[2])
     }
 }
+
+// MARK: - Utilities to use as needed in dev and testing
 
 /// Reset schema version to 1.0.0 for testing
 func resetSchemaVersionForTesting() {
