@@ -37,6 +37,8 @@ struct VersionSheetView: View {
                         .font(.system(size: 14, design: .monospaced))
                     Text("Articles: \(articlesLocation())")
                         .font(.system(size: 14, design: .monospaced))
+                    Text("Schema  : \(CurrentModelSchema.versionIdentifier)")
+                        .font(.system(size: 14, design: .monospaced))
                         .padding(.bottom, 8)
                     
                     Text("LoggedIn: \(userStatus.isLoggedIn)")
