@@ -74,7 +74,7 @@ final class ModelContainerProvider {
 
 enum DataMigrationPlan: SchemaMigrationPlan {
     
-    /// Identify your schemas
+    /// Identify all your schema
     ///
     static var schemas: [any VersionedSchema.Type] {
         [
