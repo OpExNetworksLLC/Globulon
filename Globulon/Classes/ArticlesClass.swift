@@ -152,7 +152,8 @@ class Articles {
     private class func decodeSections(from data: Data) -> Int {
         do {
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
-            let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContext(ModelContainerProvider.shared)
+            //let context = ModelContext(SharedModelContainer.shared.container)
             
             for section in decoded.sections {
                 let sectionEntity = HelpSection(id: section.section_name, section: section.section_desc, rank: section.section_rank)
@@ -170,7 +171,8 @@ class Articles {
     private class func decodeArticles(from data: Data) -> Int {
         do {
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
-            let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContext(ModelContainerProvider.shared)
+            //let context = ModelContext(SharedModelContainer.shared.container)
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
             var articleCount = 0
             
@@ -251,7 +253,8 @@ class Articles {
     }
     
     private class func deleteEntity(named entityName: String) {
-        let context = ModelContext(SharedModelContainer.shared.container)
+        let context = ModelContext(ModelContainerProvider.shared)
+        //let context = ModelContext(SharedModelContainer.shared.container)
         
         do {
             if entityName == "HelpArticle" {
@@ -288,7 +291,8 @@ class Articles {
     
     class func printSectionsAndArticles() {
         do {
-            let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContext(ModelContainerProvider.shared)
+            //let context = ModelContext(SharedModelContainer.shared.container)
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
             var sortedSections: [HelpSection] {
                 sections.sorted { $0.rank < $1.rank }

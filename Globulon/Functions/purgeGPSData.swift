@@ -17,7 +17,8 @@ import SwiftData
 
 func purgeGPSData() -> Int {
     do {
-        let context = ModelContext(SharedModelContainer.shared.container)
+        let context = ModelContext(ModelContainerProvider.shared)
+        //let context = ModelContext(SharedModelContainer.shared.container)
         //let context = ModelContext(AppEnvironment.sharedModelContainer)
 
         do {

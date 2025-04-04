@@ -9,7 +9,8 @@
 import SwiftData
 
 func countGPSDataAll() -> Int {
-    let context = ModelContext(SharedModelContainer.shared.container)
+    let context = ModelContext(ModelContainerProvider.shared)
+    //let context = ModelContext(SharedModelContainer.shared.container)
     //let context = ModelContext(AppEnvironment.sharedModelContainer)
     
     var entriesCount = 0

@@ -46,7 +46,6 @@
 		6E94F6F52B7C563C00AFA97F /* GlobulonApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */; };
 		6E94F6FB2B7C563D00AFA97F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E94F6FA2B7C563D00AFA97F /* Assets.xcassets */; };
 		6E94F6FE2B7C563D00AFA97F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E94F6FD2B7C563D00AFA97F /* Preview Assets.xcassets */; };
-		6E94F70B2B7C577A00AFA97F /* ModelAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F70A2B7C577A00AFA97F /* ModelAliases.swift */; };
 		6E94F70D2B7C57D200AFA97F /* ModelSchemaV01_00_00.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F70C2B7C57D200AFA97F /* ModelSchemaV01_00_00.swift */; };
 		6E94F7152B7C701B00AFA97F /* LogEventClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F7142B7C701B00AFA97F /* LogEventClass.swift */; };
 		6E94F7192B7C73EA00AFA97F /* MasterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E94F7182B7C73EA00AFA97F /* MasterView.swift */; };
@@ -190,7 +189,6 @@
 		6E94F6F42B7C563C00AFA97F /* GlobulonApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobulonApp.swift; sourceTree = "<group>"; };
 		6E94F6FA2B7C563D00AFA97F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E94F6FD2B7C563D00AFA97F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		6E94F70A2B7C577A00AFA97F /* ModelAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelAliases.swift; sourceTree = "<group>"; };
 		6E94F70C2B7C57D200AFA97F /* ModelSchemaV01_00_00.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelSchemaV01_00_00.swift; sourceTree = "<group>"; };
 		6E94F7142B7C701B00AFA97F /* LogEventClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEventClass.swift; sourceTree = "<group>"; };
 		6E94F7182B7C73EA00AFA97F /* MasterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterView.swift; sourceTree = "<group>"; };
@@ -527,7 +525,6 @@
 			isa = PBXGroup;
 			children = (
 				6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */,
-				6E94F70A2B7C577A00AFA97F /* ModelAliases.swift */,
 				6E94F70C2B7C57D200AFA97F /* ModelSchemaV01_00_00.swift */,
 				6E54D2392D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift */,
 				6E54D2352D91C1A0002C04B8 /* DummySchemaV01_00_00.swift */,
@@ -763,7 +760,6 @@
 				6EB56D742B8569C900C106F0 /* OnboardCompleteView.swift in Sources */,
 				6E88DC262B84703300BBB4DD /* PageControl.swift in Sources */,
 				6EB56D2D2B855F5700C106F0 /* AppDelegate.swift in Sources */,
-				6E94F70B2B7C577A00AFA97F /* ModelAliases.swift in Sources */,
 				6ECF92712D6E5417007B8F1F /* SharedModelContainer.swift in Sources */,
 				6EB56CFC2B85322800C106F0 /* ImagePicker.swift in Sources */,
 				6ECF92752D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift in Sources */,

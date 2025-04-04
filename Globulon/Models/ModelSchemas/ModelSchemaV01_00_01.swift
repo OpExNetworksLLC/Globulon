@@ -11,13 +11,11 @@ import SwiftData
 import CoreLocation
 
 enum ModelSchemaV01_00_01: VersionedSchema {
-//    static var versionIdentifier: Schema.Version {
-//        return Schema.Version(1, 0, 1)
-//    }
+
     static var versionIdentifier: Schema.Version = .init(1, 0, 1)
     
     static var models: [any PersistentModel.Type] {
-        return [
+        [
             HelpArticle.self,
             HelpSection.self,
             GPSData.self,
@@ -76,7 +74,8 @@ enum ModelSchemaV01_00_01: VersionedSchema {
         var longitude: Double
         var speed: Double
         var processed: Bool
-        var codes: String  //Rename the field
+        @Attribute(originalName: "code")  // renaming code to codes
+        var codes: String? = nil
         var note: String
 
         init(timestamp: Date, latitude: Double, longitude: Double, speed: Double, processed: Bool, codes: String, note: String) {

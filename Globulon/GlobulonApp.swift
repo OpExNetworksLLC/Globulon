@@ -143,7 +143,8 @@ import FirebaseAnalytics
         /// Heres is where we make the Shared Model Container available as a singleton across the App for use in views
         ///
         ///.modelContainer(AppEnvironment.sharedModelContainer)
-        .modelContext(SharedModelContainer.shared.context)
+        ///.modelContext(SharedModelContainer.shared.context)
+        .modelContainer(ModelContainerProvider.shared)
         
         .onChange(of: scenePhase) { scenePhase, newScenePhase in
             switch newScenePhase {

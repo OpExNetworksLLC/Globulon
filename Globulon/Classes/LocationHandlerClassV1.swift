@@ -293,7 +293,8 @@ import Combine
             
             /// Find the first entry in the buffer that  indicates no speed and thus no real motion
             if locationDataBuffer[index].speed <= 0.0 {
-                let context = ModelContext(SharedModelContainer.shared.container)
+                let context = ModelContext(ModelContainerProvider.shared)
+                //let context = ModelContext(SharedModelContainer.shared.container)
                 //let container = AppEnvironment.sharedModelContainer
                 //let context = ModelContext(container)
                 
@@ -306,6 +307,7 @@ import Combine
                     speed: locationDataBuffer[index].speed,
                     processed: false,
                     code: locationDataBuffer[index].code,
+                    //codes: locationDataBuffer[index].code,
                     note: locationDataBuffer[index].note
                 )
                 
@@ -326,6 +328,7 @@ import Combine
                         speed: locationDataBuffer[saveIndex].speed,
                         processed: false,
                         code: locationDataBuffer[saveIndex].code,
+                        //codes: locationDataBuffer[saveIndex].code,
                         note: locationDataBuffer[saveIndex].note
                     )
                     
@@ -345,7 +348,8 @@ import Combine
     }
     
     func saveLocation(location: CLLocation) {
-        let context = ModelContext(SharedModelContainer.shared.container)
+        let context = ModelContext(ModelContainerProvider.shared)
+        //let context = ModelContext(SharedModelContainer.shared.container)
         //let container = AppEnvironment.sharedModelContainer
         //let context = ModelContext(container)
         
@@ -363,6 +367,7 @@ import Combine
             speed: location.speed,
             processed: false,
             code: "",
+            //codes: "",
             note: "live: \(isMoving ? "Moving" : "") \(activityState.rawValue.description) \(state)"
         )
         
