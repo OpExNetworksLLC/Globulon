@@ -15,7 +15,7 @@ import Foundation
 import SwiftData
 import Combine
 
-// MARK: - Type aliases
+// MARK: - Type aliases for swift data schema
 
 /// Specify the current model schema and it will uipdate the other typealias's.
 ///

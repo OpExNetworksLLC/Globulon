@@ -8,7 +8,8 @@
 
 import Foundation
 
-// eg: typealias LocationManager = LocationManagerV1
+// MARK: - Type aliases for views
+
 typealias LocationHandler = LocationHandlerV1
 typealias TravelView = TravelViewV3
 typealias LoginView = LoginViewV2

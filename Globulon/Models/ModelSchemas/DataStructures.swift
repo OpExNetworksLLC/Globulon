@@ -8,8 +8,7 @@
 
 import Foundation
 
-// MARK: - Data models
-
+// MARK: - Data structures
 
 struct GPSDataBuffer: Codable, Hashable {
     var timestamp: Date
