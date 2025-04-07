@@ -8,7 +8,20 @@
 
 /**
 - Version: 1.0.0 (2025-04-04)
-- Note:
+- Note: When upgrading a schema follow this sequence:
+    1. Create a new version of the schema you intend to migrate to from the last active one
+    2. Add any new schemas to the new model schema array in the `ModelContainerProvider`
+    3. Update the `CurrentModelSchema` to the name of your new model schema
+    4. Add your data migration to the DataMigrationPlan.
+    5. Update and add fieldnames and logic in your app to accomodate the new model and any associated logic
+    6. Add your schema model to the `schemas` array in`DataMigrationPlan`
+    7. Add your migration to the `stages`array in `DataMigrationPlan`
+    
+    Testing:
+    - Use the `resetSchemaVersionForTesting` and `resetPersistentStoreIfNeeded` functions as needed
+    - In your migration code hold off saving the version `SchemaVersionStore.save` with the new version until you are ready.  This will
+      Make it easier to repeat the migration until you are sure it's complete otherwise when you run the app the version will update and think you
+      are done.
  */
 
 import Foundation
@@ -31,6 +44,7 @@ typealias GPSData = CurrentModelSchema.GPSData
 final class ModelContainerProvider {
     static let shared: ModelContainer = {
         do {
+            /// Add any new schema to the array
             let schema = Schema([HelpSection.self, HelpArticle.self, GPSData.self])
             let config = ModelConfiguration("Default", schema: schema)
             
@@ -134,16 +148,6 @@ func resetSchemaVersionForTesting() {
     SchemaVersionStore.save(Schema.Version(1, 0, 0))
 }
 
-/// Get the URL of the persistent store
-///
-func getPersistentStoreURL(container: ModelContainer?) -> URL {
-    if let container = container, let url = container.configurations.first?.url {
-        return url
-    }
-    // Default fallback if the container isn't initialized
-    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("default.store")
-}
-
 /// Reset the persistent store
 ///
 func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? = nil) throws {
@@ -174,8 +178,17 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
             }
         }
     }
+    
+    /// Get the URL of the persistent store
+    ///
+    func getPersistentStoreURL(container: ModelContainer?) -> URL {
+        if let container = container, let url = container.configurations.first?.url {
+            return url
+        }
+        // Default fallback if the container isn't initialized
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("default.store")
+    }
 }
-
 
 // MARK: - Old
 
