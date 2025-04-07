@@ -42,16 +42,16 @@ final class ModelContainerProvider {
             ///
             let savedVersion = SchemaVersionStore.load() ?? Schema.Version(0, 0, 0)
             let currentVersion = CurrentModelSchema.versionIdentifier
-            LogEvent.print(module: "ModelContainerProvider", message: "📦 Current schema: \(currentVersion), Saved schema: \(savedVersion)")
+            LogEvent.print(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
 
             if savedVersion == Schema.Version(0, 0, 0) {
                 // First-time app run
                 SchemaVersionStore.save(currentVersion)
-                LogEvent.print(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored schema version set to \(currentVersion)")
+                LogEvent.print(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
             } else if savedVersion == currentVersion {
-                LogEvent.print(module: "ModelContainerProvider", message: "✅ Schema is up-to-date at version \(currentVersion)")
+                LogEvent.print(module: "ModelContainerProvider", message: "✅ Database is up-to-date at schema version \(currentVersion)")
             } else if savedVersion < currentVersion {
-                LogEvent.print(module: "ModelContainerProvider", message: "🔄 Migration needed: from version \(savedVersion) ➡️ \(currentVersion)")
+                LogEvent.print(module: "ModelContainerProvider", message: "🔄 Database migration needed: from schema version \(savedVersion) ➡️ \(currentVersion)")
             } else {
                 LogEvent.print(module: "ModelContainerProvider", message: "⚠️ Warning: Saved schema version \(savedVersion) is NEWER than current \(currentVersion). Possible rollback or version mismatch.")
             }

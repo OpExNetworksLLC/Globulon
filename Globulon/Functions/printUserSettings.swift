@@ -48,6 +48,8 @@ func printUserSettings(description: String, indent: String) -> String {
     let userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
     settingsString = settingsString + appDescription + indent + "userMode --------> " + "\(userMode)" + "\n"
     
+    settingsString = settingsString + appDescription + indent + "database --------> " + String(UserDefaults.standard.object(forKey: "lastSchemaVersion") as? String ?? "") + "\n"
+    
     // Retrieve the date
     if let storedDate = (UserDefaults.standard.object(forKey: "lastAuth") as? Date) {
         // Use the storedDate
