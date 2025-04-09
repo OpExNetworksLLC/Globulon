@@ -8,7 +8,8 @@
 
 import Foundation
 
-//MARK:
+// MARK: - Return where the articles are store
+
 func articlesLocation() -> String {
     let storedTheme = UserDefaults.standard.integer(forKey: "articlesLocation")
     let articlesLocation = ArticleLocations(rawValue: storedTheme) ?? .local

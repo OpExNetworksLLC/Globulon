@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 63;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -88,6 +88,23 @@
 		6EA242462B86E07800C02D88 /* UserStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA242452B86E07800C02D88 /* UserStatus.swift */; };
 		6EA2424D2B86E42000C02D88 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA2424C2B86E42000C02D88 /* ForgotPasswordView.swift */; };
 		6EAA35912BAE5E6800CA3C30 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */; };
+		6EABA1EF2DA71B0E00A76A6B /* isImageEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E42DA71B0E00A76A6B /* isImageEmpty.swift */; };
+		6EABA1F02DA71B0E00A76A6B /* isURLReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E52DA71B0E00A76A6B /* isURLReachable.swift */; };
+		6EABA1F12DA71B0E00A76A6B /* isValidEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E62DA71B0E00A76A6B /* isValidEmail.swift */; };
+		6EABA1F22DA71B0E00A76A6B /* isValidPhoneNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E72DA71B0E00A76A6B /* isValidPhoneNumber.swift */; };
+		6EABA1F32DA71B0E00A76A6B /* maskEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E82DA71B0E00A76A6B /* maskEmail.swift */; };
+		6EABA1F42DA71B0E00A76A6B /* maskPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E92DA71B0E00A76A6B /* maskPassword.swift */; };
+		6EABA1F52DA71B0E00A76A6B /* maskString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1EA2DA71B0E00A76A6B /* maskString.swift */; };
+		6EABA1F62DA71B0E00A76A6B /* maskUsername.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1EB2DA71B0E00A76A6B /* maskUsername.swift */; };
+		6EABA1F72DA71B0E00A76A6B /* passwordStrengthCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1EC2DA71B0E00A76A6B /* passwordStrengthCheck.swift */; };
+		6EABA1F82DA71B0E00A76A6B /* printUserSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1ED2DA71B0E00A76A6B /* printUserSettings.swift */; };
+		6EABA1F92DA71B0E00A76A6B /* purgeGPSData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1EE2DA71B0E00A76A6B /* purgeGPSData.swift */; };
+		6EABA1FA2DA71B0E00A76A6B /* articlesLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1DE2DA71B0E00A76A6B /* articlesLocation.swift */; };
+		6EABA1FB2DA71B0E00A76A6B /* Conversions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1DF2DA71B0E00A76A6B /* Conversions.swift */; };
+		6EABA1FC2DA71B0E00A76A6B /* countGPSDataAll.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E02DA71B0E00A76A6B /* countGPSDataAll.swift */; };
+		6EABA1FD2DA71B0E00A76A6B /* FormatDates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E12DA71B0E00A76A6B /* FormatDates.swift */; };
+		6EABA1FE2DA71B0E00A76A6B /* FormatPhoneNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E22DA71B0E00A76A6B /* FormatPhoneNumbers.swift */; };
+		6EABA1FF2DA71B0E00A76A6B /* FormatSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E32DA71B0E00A76A6B /* FormatSpeed.swift */; };
 		6EB56CEF2B85303E00C106F0 /* UserProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56CEE2B85303E00C106F0 /* UserProfileView.swift */; };
 		6EB56CF12B85306C00C106F0 /* AvatarPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56CF02B85306C00C106F0 /* AvatarPickerView.swift */; };
 		6EB56CF42B8530C600C106F0 /* ImageNavCancel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56CF32B8530C600C106F0 /* ImageNavCancel.swift */; };
@@ -206,6 +223,23 @@
 		6EA242452B86E07800C02D88 /* UserStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStatus.swift; sourceTree = "<group>"; };
 		6EA2424C2B86E42000C02D88 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
+		6EABA1DE2DA71B0E00A76A6B /* articlesLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = articlesLocation.swift; sourceTree = "<group>"; };
+		6EABA1DF2DA71B0E00A76A6B /* Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
+		6EABA1E02DA71B0E00A76A6B /* countGPSDataAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countGPSDataAll.swift; sourceTree = "<group>"; };
+		6EABA1E12DA71B0E00A76A6B /* FormatDates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDates.swift; sourceTree = "<group>"; };
+		6EABA1E22DA71B0E00A76A6B /* FormatPhoneNumbers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatPhoneNumbers.swift; sourceTree = "<group>"; };
+		6EABA1E32DA71B0E00A76A6B /* FormatSpeed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatSpeed.swift; sourceTree = "<group>"; };
+		6EABA1E42DA71B0E00A76A6B /* isImageEmpty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = isImageEmpty.swift; sourceTree = "<group>"; };
+		6EABA1E52DA71B0E00A76A6B /* isURLReachable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = isURLReachable.swift; sourceTree = "<group>"; };
+		6EABA1E62DA71B0E00A76A6B /* isValidEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = isValidEmail.swift; sourceTree = "<group>"; };
+		6EABA1E72DA71B0E00A76A6B /* isValidPhoneNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = isValidPhoneNumber.swift; sourceTree = "<group>"; };
+		6EABA1E82DA71B0E00A76A6B /* maskEmail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = maskEmail.swift; sourceTree = "<group>"; };
+		6EABA1E92DA71B0E00A76A6B /* maskPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = maskPassword.swift; sourceTree = "<group>"; };
+		6EABA1EA2DA71B0E00A76A6B /* maskString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = maskString.swift; sourceTree = "<group>"; };
+		6EABA1EB2DA71B0E00A76A6B /* maskUsername.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = maskUsername.swift; sourceTree = "<group>"; };
+		6EABA1EC2DA71B0E00A76A6B /* passwordStrengthCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = passwordStrengthCheck.swift; sourceTree = "<group>"; };
+		6EABA1ED2DA71B0E00A76A6B /* printUserSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = printUserSettings.swift; sourceTree = "<group>"; };
+		6EABA1EE2DA71B0E00A76A6B /* purgeGPSData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = purgeGPSData.swift; sourceTree = "<group>"; };
 		6EB56CEE2B85303E00C106F0 /* UserProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileView.swift; sourceTree = "<group>"; };
 		6EB56CF02B85306C00C106F0 /* AvatarPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarPickerView.swift; sourceTree = "<group>"; };
 		6EB56CF32B8530C600C106F0 /* ImageNavCancel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageNavCancel.swift; sourceTree = "<group>"; };
@@ -265,10 +299,6 @@
 		6ECF92E42D6EAC98007B8F1F /* AuthSourceEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthSourceEnum.swift; sourceTree = "<group>"; };
 		6ECF92E62D6EACD8007B8F1F /* BiometricTypeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricTypeEnum.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		6ECF92692D6E4D6C007B8F1F /* Functions */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Functions; sourceTree = "<group>"; };
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6E94F6EE2B7C563C00AFA97F /* Frameworks */ = {
@@ -427,7 +457,7 @@
 				6E94F7072B7C570800AFA97F /* Models */,
 				6E94F7042B7C567B00AFA97F /* Views */,
 				6E94F7062B7C56BC00AFA97F /* Classes */,
-				6ECF92692D6E4D6C007B8F1F /* Functions */,
+				6EABA2002DA71D6800A76A6B /* Functions */,
 				6E94F70E2B7C68F400AFA97F /* Enums */,
 				6E94F7112B7C697A00AFA97F /* Representables */,
 				6EB56CF22B8530B300C106F0 /* Modifiers */,
@@ -590,6 +620,30 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		6EABA2002DA71D6800A76A6B /* Functions */ = {
+			isa = PBXGroup;
+			children = (
+				6EABA1DE2DA71B0E00A76A6B /* articlesLocation.swift */,
+				6EABA1DF2DA71B0E00A76A6B /* Conversions.swift */,
+				6EABA1E02DA71B0E00A76A6B /* countGPSDataAll.swift */,
+				6EABA1E12DA71B0E00A76A6B /* FormatDates.swift */,
+				6EABA1E22DA71B0E00A76A6B /* FormatPhoneNumbers.swift */,
+				6EABA1E32DA71B0E00A76A6B /* FormatSpeed.swift */,
+				6EABA1E42DA71B0E00A76A6B /* isImageEmpty.swift */,
+				6EABA1E52DA71B0E00A76A6B /* isURLReachable.swift */,
+				6EABA1E62DA71B0E00A76A6B /* isValidEmail.swift */,
+				6EABA1E72DA71B0E00A76A6B /* isValidPhoneNumber.swift */,
+				6EABA1E82DA71B0E00A76A6B /* maskEmail.swift */,
+				6EABA1E92DA71B0E00A76A6B /* maskPassword.swift */,
+				6EABA1EA2DA71B0E00A76A6B /* maskString.swift */,
+				6EABA1EB2DA71B0E00A76A6B /* maskUsername.swift */,
+				6EABA1EC2DA71B0E00A76A6B /* passwordStrengthCheck.swift */,
+				6EABA1ED2DA71B0E00A76A6B /* printUserSettings.swift */,
+				6EABA1EE2DA71B0E00A76A6B /* purgeGPSData.swift */,
+			);
+			path = Functions;
+			sourceTree = "<group>";
+		};
 		6EB56CED2B85301700C106F0 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -652,9 +706,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				6ECF92692D6E4D6C007B8F1F /* Functions */,
 			);
 			name = Globulon;
 			packageProductDependencies = (
@@ -810,6 +861,23 @@
 				6EB56D762B856A4100C106F0 /* Buttons.swift in Sources */,
 				6E88DC2A2B84739F00BBB4DD /* VersionSheetView.swift in Sources */,
 				6E94F7152B7C701B00AFA97F /* LogEventClass.swift in Sources */,
+				6EABA1EF2DA71B0E00A76A6B /* isImageEmpty.swift in Sources */,
+				6EABA1F02DA71B0E00A76A6B /* isURLReachable.swift in Sources */,
+				6EABA1F12DA71B0E00A76A6B /* isValidEmail.swift in Sources */,
+				6EABA1F22DA71B0E00A76A6B /* isValidPhoneNumber.swift in Sources */,
+				6EABA1F32DA71B0E00A76A6B /* maskEmail.swift in Sources */,
+				6EABA1F42DA71B0E00A76A6B /* maskPassword.swift in Sources */,
+				6EABA1F52DA71B0E00A76A6B /* maskString.swift in Sources */,
+				6EABA1F62DA71B0E00A76A6B /* maskUsername.swift in Sources */,
+				6EABA1F72DA71B0E00A76A6B /* passwordStrengthCheck.swift in Sources */,
+				6EABA1F82DA71B0E00A76A6B /* printUserSettings.swift in Sources */,
+				6EABA1F92DA71B0E00A76A6B /* purgeGPSData.swift in Sources */,
+				6EABA1FA2DA71B0E00A76A6B /* articlesLocation.swift in Sources */,
+				6EABA1FB2DA71B0E00A76A6B /* Conversions.swift in Sources */,
+				6EABA1FC2DA71B0E00A76A6B /* countGPSDataAll.swift in Sources */,
+				6EABA1FD2DA71B0E00A76A6B /* FormatDates.swift in Sources */,
+				6EABA1FE2DA71B0E00A76A6B /* FormatPhoneNumbers.swift in Sources */,
+				6EABA1FF2DA71B0E00A76A6B /* FormatSpeed.swift in Sources */,
 				6E94F7192B7C73EA00AFA97F /* MasterView.swift in Sources */,
 				6EB56CFA2B8531DF00C106F0 /* ZoomScrollView.swift in Sources */,
 				6E54D23A2D91F1CD002C04B8 /* ModelSchemaV01_00_01.swift in Sources */,
