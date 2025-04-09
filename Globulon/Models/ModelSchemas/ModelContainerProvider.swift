@@ -59,7 +59,7 @@ final class ModelContainerProvider {
             LogEvent.print(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
 
             if savedVersion == Schema.Version(0, 0, 0) {
-                // First-time app run
+                /// First-time app run
                 SchemaVersionStore.save(currentVersion)
                 LogEvent.print(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
             } else if savedVersion == currentVersion {
@@ -78,6 +78,7 @@ final class ModelContainerProvider {
             )
 
             return container
+            
         } catch {
             fatalError("Failed to initialize ModelContainer: \(error)")
         }
@@ -126,6 +127,8 @@ enum DataMigrationPlan: SchemaMigrationPlan {
 
 // MARK: - Schema version store
 
+/// Store the current schema being used.  The `ModelContainerProvider` will look to this to see if a new schema has been created and a migration required.
+///
 struct SchemaVersionStore {
     private static let key = "lastSchemaVersion"
 
@@ -143,9 +146,11 @@ struct SchemaVersionStore {
 
 // MARK: - Utilities to use as needed in dev and testing
 
-/// Reset schema version to 1.0.0 for testing
-func resetSchemaVersionForTesting() {
-    SchemaVersionStore.save(Schema.Version(1, 0, 0))
+/// Reset schema version for testing.  If no version is specified then use 1, 0, 0
+///
+func resetSchemaVersionForTesting(to version: Schema.Version? = nil) {
+    let versionToSet = version ?? Schema.Version(1, 0, 0)
+    SchemaVersionStore.save(versionToSet)
 }
 
 /// Reset the persistent store
@@ -202,9 +207,9 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //
 //    var container: ModelContainer
 //    var context: ModelContext
-//    
+//
 //    private let accessQueue = DispatchQueue(label: "com." + AppSettings.appName + ".SharedModelContainerQueue", attributes: .concurrent)
-//    
+//
 //    /// Migration Map.  The applyMigrations() function will cycle through this map and apply the upgrades
 //    ///
 //    private static let migrationMap: [Schema.Version: () throws -> Void] = [
@@ -215,22 +220,22 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //        //,Schema.Version(1, 0, 1): migrateV01_00_00_to_V01_00_01
 //        //,Schema.Version(2, 0, 0): {}
 //    ]
-//    
+//
 //    private init() {
-//        
+//
 //        /// Reset to the first version for testing
 //        ///
 //        SharedModelContainer.resetSchemaVersionForTesting()
-//        
+//
 //        do {
 //            LogEvent.print(module: "SharedModelContainer()", message: "▶️ starting...")
-//            
+//
 //            let tempSchema = Schema(SharedModelContainer.getCurrentSchema().models)
 //            let tempContainer = try ModelContainer(
 //                for: tempSchema,
 //                configurations: [ModelConfiguration(schema: tempSchema, isStoredInMemoryOnly: false)]
 //            )
-//            
+//
 //            try SharedModelContainer.resetPersistentStoreIfNeeded(startFresh: false, container: tempContainer)
 //
 //            let currentSchema = SharedModelContainer.getCurrentSchema()
@@ -238,7 +243,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 //            container = try ModelContainer(for: schema, configurations: [modelConfiguration])
 //            context = ModelContext(container)
-//            
+//
 //            try applyMigrations()
 //
 //            LogEvent.print(module: "SharedModelContainer()", message: "⏹️ ...finished")
@@ -268,7 +273,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            return ModelSchemaV01_00_00.self
 //        }
 //    }
-//    
+//
 //    private static func getPersistentStoreURL(container: ModelContainer?) -> URL {
 //        if let container = container, let url = container.configurations.first?.url {
 //            return url
@@ -276,7 +281,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //        // Default fallback if the container isn't initialized
 //        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("default.store")
 //    }
-//    
+//
 //    static func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? = nil) throws {
 //        guard startFresh else { return }
 //
@@ -308,7 +313,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //
 //        LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Perssistent store successfully reset.")
 //    }
-//    
+//
 //    /// Create a new container
 //    private static func createContainer() -> ModelContainer {
 //        do {
@@ -327,7 +332,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            return try block(container)
 //        }
 //    }
-//    
+//
 //
 //    private static func getStoredSchemaVersion() -> Schema.Version {
 //        // Retrieve the stored schema version from persistent storage
@@ -338,21 +343,21 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //        // Save the new schema version to persistent storage
 //        UserDefaults.standard.set(version.stringValue, forKey: "SchemaVersion")
 //    }
-//    
+//
 //    // Reset schema version to 1.0.0 for testing
 //    private static func resetSchemaVersionForTesting() {
 //        setStoredSchemaVersion(Schema.Version(1, 0, 0))
 //    }
-//    
+//
 //    /// Based on the stored version apply the right version based on conditions, usually to the next version
 //    ///
 //    private func applyMigrations() throws {
 //
 //        LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "starting...")
-//        
+//
 //        let storedVersion = SharedModelContainer.getStoredSchemaVersion()
 //        LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "Current stored SwiftData schema: \(storedVersion)")
-//        
+//
 //        // Iterate through migrations and apply those required
 //        for (version, migration) in SharedModelContainer.migrationMap.sorted(by: { $0.key < $1.key }) {
 //            if storedVersion < version {
@@ -367,10 +372,10 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //                }
 //            }
 //        }
-//        
+//
 //        LogEvent.print(module: "SharedModelContainer.applyMigrations()", message: "⏹️ ...finished")
 //    }
-//    
+//
 ////    private static func migrateV01_00_00_to_V01_00_01() throws {
 ////        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "starting...")
 ////
@@ -384,8 +389,8 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 ////        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "⏹️ ...finished")
 ////
 ////    }
-// 
-//    
+//
+//
 //    /// This is pointed to from `migrationsMap()`
 //    ///
 //    private static func migrateV01_00_00_to_V01_00_01() throws {
@@ -401,7 +406,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            // Explicitly fetch and migrate old data
 //            let fetchRequest = FetchDescriptor<ModelSchemaV01_00_00.GPSData>()
 //            let oldData = try context.fetch(fetchRequest)
-//            
+//
 //            for oldObject in oldData {
 //                let newObject = ModelSchemaV01_00_01.GPSData(
 //                    timestamp: oldObject.timestamp,
@@ -412,25 +417,25 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //                    codes: oldObject.code,  // Manually migrate "code" → "codes"
 //                    note: oldObject.note
 //                )
-//                
+//
 //                LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migrating old code: \(oldObject.code) to new codes: \(newObject.codes)")
-//                
+//
 //                context.insert(newObject)
 //                context.delete(oldObject) // Remove the old version
 //            }
-//            
+//
 //            try context.save()
-//           
-// 
+//
+//
 //            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migrated \(oldData.count) objects.")
-//            
+//
 //            // Replace the existing container with the new one
 //            // Postpone updating SharedModelContainer.shared until initialization is done
 //            DispatchQueue.main.async {
 //                SharedModelContainer.shared.container = newContainer
 //                SharedModelContainer.shared.context = context
 //            }
-//            
+//
 //            // Update stored schema version
 //            setStoredSchemaVersion(Schema.Version(1, 0, 1))
 //
@@ -440,7 +445,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Migration failed: \(error)")
 //            throw error
 //        }
-//        
+//
 ////        do {
 ////            let newContainer = try ModelContainer(for: newSchema, configurations: [newModelConfiguration])
 ////
@@ -458,7 +463,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 ////        }
 //    }
 //
-//    
+//
 ////    private static func migrateV01_00_00_to_V01_00_01() throws {
 ////        LogEvent.print(module: "SharedModelContainer.migrateV01_00_00_to_V01_00_01()", message: "Starting lightweight migration...")
 ////
@@ -479,7 +484,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 ////            throw error
 ////        }
 ////    }
-//    
+//
 ////    private static func migrateToVersion2() throws {
 ////        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "starting...")
 ////
@@ -493,7 +498,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 ////        LogEvent.print(module: "SharedModelContainer.migrateToVersion2()", message: "⏹️ ...finished")
 ////
 ////    }
-//    
+//
 ////    func performMigrationTask() throws {
 ////        /// Perform specific data transformations required for the migration
 ////        /// This might include:
@@ -507,7 +512,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 ////        /*
 ////        let context = self.viewContext
 ////        let fetchRequest: NSFetchRequest<NSManagedObject> = NSFetchRequest(entityName: "YourEntityName")
-////        
+////
 ////        do {
 ////            let results = try context.fetch(fetchRequest)
 ////            for object in results {
