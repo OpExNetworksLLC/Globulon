@@ -65,7 +65,7 @@ class LogEvent {
     
     class func writeShared(module: String, message: Any, indent: Int = 0) {
         let indentation = String(repeating: " ", count: indent)
-        let logMessage = "[\(AppSettings.appName)] \(formatDateStamp(Date())), \(module): \(indentation)\(message)\n"
+        let logMessage = "[\(AppSettings.appName)], \(formatDateStamp(Date())), \"\(module)\", \"\(indentation)\(message)\"\n"
         
         let fileManager = FileManager.default
         let logsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -102,6 +102,7 @@ class LogEvent {
         documentPicker.delegate = viewController as? UIDocumentPickerDelegate
         viewController.present(documentPicker, animated: true, completion: nil)
     }
+    
     /// Copies direclty to the users on device document directory
     class func copyToDeviceDirectory() {
         let fileManager = FileManager.default

@@ -71,7 +71,7 @@ func printUserSettings(description: String, indent: String) -> String {
     //settingsString = settingsString + appDescription + indent + "speedThreshold --> " + "\(trackingSpeedThreshold.rawValue)" + "\n"
     
     
-    settingsString = settingsString + appDescription + indent + "" + "\n"
+    settingsString = settingsString + appDescription
         
     return settingsString
 }
