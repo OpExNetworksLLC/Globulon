@@ -108,21 +108,19 @@ enum DataMigrationPlan: SchemaMigrationPlan {
     
     /// Migrate - from:  ModelSchemaV01_00_00  to:  ModelSchemaV01_00_01
     ///
-    static let migrateV01_00_00toV01_00_01 = MigrationStage.custom(
-        fromVersion: ModelSchemaV01_00_00.self,
-        toVersion: ModelSchemaV01_00_01.self,
-        willMigrate: { context in
-            LogEvent.print(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
-        },
-        didMigrate: { context in
-            
-            /// Update the stored version
-            ///
-            SchemaVersionStore.save(Schema.Version(1, 0, 1))
-            
-            LogEvent.print(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
-        }
-    )
+    static var migrateV01_00_00toV01_00_01: MigrationStage {
+        .custom(
+            fromVersion: ModelSchemaV01_00_00.self,
+            toVersion: ModelSchemaV01_00_01.self,
+            willMigrate: { context in
+                LogEvent.print(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
+            },
+            didMigrate: { context in
+                SchemaVersionStore.save(Schema.Version(1, 0, 1))
+                LogEvent.print(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
+            }
+        )
+    }
 }
 
 // MARK: - Schema version store

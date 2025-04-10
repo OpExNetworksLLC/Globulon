@@ -12,7 +12,9 @@ import CoreLocation
 
 enum ModelSchemaV01_00_00: VersionedSchema {
 
-    static var versionIdentifier: Schema.Version = .init(1, 0, 0)
+    static var versionIdentifier: Schema.Version {
+        Schema.Version(1, 0, 0)
+    }
     
     static var models: [any PersistentModel.Type] {
         [
