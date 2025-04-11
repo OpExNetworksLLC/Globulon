@@ -16,7 +16,7 @@ import SwiftUI
 
 struct BluetoothView: View {
         
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     @StateObject private var bluetoothHandler = BluetoothHandler.shared
     
     @State private var isShowHelp = false

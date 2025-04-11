@@ -58,7 +58,7 @@ class Articles {
     @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) {
         LogEvent.print(module: "Articles.load()", message: "source (.remote)")
         
-        guard NetworkHandler.shared.isConnected else {
+        guard NetworkManager.shared.isConnected else {
             completion(false, "No internet connection. Connect to the internet and try again.")
             return
         }

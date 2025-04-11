@@ -14,7 +14,7 @@ struct HomeView: View {
 
     @EnvironmentObject var appEnvironment: AppEnvironment
     
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @State private var isShowHelp = false
     

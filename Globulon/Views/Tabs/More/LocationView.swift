@@ -14,7 +14,7 @@ struct LocationView: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @State var isShowHelp = false
     

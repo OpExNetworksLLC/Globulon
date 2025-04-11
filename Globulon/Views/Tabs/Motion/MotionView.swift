@@ -18,7 +18,7 @@ struct MotionView: View {
     @StateObject var locationManager = LocationManager.shared
     @StateObject var motionHandler = MotionHandler.shared
     @StateObject var activityHandler = ActivityHandler.shared
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @State var isShowHelp = false
     @State private var isRecording = false

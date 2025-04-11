@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6E08F52F2BA905B7004E6329 /* NetworkHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52E2BA905B7004E6329 /* NetworkHandlerClass.swift */; };
+		6E08F52F2BA905B7004E6329 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52E2BA905B7004E6329 /* NetworkManager.swift */; };
 		6E19D6E22BA2501B00B2AE8C /* IntroAcceptTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */; };
 		6E2993B32BC1DF5900CA14AE /* AppAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2993B22BC1DF5900CA14AE /* AppAliases.swift */; };
 		6E2A22CD2B89649A0030F23E /* IntroStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CC2B89649A0030F23E /* IntroStartView.swift */; };
@@ -167,7 +167,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6E08F52E2BA905B7004E6329 /* NetworkHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkHandlerClass.swift; sourceTree = "<group>"; };
+		6E08F52E2BA905B7004E6329 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroAcceptTermsView.swift; sourceTree = "<group>"; };
 		6E2993B22BC1DF5900CA14AE /* AppAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAliases.swift; sourceTree = "<group>"; };
 		6E2A22CC2B89649A0030F23E /* IntroStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroStartView.swift; sourceTree = "<group>"; };
@@ -525,7 +525,7 @@
 				6ECF926E2D6E51F1007B8F1F /* LocationHandlerClassV1.swift */,
 				6E3F449B2D77B2460020229A /* MotionHandlerClass.swift */,
 				6E94F7142B7C701B00AFA97F /* LogEventClass.swift */,
-				6E08F52E2BA905B7004E6329 /* NetworkHandlerClass.swift */,
+				6E08F52E2BA905B7004E6329 /* NetworkManager.swift */,
 				6ECF92A22D6E9CBD007B8F1F /* NotificationHandlerClass.swift */,
 				6E7F55842BAB3B7F004136DA /* PostNotificationClass.swift */,
 				6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */,
@@ -811,7 +811,7 @@
 				6EB56CFC2B85322800C106F0 /* ImagePicker.swift in Sources */,
 				6ECF92752D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift in Sources */,
 				6EA2424D2B86E42000C02D88 /* ForgotPasswordView.swift in Sources */,
-				6E08F52F2BA905B7004E6329 /* NetworkHandlerClass.swift in Sources */,
+				6E08F52F2BA905B7004E6329 /* NetworkManager.swift in Sources */,
 				6EB56CF62B85310900C106F0 /* TextNavCancel.swift in Sources */,
 				6EB56D142B8558C700C106F0 /* UserSecurityView.swift in Sources */,
 				6EAA35912BAE5E6800CA3C30 /* DataStructures.swift in Sources */,

@@ -20,7 +20,7 @@ struct SystemStatusView: View {
     
     @ObservedObject var backgroundTaskHandler = BackgroundTaskHandler.shared
     
-    @StateObject var networkHandler         = NetworkHandler.shared
+    @StateObject var networkManager         = NetworkManager.shared
     @StateObject var notificationsHandler   = NotificationsHandler.shared
     @StateObject var activityHandler        = ActivityHandler.shared
     @StateObject var locationManager        = LocationManager.shared
@@ -40,8 +40,8 @@ struct SystemStatusView: View {
                 HeaderView()
                 Form {
                     NetworkSectionView(
-                        isConnected: networkHandler.isConnected,
-                        isReachable: networkHandler.isReachable
+                        isConnected: networkManager.isConnected,
+                        isReachable: networkManager.isReachable
                     )
                     CarPlaySectionView(
                         carPlayManager: carPlayManager

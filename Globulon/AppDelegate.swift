@@ -62,8 +62,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         /// Start network monitoring...
         ///
-        let networkHandler = NetworkHandler.shared
-        networkHandler.startNetworkUpdates()
+        let NetworkManager = NetworkManager.shared
+        NetworkManager.startNetworkUpdates()
         
         /// Start Bluetooth monitoring..
         ///
@@ -203,8 +203,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         /// Start network monitoring...
         ///
-        let networkHandler = NetworkHandler.shared
-        networkHandler.startNetworkUpdates()
+        let NetworkManager = NetworkManager.shared
+        NetworkManager.startNetworkUpdates()
         
         /// Start Bluetooth monitoring..
         ///

@@ -1,5 +1,5 @@
 //
-//  NetworkHandlerClass.swift
+//  NetworkManagerClass.swift
 //  Globulon
 //
 //  Created by David Holeman on 02/26/25.
@@ -15,14 +15,14 @@ import SwiftUI
 import Network
 import Combine
 
-@MainActor class NetworkHandler: ObservableObject {
+@MainActor class NetworkManager: ObservableObject {
     
     // Singleton instance
-    static let shared = NetworkHandler()
+    static let shared = NetworkManager()
     
     // Network monitoring variables
     private var monitor: NWPathMonitor
-    private let queue = DispatchQueue(label: "NetworkHandlerQueue")
+    private let queue = DispatchQueue(label: "NetworkManagerQueue")
     private var hasStartedNetworkUpdates = false
     
     // Published properties to update the UI
@@ -42,7 +42,7 @@ import Combine
         guard !hasStartedNetworkUpdates else { return }
         hasStartedNetworkUpdates = true
         
-        LogEvent.print(module: "NetworkHandler.startNetworkUpdates()", message: "▶️ starting...")
+        LogEvent.print(module: "NetworkManager.startNetworkUpdates()", message: "▶️ starting...")
         
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
@@ -65,7 +65,7 @@ import Combine
         guard hasStartedNetworkUpdates else { return }
         monitor.cancel()
         hasStartedNetworkUpdates = false
-        LogEvent.print(module: "NetworkHandler.stopNetworkUpdates()", message: "⏹️...stopped")
+        LogEvent.print(module: "NetworkManager.stopNetworkUpdates()", message: "⏹️...stopped")
     }
     
     // Handle path updates, ensure it's called from the correct actor
@@ -89,13 +89,13 @@ import Combine
             if wasDisconnected {
                 handleConnectivityChange(isConnected: true)
                 wasDisconnected = false
-                LogEvent.print(module: "NetworkHandler.updateNetworkStatus()", message: "Connected to the internet")
+                LogEvent.print(module: "NetworkManager.updateNetworkStatus()", message: "Connected to the internet")
             }
         } else {
             if !wasDisconnected {
                 handleConnectivityChange(isConnected: false)
                 wasDisconnected = true
-                LogEvent.print(module: "NetworkHandler.updateNetworkStatus()", message: "Disconnected from the internet")
+                LogEvent.print(module: "NetworkManager.updateNetworkStatus()", message: "Disconnected from the internet")
             }
         }
     }

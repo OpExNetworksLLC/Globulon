@@ -42,7 +42,7 @@ struct SwiftUIWebView: UIViewRepresentable {
                 uiView.backgroundColor = UIColor.clear
             }
             
-            if NetworkHandler.shared.isConnected {
+            if NetworkManager.shared.isConnected {
                 uiView.load(urlRequest)
             } else {
                 let str = "<p style=color:red>Document could not be accessed.</p><p>Check to be sure you are connected to the internet and then try again.</p>"

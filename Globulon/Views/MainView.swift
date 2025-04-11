@@ -16,7 +16,7 @@ struct MainView: View {
     @EnvironmentObject var appVariables: AppStatus
     @EnvironmentObject var userSettings: UserSettings
 
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @StateObject var motionHandler = MotionHandler.shared
     @State private var isRecording = false
@@ -173,7 +173,7 @@ struct MainView: View {
                     ///
                     if currentTab == .home {
                         ToolbarItem(placement: .navigationBarTrailing) {
-                            if networkHandler.isConnected {
+                            if networkManager.isConnected {
                                 Circle()
                                     .fill(Color.green)
                                     .frame(width: 10, height: 10)

@@ -59,8 +59,8 @@ struct LaunchView: View {
                 .task {
                     LogEvent.print(module: "LaunchView.task", message: "▶️ starting...")
                     
-                    //_ = networkHandler.isConnected
-                    _ = NetworkHandler.shared.isConnected
+                    //_ = NetworkManager.isConnected
+                    _ = NetworkManager.shared.isConnected
                     
                     /// OPTION: this is here for testing if you want to clear out the aritcles data
                     ///

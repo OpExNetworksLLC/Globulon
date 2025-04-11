@@ -16,7 +16,7 @@ struct ActivityView: View {
     
     @StateObject var locationManager = LocationManager.shared
     @StateObject var activityHandler = ActivityHandler.shared
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @State var isShowHelp = false
     @State private var isRecording = false

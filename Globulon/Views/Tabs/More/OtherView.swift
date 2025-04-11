@@ -12,7 +12,7 @@ struct OtherView: View {
 
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var networkHandler = NetworkHandler.shared
+    @StateObject var networkManager = NetworkManager.shared
     
     @State private var isShowHelp = false
 
