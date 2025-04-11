@@ -23,7 +23,7 @@ struct SystemStatusView: View {
     @StateObject var networkHandler         = NetworkHandler.shared
     @StateObject var notificationsHandler   = NotificationsHandler.shared
     @StateObject var activityHandler        = ActivityHandler.shared
-    @StateObject var locationHandler        = LocationHandler.shared
+    @StateObject var locationManager        = LocationManager.shared
     @StateObject var bluetoothHandler       = BluetoothHandler.shared
     @StateObject var carPlayManager         = CarPlayManager.shared
     
@@ -55,8 +55,8 @@ struct SystemStatusView: View {
                         isConnected: bluetoothHandler.isConnected
                     )
                     PermissionsSectionView(
-                        authorizedDescription: locationHandler.authorizedDescription,
-                        isLocationAuthorized: locationHandler.isAuthorized,
+                        authorizedDescription: locationManager.authorizedDescription,
+                        isLocationAuthorized: locationManager.isAuthorized,
                         isMotionAuthorized: activityHandler.isAuthorized,
                         isNotificationEnabled: notificationsHandler.isNotificationsEnabled,
                         isBluetoothPermission: bluetoothHandler.isPermission
@@ -65,7 +65,7 @@ struct SystemStatusView: View {
                         isMotionActivityAvailable: activityHandler.isAvailable
                     )
                     MonitoringSectionView(
-                        locationHandler: locationHandler,
+                        locationManager: locationManager,
                         activityHandler: activityHandler
                     )
                     BackgroundSectionView(
@@ -365,7 +365,7 @@ struct SystemStatusView: View {
     }
     
     struct MonitoringSectionView: View {
-        @ObservedObject var locationHandler: LocationHandler
+        @ObservedObject var locationManager: LocationManager
         @ObservedObject var activityHandler: ActivityHandler
 
         var body: some View {
@@ -375,13 +375,13 @@ struct SystemStatusView: View {
                     Text("Location:")
                     Spacer()
                     Circle()
-                        .fill(locationHandler.updatesLive ? Color.green : Color.red)
+                        .fill(locationManager.updatesLive ? Color.green : Color.red)
                         .frame(width: 16, height: 16)
                 }
                 HStack {
                     Button(role: .destructive) {
                         print("start")
-                        locationHandler.startLocationUpdates()
+                        locationManager.startLocationUpdates()
                     } label: {
                         HStack {
                             Image(systemName: "play")
@@ -403,11 +403,11 @@ struct SystemStatusView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding(.trailing, 8)
-                    .disabled(locationHandler.updatesLive)
+                    .disabled(locationManager.updatesLive)
 
                     Button(role: .destructive) {
                         print("pause")
-                        locationHandler.stopLocationUpdates()
+                        locationManager.stopLocationUpdates()
                     } label: {
                         HStack {
                             Image(systemName: "stop")
@@ -429,7 +429,7 @@ struct SystemStatusView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                     .padding(.trailing, 8)
-                    .disabled(!locationHandler.updatesLive)
+                    .disabled(!locationManager.updatesLive)
                 }
 
                 // Motion monitoring (only if available)

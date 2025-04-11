@@ -100,8 +100,8 @@ struct AccelerationData: Identifiable {
     private let filterFactor: Float = 0.05
     private let threshold: Float = 0.01
 
-    private var locationHandler: LocationHandler {
-        return LocationHandler.shared
+    private var locationManager: LocationManager {
+        return LocationManager.shared
     }
 
     @Published var accelerationHistory: [AccelerationData] = []
@@ -243,9 +243,9 @@ struct AccelerationData: Identifiable {
 
         let entry = MotionDataBuffer(
             timestamp: Date(),
-            latitude: locationHandler.lastLocation.coordinate.latitude,
-            longitude: locationHandler.lastLocation.coordinate.longitude,
-            speed: locationHandler.lastSpeed,
+            latitude: locationManager.lastLocation.coordinate.latitude,
+            longitude: locationManager.lastLocation.coordinate.longitude,
+            speed: locationManager.lastSpeed,
             accelerometerX: accelerometerData.x,
             accelerometerY: accelerometerData.y,
             accelerometerZ: accelerometerData.z,

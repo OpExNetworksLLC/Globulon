@@ -41,15 +41,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Start location monitoring...
         ///
-        let locationHandler = LocationHandler.shared
-        if locationHandler.updatesLive {
+        let locationManager = LocationManager.shared
+        if locationManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
-            locationHandler.startLocationUpdates()
+            locationManager.startLocationUpdates()
         }
         /// If a background activity session was previously active, reinstantiate it after the background launch.
-        if locationHandler.backgroundActivity {
+        if locationManager.backgroundActivity {
             LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
-            locationHandler.backgroundActivity = true
+            locationManager.backgroundActivity = true
         }
         
         /// Start activity monitoring...
@@ -178,17 +178,17 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Start location monitoring...
         ///
-        let locationHandler = LocationHandler.shared
-        print("locationHandler.updatesLive:\(locationHandler.updatesLive)")
-        if !locationHandler.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart locationHandler Session")
-            locationHandler.startLocationUpdates()
+        let locationManager = LocationManager.shared
+        print("locationManager.updatesLive:\(locationManager.updatesLive)")
+        if !locationManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart locationManager Session")
+            locationManager.startLocationUpdates()
         }
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         ///
-        if locationHandler.backgroundActivity {
+        if locationManager.backgroundActivity {
             LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
-            locationHandler.backgroundActivity = true
+            locationManager.backgroundActivity = true
         }
         
         /// Start activity monitoring...

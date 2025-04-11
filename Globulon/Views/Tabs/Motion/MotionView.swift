@@ -15,7 +15,7 @@ import Charts
 struct MotionView: View {
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var locationHandler = LocationHandler.shared
+    @StateObject var locationManager = LocationManager.shared
     @StateObject var motionHandler = MotionHandler.shared
     @StateObject var activityHandler = ActivityHandler.shared
     @StateObject var networkHandler = NetworkHandler.shared
@@ -44,12 +44,12 @@ struct MotionView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
+                        Text("\(locationManager.lastLocation.coordinate.latitude), \(locationManager.lastLocation.coordinate.longitude)")
                     }
                     HStack {
                         Text("Speed:")
                         Spacer()
-                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
+                        Text("\(formatMPH(convertMPStoMPH(locationManager.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .font(.system(size: 12, design: .monospaced))
@@ -155,8 +155,8 @@ struct MotionView: View {
         }
     }
     func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationHandler.lastLocation.coordinate.longitude)
+        let location = CLLocationCoordinate2D(latitude: locationManager.lastLocation.coordinate.latitude,
+                                              longitude: locationManager.lastLocation.coordinate.longitude)
         let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }

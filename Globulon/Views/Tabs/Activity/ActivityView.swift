@@ -14,7 +14,7 @@ import Charts
 struct ActivityView: View {
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var locationHandler = LocationHandler.shared
+    @StateObject var locationManager = LocationManager.shared
     @StateObject var activityHandler = ActivityHandler.shared
     @StateObject var networkHandler = NetworkHandler.shared
     
@@ -38,12 +38,12 @@ struct ActivityView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
+                        Text("\(locationManager.lastLocation.coordinate.latitude), \(locationManager.lastLocation.coordinate.longitude)")
                     }
                     HStack {
                         Text("Speed:")
                         Spacer()
-                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
+                        Text("\(formatMPH(convertMPStoMPH(locationManager.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .font(.system(size: 12, design: .monospaced))
@@ -55,7 +55,7 @@ struct ActivityView: View {
                     HStack {
                         Text("State:")
                         Spacer()
-                        if self.locationHandler.isMoving {
+                        if self.locationManager.isMoving {
                             Text("Moving")
                                 .foregroundColor(.green)
                         } else {
@@ -66,8 +66,8 @@ struct ActivityView: View {
                     HStack {
                         Text("Mode:")
                         Spacer()
-                        Text(self.locationHandler.activityState.rawValue)
-                            .foregroundColor(modeColor(for: locationHandler.activityState))
+                        Text(self.locationManager.activityState.rawValue)
+                            .foregroundColor(modeColor(for: locationManager.activityState))
 
                     }
                     HStack {
@@ -87,12 +87,12 @@ struct ActivityView: View {
                 VStack {
                     
                     Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.lastLocation.coordinate.latitude), longitude: (locationHandler.lastLocation.coordinate.longitude)))
+                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationManager.lastLocation.coordinate.latitude), longitude: (locationManager.lastLocation.coordinate.longitude)))
                     }
                     .onAppear {
                         updateCameraPosition()
                     }
-                    .onChange(of: locationHandler.lastLocation) {
+                    .onChange(of: locationManager.lastLocation) {
                         updateCameraPosition()
                     }
                     .frame(height: 200)
@@ -140,14 +140,14 @@ struct ActivityView: View {
     }
     
     func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationHandler.lastLocation.coordinate.longitude)
+        let location = CLLocationCoordinate2D(latitude: locationManager.lastLocation.coordinate.latitude,
+                                              longitude: locationManager.lastLocation.coordinate.longitude)
         let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }
     
     /// Helper function to change text color based on activity state
-    private func modeColor(for state: LocationHandler.ActivityState) -> Color {
+    private func modeColor(for state: LocationManager.ActivityState) -> Color {
         switch state {
         case .stationary: return .gray
         case .walking: return .green

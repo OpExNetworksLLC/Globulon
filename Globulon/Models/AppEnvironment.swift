@@ -25,7 +25,7 @@ class AppEnvironment: ObservableObject {
 //        didSet {
 //            userSettings.activeTourID = activeTourID
 //            LogEvent.print(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
-//            LocationHandler.shared.loadTourData(for: activeTourID)
+//            LocationManager.shared.loadTourData(for: activeTourID)
 //        }
 //    }
     

@@ -17,7 +17,7 @@ struct TravelViewV3: View {
     @Environment(\.colorScheme) var colorScheme
     @Binding var isShowSideMenu: Bool
 
-    @StateObject private var locationHandler = LocationHandler.shared
+    @StateObject private var locationManager = LocationManager.shared
 
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var cameraSpan: Double = 500
@@ -35,17 +35,17 @@ struct TravelViewV3: View {
                 HStack {
                     Text("Lat/Lng:")
                     Spacer()
-                    Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
+                    Text("\(locationManager.lastLocation.coordinate.latitude), \(locationManager.lastLocation.coordinate.longitude)")
                 }
                 HStack {
                     Text("Speed:")
                     Spacer()
-                    Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
+                    Text("\(formatMPH(convertMPStoMPH(locationManager.lastSpeed), decimalPoints: 2)) mph")
                 }
                 HStack {
                     Text("Heading:")
                     Spacer()
-                    Text("\(locationHandler.userHeading ?? 0.0)°")
+                    Text("\(locationManager.userHeading ?? 0.0)°")
                 }
                 .padding(.bottom, -16)
             }
@@ -56,7 +56,7 @@ struct TravelViewV3: View {
             ZStack {
                 // Map View
                 Map(position: $cameraPosition, interactionModes: [.all]) {
-                    Annotation("You", coordinate: locationHandler.lastLocation.coordinate) {
+                    Annotation("You", coordinate: locationManager.lastLocation.coordinate) {
                         ZStack {
                             ConeView(heading: 0) // Always points to the top
                                 .fill(LinearGradient(
@@ -77,7 +77,7 @@ struct TravelViewV3: View {
                         }
                     }
                 }
-                .onChange(of: locationHandler.userLocation) {
+                .onChange(of: locationManager.userLocation) {
                     updateCameraPosition()
                 }
                 .onAppear {
@@ -146,7 +146,7 @@ struct TravelViewV3: View {
         }
         .onAppear {
             // Request location permissions
-            locationHandler.requestWhenInUseAuthorization()
+            locationManager.requestWhenInUseAuthorization()
             UIApplication.shared.isIdleTimerDisabled = true
         }
         .onDisappear {
@@ -155,12 +155,12 @@ struct TravelViewV3: View {
     }
 
     private func updateCameraPosition() {
-        guard let location = locationHandler.userLocation else { return }
+        guard let location = locationManager.userLocation else { return }
         cameraPosition = .camera(
             MapCamera(
                 centerCoordinate: location.coordinate,
                 distance: cameraSpan,
-                heading: locationHandler.userHeading ?? 0.0, // Rotate map to match heading
+                heading: locationManager.userHeading ?? 0.0, // Rotate map to match heading
                 pitch: cameraPitch
             )
         )

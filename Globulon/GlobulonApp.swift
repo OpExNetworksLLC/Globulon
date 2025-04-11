@@ -98,14 +98,14 @@ import FirebaseAnalytics
         /// Check the permissions and availability of various handlers
         ///
         /// Location Handler
-        LocationHandler.shared.getAuthorizedWhenInUse { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationHandler.getAuthorizedWhenInUse()", message: "\(result)")
+        LocationManager.shared.getAuthorizedWhenInUse { result in
+            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
         }
-        LocationHandler.shared.getAuthorizedAlways { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationHandler.getAuthorizedAlways()", message: "\(result)")
+        LocationManager.shared.getAuthorizedAlways { result in
+            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedAlways()", message: "\(result)")
         }
-        LocationHandler.shared.getAuthorizedDescription { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationHandler.getAuthorizedDescription()", message: "\(result)")
+        LocationManager.shared.getAuthorizedDescription { result in
+            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedDescription()", message: "\(result)")
         }
         
         /// Activity Handler

@@ -13,7 +13,7 @@ import MapKit
 struct LocationView: View {
     @Binding var isShowSideMenu: Bool
     
-    @StateObject var locationHandler = LocationHandler.shared
+    @StateObject var locationManager = LocationManager.shared
     @StateObject var networkHandler = NetworkHandler.shared
     
     @State var isShowHelp = false
@@ -36,12 +36,12 @@ struct LocationView: View {
                     HStack {
                         Text("Lat/Lng:")
                         Spacer()
-                        Text("\(locationHandler.lastLocation.coordinate.latitude), \(locationHandler.lastLocation.coordinate.longitude)")
+                        Text("\(locationManager.lastLocation.coordinate.latitude), \(locationManager.lastLocation.coordinate.longitude)")
                     }
                     HStack {
                         Text("Speed:")
                         Spacer()
-                        Text("\(formatMPH(convertMPStoMPH(locationHandler.lastSpeed), decimalPoints: 2)) mph")
+                        Text("\(formatMPH(convertMPStoMPH(locationManager.lastSpeed), decimalPoints: 2)) mph")
                     }
                 }
                 .padding()
@@ -51,12 +51,12 @@ struct LocationView: View {
                 
                 VStack {
                     Map(position: $cameraPosition, interactionModes: [.pan, .zoom]) {
-                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationHandler.lastLocation.coordinate.latitude), longitude: (locationHandler.lastLocation.coordinate.longitude)))
+                        Marker("You", systemImage: "circle.circle", coordinate: CLLocationCoordinate2D(latitude: (locationManager.lastLocation.coordinate.latitude), longitude: (locationManager.lastLocation.coordinate.longitude)))
                     }
                     .onAppear {
                         updateCameraPosition()
                     }
-                    .onChange(of: locationHandler.lastLocation) {
+                    .onChange(of: locationManager.lastLocation) {
                         updateCameraPosition()
                     }
                 }
@@ -100,8 +100,8 @@ struct LocationView: View {
     }
     
     func updateCameraPosition() {
-        let location = CLLocationCoordinate2D(latitude: locationHandler.lastLocation.coordinate.latitude,
-                                              longitude: locationHandler.lastLocation.coordinate.longitude)
+        let location = CLLocationCoordinate2D(latitude: locationManager.lastLocation.coordinate.latitude,
+                                              longitude: locationManager.lastLocation.coordinate.longitude)
         let region = MKCoordinateRegion(center: location, span: MKCoordinateSpan(latitudeDelta: mapSpan, longitudeDelta: mapSpan))
         cameraPosition = .region(region)
     }
