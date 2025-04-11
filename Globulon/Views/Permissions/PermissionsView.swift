@@ -51,7 +51,7 @@ struct PermissionsView: View {
     @State var isMotionTrackingAllowed = false
     
     /// Singleton access tothe notifications handler
-    let notificationsHandler = NotificationsHandler.shared
+    let notificationManager = NotificationManager.shared
     @State var isUserNotificationAllowed = false
     
     /// Bluetooth
@@ -258,7 +258,7 @@ struct PermissionsView: View {
                                 Button(action: {
                                     /*
                                     if !self.isUserNotificationAllowed {
-                                        NotificationsHandler.requestUserNotificationPermission { result in
+                                        NotificationManager.requestUserNotificationPermission { result in
                                             self.isUserNotificationAllowed = result
                                         }
                                         isPermissionAllowed = true
@@ -271,7 +271,7 @@ struct PermissionsView: View {
                                     }
                                     */
                                     Task {
-                                        let result = await notificationsHandler.requestUserNotificationPermission()
+                                        let result = await notificationManager.requestUserNotificationPermission()
                                         if result {
                                             self.isUserNotificationAllowed = true
                                             isPermissionAllowed = true
@@ -304,11 +304,11 @@ struct PermissionsView: View {
                                     /// Check and reflect the latest status.  This is important because if this view is accessed after intial setup we want
                                     /// to reflect the latest status of permissions set for the app.
                                     Task {
-                                        if notificationsHandler.isNotificationsEnabled {
+                                        if notificationManager.isNotificationsEnabled {
                                             self.isUserNotificationAllowed = true
                                             isPermissionAllowed = true
                                         }
-//                                        let result = await notificationsHandler.requestUserNotificationPermission()
+//                                        let result = await notificationManager.requestUserNotificationPermission()
 //                                        if result {
 //                                            self.isUserNotificationAllowed = true
 //                                            isPermissionAllowed = true
@@ -320,7 +320,7 @@ struct PermissionsView: View {
                             }
                             .fixedSize(horizontal: false, vertical: true)
 //                            .onAppear {
-//                                notificationsHandler.getUserNotificationPermission { result in
+//                                notificationManager.getUserNotificationPermission { result in
 //                                    self.isUserNotificationAllowed = result
 //                                }
 //                            }

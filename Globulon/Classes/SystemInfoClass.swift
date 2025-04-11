@@ -22,7 +22,7 @@ class SystemInfo {
         uname(&sysInfo)
         let modelCode = withUnsafePointer(to: &sysInfo.machine) {
             $0.withMemoryRebound(to: CChar.self, capacity: 1) {
-                ptr in String.init(validatingUTF8: ptr)
+                ptr in String(validatingCString: ptr)
             }
         }
         return modelCode ?? "Unknown"

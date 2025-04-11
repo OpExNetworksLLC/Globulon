@@ -131,6 +131,10 @@ struct GDPRConsentView: View {
                             }
                         }
                         .navigationBarTitleDisplayMode(.inline)
+                        .onDisappear {
+                            /// Set a flag to track the Privacy Policy has been viewed
+                            userSettings.isPrivacy = true
+                        }
                 }
             }
 

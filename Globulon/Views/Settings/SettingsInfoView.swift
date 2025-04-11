@@ -40,59 +40,85 @@ struct SettingsInfoView: View {
         
             HStack() {
                 Text("isBiometricID....:")
-                Text(String(UserSettings.init().isBiometricID))
+                Text(String(userSettings.isBiometricID))
                 Spacer()
             }
             .padding(.bottom, 8)
             HStack() {
                 Text("userMode.........:")
-                Text("\(UserSettings.init().userMode.description)")
+                Text("\(userSettings.userMode.description)")
                 Spacer()
             }
             .padding(.bottom, 8)
             HStack() {
                 Text("isTerms..........:")
-                Text(String(UserSettings.init().isTerms))
+                Text(String(userSettings.isTerms))
+                Spacer()
+            }
+            HStack() {
+                Text("isIntroduced.....:")
+                Text(String(userSettings.isIntroduced))
+                Spacer()
+            }
+            HStack() {
+                Text("isGDPRConsent....:")
+                Text(String(userSettings.isGDPRConsentGranted))
+                Spacer()
+            }
+            HStack() {
+                Text("isPermissions....:")
+                Text(String(userSettings.isPermissions))
                 Spacer()
             }
             HStack() {
                 Text("isOnboarded......:")
-                Text(String(UserSettings.init().isOnboarded))
+                Text(String(userSettings.isOnboarded))
                 Spacer()
             }
             HStack() {
                 Text("isWelcomed.......:")
-                Text(String(UserSettings.init().isWelcomed))
+                Text(String(userSettings.isWelcomed))
                 Spacer()
             }
+            .padding(.bottom, 8)
+            
             HStack() {
                 Text("isPrivacy........:")
                 Text(String(UserSettings.init().isPrivacy))
                 Spacer()
             }
+            
+            /*
             HStack() {
                 Text("isLicensed.......:")
                 Text(String(UserSettings.init().isLicensed))
                 Spacer()
             }
             .padding(.bottom, 8)
+            */
+            
             HStack() {
                 Text("landingPage......:")
-                Text(UserSettings.init().landingPage.description)
+                Text(userSettings.landingPage.description)
                 Spacer()
             }
             .padding(.bottom, 8)
             HStack() {
                 Text("articlesLocation.:")
-                Text(UserSettings.init().articlesLocation.description)
+                Text(userSettings.articlesLocation.description)
                 Spacer()
             }
             HStack() {
                 Text("articlesDate.....:")
-                Text(formatDate(date: UserSettings.init().articlesDate))
+                Text(formatDate(date: userSettings.articlesDate))
                 Spacer()
             }
-
+            .padding(.bottom, 8)
+            HStack() {
+                Text("database schema..:")
+                Text(SchemaVersionStore.getDesc())
+                Spacer()
+            }
             .padding(.bottom, 8)
 
             Spacer()

@@ -134,6 +134,10 @@ struct SchemaVersionStore {
         UserDefaults.standard.set("\(version.major).\(version.minor).\(version.patch)", forKey: key)
     }
     
+    static func getDesc() -> String {
+        return UserDefaults.standard.string(forKey: key) ?? ""
+    }
+    
     static func load() -> Schema.Version? {
         guard let versionString = UserDefaults.standard.string(forKey: key) else { return nil }
         let components = versionString.split(separator: ".").compactMap { Int($0) }

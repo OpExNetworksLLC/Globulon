@@ -19,9 +19,9 @@ import SwiftUI
     - getUserNotificationPermission() checks the status states and determines if access is true
     - requestUserNotificationPermission() is called to request the user to allow notifications via iOS permissions.  Based on that choice it returns the appropriate observed status
  */
-@MainActor class NotificationsHandler: ObservableObject {
+@MainActor class NotificationManager: ObservableObject {
     
-    static let shared = NotificationsHandler()
+    static let shared = NotificationManager()
     
     @Published var isNotificationsEnabled: Bool = false
     

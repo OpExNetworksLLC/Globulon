@@ -145,6 +145,7 @@ struct UserAccountView: View {
             .frame(width: UIScreen.main.bounds.width - 36, height: 120, alignment: .leading)
         }
     }
+    
     struct NameView: View {
         
         @State var firstname: String = UserSettings.init().firstname
@@ -212,7 +213,6 @@ struct UserAccountView: View {
                 }
             }
         }
-        
     }
     
     struct EmailView: View {
@@ -580,6 +580,7 @@ struct UserAccountView: View {
                     .onAppear {
                         isPrivacyReviewed = UserSettings.init().isPrivacy
                     }
+                        /// If the webpage has been reviewd then true is returned by `WebPageView`
                         .onChange(of: isPrivacyReviewed) {
                             UserSettings.init().isPrivacy = isPrivacyReviewed
                         }
