@@ -11,11 +11,7 @@
  - Note:
 */
 
-
 import SwiftUI
-
-/// Biometric and Keychain
-///
 import LocalAuthentication
 import Security
 
