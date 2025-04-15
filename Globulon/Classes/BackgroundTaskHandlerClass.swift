@@ -133,7 +133,7 @@ import SwiftUI
     }
 
 
-    // Short task work simulation
+    /// Short task work simulation
     private func doSomeShortTaskWork() async throws {
         print("Doing some short task work...")
         try await Task.sleep(nanoseconds: 3 * 1_000_000_000) // Reduced sleep time to 3 seconds

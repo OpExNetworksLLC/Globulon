@@ -12,7 +12,7 @@ import SceneKit
 import Charts
 
 struct ActivityView: View {
-    @Binding var isShowSideMenu: Bool
+    //@Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
     @StateObject var activityManager = ActivityManager.shared
@@ -177,6 +177,7 @@ struct ActivityView: View {
 
 
 #Preview {
-    ActivityView(isShowSideMenu: .constant(false))
+    //ActivityView(isShowSideMenu: .constant(false))
+    ActivityView()
 }
 

@@ -359,10 +359,9 @@
 			isa = PBXGroup;
 			children = (
 				6E680D5E2D7BC8C5002F7F43 /* MoreView.swift */,
+				6E3F44AE2D77BE710020229A /* ActivityView.swift */,
 				6ECF92982D6E9BBA007B8F1F /* BluetoothView.swift */,
-				6E9AEEB92C2D1EA700522E71 /* LocationView.swift */,
-				6ECF92A02D6E9C6E007B8F1F /* StatusView.swift */,
-				6ECF929E2D6E9C4F007B8F1F /* OtherView.swift */,
+				6E76F7902DAF22F90052CF42 /* unused */,
 			);
 			path = More;
 			sourceTree = "<group>";
@@ -370,7 +369,6 @@
 		6E680D602D7BD7A2002F7F43 /* Activity */ = {
 			isa = PBXGroup;
 			children = (
-				6E3F44AE2D77BE710020229A /* ActivityView.swift */,
 			);
 			path = Activity;
 			sourceTree = "<group>";
@@ -390,6 +388,16 @@
 				6E680D392D7BC89C002F7F43 /* TravelViewV3.swift */,
 			);
 			path = Travel;
+			sourceTree = "<group>";
+		};
+		6E76F7902DAF22F90052CF42 /* unused */ = {
+			isa = PBXGroup;
+			children = (
+				6E9AEEB92C2D1EA700522E71 /* LocationView.swift */,
+				6ECF92A02D6E9C6E007B8F1F /* StatusView.swift */,
+				6ECF929E2D6E9C4F007B8F1F /* OtherView.swift */,
+			);
+			path = unused;
 			sourceTree = "<group>";
 		};
 		6E88DC0F2B846B2700BBB4DD /* Welcome */ = {

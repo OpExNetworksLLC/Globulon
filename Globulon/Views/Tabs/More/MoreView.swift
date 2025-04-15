@@ -20,6 +20,7 @@ struct MoreView: View {
                 Spacer()
             }
             List {
+                NavigationLink("Activity", destination: ActivityView())
                 NavigationLink("Bluetooth connections", destination: BluetoothView())
             }
             .listStyle(.plain)
