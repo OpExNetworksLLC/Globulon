@@ -109,20 +109,20 @@ import FirebaseAnalytics
         }
         
         /// Activity Handler
-        ActivityHandler.shared.getMotionActivityAvailability { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityHandler.getMotionActivityAvailability()", message: "\(result)")
+        ActivityManager.shared.getMotionActivityAvailability { result in
+            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getMotionActivityAvailability()", message: "\(result)")
         }
-        ActivityHandler.shared.getMotionActivityPermission { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityHandler.getMotionActivityPermission()", message: "\(result)")
+        ActivityManager.shared.getMotionActivityPermission { result in
+            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getMotionActivityPermission()", message: "\(result)")
         }
         
-        ActivityHandler.shared.getActivityMonitoringStatus { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityHandler.getActivityMonitoringStatus()", message: "\(result)")
+        ActivityManager.shared.getActivityMonitoringStatus { result in
+            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
             
             /** OPTION:  Use this code to start the handle
             ```
             if !result {
-            ActivityHandler.shared.startActivityUpdates()
+            ActivityManager.shared.startActivityUpdates()
             }
             ```
             */

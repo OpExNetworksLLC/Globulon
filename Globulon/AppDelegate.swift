@@ -54,10 +54,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Start activity monitoring...
         ///
-        let activityHandler = ActivityHandler.shared
-        if activityHandler.updatesLive {
+        let activityManager = ActivityManager.shared
+        if activityManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
-            activityHandler.startActivityUpdates()
+            activityManager.startActivityUpdates()
         }
 
         /// Start network monitoring...
@@ -193,13 +193,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Start activity monitoring...
         ///
-        let activityHandler = ActivityHandler.shared
-        print("activityHandler.updatesLive:\(activityHandler.updatesLive)")
-        if !activityHandler.updatesLive {
+        let activityManager = ActivityManager.shared
+        print("activityManager.updatesLive:\(activityManager.updatesLive)")
+        if !activityManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyHandler Session")
-            activityHandler.startActivityUpdates()
+            activityManager.startActivityUpdates()
         }
-        //activityHandler.startActivityUpdates()
+        //activityManager.startActivityUpdates()
 
         /// Start network monitoring...
         ///

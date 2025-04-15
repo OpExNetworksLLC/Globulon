@@ -22,7 +22,7 @@ struct SystemStatusView: View {
     
     @StateObject var networkManager         = NetworkManager.shared
     @StateObject var notificationManager   = NotificationManager.shared
-    @StateObject var activityHandler        = ActivityHandler.shared
+    @StateObject var activityManager        = ActivityManager.shared
     @StateObject var locationManager        = LocationManager.shared
     @StateObject var bluetoothHandler       = BluetoothHandler.shared
     @StateObject var carPlayManager         = CarPlayManager.shared
@@ -57,16 +57,16 @@ struct SystemStatusView: View {
                     PermissionsSectionView(
                         authorizedDescription: locationManager.authorizedDescription,
                         isLocationAuthorized: locationManager.isAuthorized,
-                        isMotionAuthorized: activityHandler.isAuthorized,
+                        isMotionAuthorized: activityManager.isAuthorized,
                         isNotificationEnabled: notificationManager.isNotificationsEnabled,
                         isBluetoothPermission: bluetoothHandler.isPermission
                     )
                     DeviceSectionView(
-                        isMotionActivityAvailable: activityHandler.isAvailable
+                        isMotionActivityAvailable: activityManager.isAvailable
                     )
                     MonitoringSectionView(
                         locationManager: locationManager,
-                        activityHandler: activityHandler
+                        activityManager: activityManager
                     )
                     BackgroundSectionView(
                         backgroundTaskHandler: backgroundTaskHandler
@@ -366,7 +366,7 @@ struct SystemStatusView: View {
     
     struct MonitoringSectionView: View {
         @ObservedObject var locationManager: LocationManager
-        @ObservedObject var activityHandler: ActivityHandler
+        @ObservedObject var activityManager: ActivityManager
 
         var body: some View {
             Section(header: Text("MONITORING")) {
@@ -433,18 +433,18 @@ struct SystemStatusView: View {
                 }
 
                 // Motion monitoring (only if available)
-                if activityHandler.isAvailable {
+                if activityManager.isAvailable {
                     HStack {
                         Text("Motion:")
                         Spacer()
                         Circle()
-                            .fill(activityHandler.isActivityMonitoringOn ? Color.green : Color.red)
+                            .fill(activityManager.isActivityMonitoringOn ? Color.green : Color.red)
                             .frame(width: 16, height: 16)
                     }
                     HStack {
                         Button(role: .destructive) {
                             print("start")
-                            activityHandler.startActivityUpdates()
+                            activityManager.startActivityUpdates()
                         } label: {
                             HStack {
                                 Image(systemName: "play")
@@ -466,11 +466,11 @@ struct SystemStatusView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 8)
-                        .disabled(activityHandler.isActivityMonitoringOn)
+                        .disabled(activityManager.isActivityMonitoringOn)
 
                         Button(role: .destructive) {
                             print("pause")
-                            activityHandler.stopActivityUpdates()
+                            activityManager.stopActivityUpdates()
                         } label: {
                             HStack {
                                 Image(systemName: "stop")
@@ -492,7 +492,7 @@ struct SystemStatusView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 8)
-                        .disabled(!activityHandler.isActivityMonitoringOn)
+                        .disabled(!activityManager.isActivityMonitoringOn)
                     }
                 }
             }

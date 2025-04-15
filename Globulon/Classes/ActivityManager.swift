@@ -1,5 +1,5 @@
 //
-//  ActivityHandlerClass.swift
+//  ActivityManager.swift
 //  Globulon
 //
 //  Created by David Holeman on 02/25/25.
@@ -31,7 +31,7 @@ struct ActivityDataBuffer: Codable, Hashable {
 }
 
 @MainActor
-class ActivityHandler: ObservableObject {
+class ActivityManager: ObservableObject {
     
     enum ActivityState: String {
         case walking = "Walking"
@@ -41,7 +41,7 @@ class ActivityHandler: ObservableObject {
         case unknown = "Unknown"
     }
 
-    static let shared = ActivityHandler()
+    static let shared = ActivityManager()
 
     @Published var isActivity = false
     @Published var isActivityMonitoringOn = false
@@ -52,7 +52,7 @@ class ActivityHandler: ObservableObject {
     @Published var updatesLive: Bool {
         didSet {
             UserDefaults.standard.set(updatesLive, forKey: "activityupdatesLive")
-            LogEvent.print(module: "ActivityHandler.updatesLive", message: "\(updatesLive ? "Activity updates started ..." : "... stopped activity updates")")
+            LogEvent.print(module: "ActivityManager.updatesLive", message: "\(updatesLive ? "Activity updates started ..." : "... stopped activity updates")")
         }
     }
 
@@ -96,7 +96,7 @@ class ActivityHandler: ObservableObject {
     class func requestMotionActivityPermission(completion: @escaping (Bool) -> Void) {
         let motionActivityManager = CMMotionActivityManager()
         motionActivityManager.startActivityUpdates(to: .main) { _ in
-            LogEvent.print(module: "ActivityHandler.requestMotionActivityPermission()", message: "Motion activity updates have started...")
+            LogEvent.print(module: "ActivityManager.requestMotionActivityPermission()", message: "Motion activity updates have started...")
         }
         
         //getMotionActivityPermission(completion: completion)
@@ -104,14 +104,14 @@ class ActivityHandler: ObservableObject {
 
     func startActivityUpdates() {
         guard CMMotionActivityManager.isActivityAvailable() else {
-            LogEvent.print(module: "** ActivityHandler.startActivityUpdates()", message: "Activity data is not available on this device.")
+            LogEvent.print(module: "** ActivityManager.startActivityUpdates()", message: "Activity data is not available on this device.")
             return
         }
         self.isAvailable = true
         
         self.updatesLive = true
         self.isActivityMonitoringOn = true
-        LogEvent.print(module: "ActivityHandler.startActivityUpdates()", message: "started ...")
+        LogEvent.print(module: "ActivityManager.startActivityUpdates()", message: "started ...")
 
         motionActivityManager.startActivityUpdates(to: .main) { [weak self] activity in
             guard let self = self, let activity = activity else { return }
@@ -124,7 +124,7 @@ class ActivityHandler: ObservableObject {
         motionActivityManager.stopActivityUpdates()
         isActivityMonitoringOn = false
         updatesLive = false
-        LogEvent.print(module: "ActivityHandler.stopActivityUpdates()", message: "Stopping activity updates")
+        LogEvent.print(module: "ActivityManager.stopActivityUpdates()", message: "Stopping activity updates")
     }
 
     private func updateActivityState(_ activity: CMMotionActivity) {

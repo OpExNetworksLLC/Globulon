@@ -18,7 +18,7 @@ struct MainView: View {
 
     @StateObject var networkManager = NetworkManager.shared
     
-    @StateObject var motionHandler = MotionHandler.shared
+    @StateObject var motionManager = MotionManager.shared
     @State private var isRecording = false
     
     @State private var showNetworkAlert = false
@@ -187,7 +187,7 @@ struct MainView: View {
                     
                     if currentTab == .motion {
                         ToolbarItem(placement: .navigationBarLeading) {
-                            if motionHandler.isMotionMonitoringOn {
+                            if motionManager.isMotionMonitoringOn {
                                 Rectangle()
                                     .fill(Color.green)
                                     .frame(width: 10, height: 10)
@@ -201,9 +201,9 @@ struct MainView: View {
                             Button(action: {
                                 isRecording.toggle()
                                 if isRecording {
-                                    motionHandler.startMotionUpdates()
+                                    motionManager.startMotionUpdates()
                                 } else {
-                                    motionHandler.stopMotionUpdates()
+                                    motionManager.stopMotionUpdates()
                                 }
                             }) {
                                 if isRecording {

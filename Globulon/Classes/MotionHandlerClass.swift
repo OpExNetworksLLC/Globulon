@@ -1,18 +1,25 @@
 //
-//  MotionHandlerClass.swift
+//  MotionManager.swift
 //  Globulon
 //
 //  Created by David Holeman on 3/4/25.
 //  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
-// MARK: - MotionHandler
+/**
+ - Version: 1.0.0 (2025-03-04)
+ - Note:
+    - Version: 1.0.0 (2025-03-04)
+        - (created)
+*/
 
 import Foundation
 import CoreMotion
 import CoreLocation
 import Combine
 import SceneKit
+
+// MARK: - MotionDataBuffer:  global
 
 struct MotionDataBuffer: Codable, Hashable {
     var timestamp: Date
@@ -33,7 +40,8 @@ struct MotionDataBuffer: Codable, Hashable {
     var note: String
 }
 
-// MARK: - AccelerationData
+// MARK: - AccelerationData:  global
+
 struct AccelerationData: Identifiable {
     let id = UUID()
     let timestamp: Date
@@ -42,7 +50,9 @@ struct AccelerationData: Identifiable {
     let z: Double
 }
 
-@MainActor class MotionHandler: ObservableObject {
+// MARK: - MotionManager
+
+@MainActor class MotionManager: ObservableObject {
     
     struct AccelerometerData {
         var x: Double
@@ -62,7 +72,7 @@ struct AccelerationData: Identifiable {
         var roll: Double
     }
 
-    static let shared = MotionHandler()
+    static let shared = MotionManager()
     
     @Published var isActivity = false
     @Published var isMotionMonitoringOn = false
@@ -74,7 +84,7 @@ struct AccelerationData: Identifiable {
     @Published var updatesStarted: Bool {
         didSet {
             UserDefaults.standard.set(updatesStarted, forKey: "motionUpdatesStarted")
-            LogEvent.print(module: "MotionHandler.updatesStarted", message: "\(updatesStarted ? "Motion updates started ..." : "... stopped activity updates")")
+            LogEvent.print(module: "MotionManager.updatesStarted", message: "\(updatesStarted ? "Motion updates started ..." : "... stopped activity updates")")
         }
     }
 
@@ -149,9 +159,9 @@ struct AccelerationData: Identifiable {
             self.accelerometerUpdated = true
             self.isActivity = true
             self.isMotionMonitoringOn = true
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Accelerometer updates have started...")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Accelerometer updates have started...")
         } else {
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Accelerometer is not available.")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Accelerometer is not available.")
         }
 
         if motionManager.isGyroAvailable {
@@ -191,9 +201,9 @@ struct AccelerationData: Identifiable {
             self.gyroscopeUpdated = true
             self.isActivity = true
             self.isMotionMonitoringOn = true
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Gyroscope updates have started...")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Gyroscope updates have started...")
         } else {
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Gyroscope is not available.")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Gyroscope is not available.")
         }
 
         if motionManager.isDeviceMotionAvailable {
@@ -212,9 +222,9 @@ struct AccelerationData: Identifiable {
             self.attitudeUpdated = true
             self.isActivity = true
             self.isMotionMonitoringOn = true
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Device motion updates have started...")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Device motion updates have started...")
         } else {
-            LogEvent.print(module: "MotionHandler.startMotionUpdates()", message: "Device motion is not available.")
+            LogEvent.print(module: "MotionManager.startMotionUpdates()", message: "Device motion is not available.")
         }
     }
 
@@ -224,7 +234,7 @@ struct AccelerationData: Identifiable {
         motionManager.stopDeviceMotionUpdates()
         self.isActivity = false
         self.isMotionMonitoringOn = false
-        LogEvent.print(module: "MotionHandler.stopMotionUpdates()", message: "Device Motion Activity updates have stopped.")
+        LogEvent.print(module: "MotionManager.stopMotionUpdates()", message: "Device Motion Activity updates have stopped.")
     }
 
     private func checkAndUpdateMotionDataBuffer() {
@@ -257,7 +267,7 @@ struct AccelerationData: Identifiable {
             attitudeRoll: attitudeData.roll,
             processed: false,
             code: "",
-            note: "buffer:" + " " + "activity: \(ActivityHandler.shared.isActivity ? "active" : "inactive")" + " / " + "\(ActivityHandler.shared.activityState)"
+            note: "buffer:" + " " + "activity: \(ActivityManager.shared.isActivity ? "active" : "inactive")" + " / " + "\(ActivityManager.shared.activityState)"
         )
         motionDataBuffer.insert(entry, at: 0)
     }

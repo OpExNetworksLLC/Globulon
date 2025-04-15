@@ -15,7 +15,7 @@ struct ActivityView: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
-    @StateObject var activityHandler = ActivityHandler.shared
+    @StateObject var activityManager = ActivityManager.shared
     @StateObject var networkManager = NetworkManager.shared
     
     @State var isShowHelp = false
@@ -73,8 +73,8 @@ struct ActivityView: View {
                     HStack {
                         Text("Activity:")
                         Spacer()
-                        Text(self.activityHandler.activityState.rawValue)
-                            .foregroundColor(activityColor(for: activityHandler.activityState))
+                        Text(self.activityManager.activityState.rawValue)
+                            .foregroundColor(activityColor(for: activityManager.activityState))
 
                     }
                 }
@@ -122,7 +122,7 @@ struct ActivityView: View {
                 }
  
                 List {
-                    ForEach(activityHandler.activityDataBuffer, id: \.self) { detail in
+                    ForEach(activityManager.activityDataBuffer, id: \.self) { detail in
                         Text("\(formatDateStampA(detail.timestamp)) \(detail.note)")
                     }
                 }
@@ -157,7 +157,7 @@ struct ActivityView: View {
         }
     }
     /// Helper function to change text color based on activity state
-    private func activityColor(for state: ActivityHandler.ActivityState) -> Color {
+    private func activityColor(for state: ActivityManager.ActivityState) -> Color {
         switch state {
         case .stationary: return .gray
         case .walking: return .green

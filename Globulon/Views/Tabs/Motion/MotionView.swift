@@ -16,8 +16,8 @@ struct MotionView: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
-    @StateObject var motionHandler = MotionHandler.shared
-    @StateObject var activityHandler = ActivityHandler.shared
+    @StateObject var motionManager = MotionManager.shared
+    @StateObject var activityManager = ActivityManager.shared
     @StateObject var networkManager = NetworkManager.shared
     
     @State var isShowHelp = false
@@ -64,19 +64,19 @@ struct MotionView: View {
                     HStack {
                         Text("Accelerometer XYZ:")
                         Spacer()
-                        Text("\(motionHandler.accelerometerData.x), \(motionHandler.accelerometerData.y), \(motionHandler.accelerometerData.z)")
+                        Text("\(motionManager.accelerometerData.x), \(motionManager.accelerometerData.y), \(motionManager.accelerometerData.z)")
                     }
                     .padding(.trailing, 2)
                     HStack {
                         Text("Gyroscope XYZ:")
                         Spacer()
-                        Text("\(motionHandler.gyroscopeData.x), \(motionHandler.gyroscopeData.y), \(motionHandler.gyroscopeData.z)")
+                        Text("\(motionManager.gyroscopeData.x), \(motionManager.gyroscopeData.y), \(motionManager.gyroscopeData.z)")
                     }
                     .padding(.trailing, 2)
                     HStack {
                         Text("Attitude PYR:")
                         Spacer()
-                        Text("\(motionHandler.attitudeData.pitch), \(motionHandler.attitudeData.yaw), \(motionHandler.attitudeData.roll)")
+                        Text("\(motionManager.attitudeData.pitch), \(motionManager.attitudeData.yaw), \(motionManager.attitudeData.roll)")
                     }
                     .padding(.trailing, 2)
                 }
@@ -91,13 +91,13 @@ struct MotionView: View {
                         Rectangle()
                             .fill(Color.blue)
                             .frame(width: 50, height: 100)
-                            .rotationEffect(Angle(radians: motionHandler.attitudeData.roll), anchor: .center)
-                            .rotation3DEffect(Angle(radians: motionHandler.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
-                            .rotation3DEffect(Angle(radians: motionHandler.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
+                            .rotationEffect(Angle(radians: motionManager.attitudeData.roll), anchor: .center)
+                            .rotation3DEffect(Angle(radians: motionManager.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
+                            .rotation3DEffect(Angle(radians: motionManager.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
                         Spacer().frame(width: 50)
                         SceneView(
-                            scene: motionHandler.scene,
+                            scene: motionManager.scene,
                             options: [.allowsCameraControl]
                         )
                         .frame(width: 100, height: 100)
@@ -107,7 +107,7 @@ struct MotionView: View {
                 
                 VStack {
                     Chart {
-                        ForEach(motionHandler.accelerationHistory) { dataPoint in
+                        ForEach(motionManager.accelerationHistory) { dataPoint in
                             LineMark(
                                 x: .value("Time", dataPoint.timestamp),
                                 y: .value("X", dataPoint.x)

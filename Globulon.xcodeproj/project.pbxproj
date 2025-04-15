@@ -137,7 +137,7 @@
 		6EB56D722B85699500C106F0 /* OnboardPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56D712B85699500C106F0 /* OnboardPasswordView.swift */; };
 		6EB56D742B8569C900C106F0 /* OnboardCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56D732B8569C900C106F0 /* OnboardCompleteView.swift */; };
 		6EB56D762B856A4100C106F0 /* Buttons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EB56D752B856A4100C106F0 /* Buttons.swift */; };
-		6EC603C52C6AE745001BB460 /* ActivityHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */; };
+		6EC603C52C6AE745001BB460 /* ActivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC603C42C6AE745001BB460 /* ActivityManager.swift */; };
 		6ECEC4052C27740200232E80 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6ECEC4042C27740200232E80 /* GoogleService-Info.plist */; };
 		6ECF91872D6E46B6007B8F1F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 6ECF91862D6E46B6007B8F1F /* README.md */; };
 		6ECF91892D6E46F3007B8F1F /* DEV_NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = 6ECF91882D6E46F3007B8F1F /* DEV_NOTES.md */; };
@@ -272,7 +272,7 @@
 		6EB56D712B85699500C106F0 /* OnboardPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardPasswordView.swift; sourceTree = "<group>"; };
 		6EB56D732B8569C900C106F0 /* OnboardCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardCompleteView.swift; sourceTree = "<group>"; };
 		6EB56D752B856A4100C106F0 /* Buttons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buttons.swift; sourceTree = "<group>"; };
-		6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityHandlerClass.swift; sourceTree = "<group>"; };
+		6EC603C42C6AE745001BB460 /* ActivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityManager.swift; sourceTree = "<group>"; };
 		6ECEC4042C27740200232E80 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6ECF91862D6E46B6007B8F1F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		6ECF91882D6E46F3007B8F1F /* DEV_NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DEV_NOTES.md; sourceTree = "<group>"; };
@@ -511,7 +511,7 @@
 			isa = PBXGroup;
 			children = (
 				6ECF92842D6E69A4007B8F1F /* AsyncProcessor.swift */,
-				6EC603C42C6AE745001BB460 /* ActivityHandlerClass.swift */,
+				6EC603C42C6AE745001BB460 /* ActivityManager.swift */,
 				6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */,
 				6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */,
 				6EB56D1F2B855BA800C106F0 /* ArticlesClass.swift */,
@@ -814,7 +814,7 @@
 				6EAA35912BAE5E6800CA3C30 /* DataStructures.swift in Sources */,
 				6E7F55852BAB3B7F004136DA /* PostNotificationClass.swift in Sources */,
 				6E88DC352B8479DA00BBB4DD /* AppStatus.swift in Sources */,
-				6EC603C52C6AE745001BB460 /* ActivityHandlerClass.swift in Sources */,
+				6EC603C52C6AE745001BB460 /* ActivityManager.swift in Sources */,
 				6E88DC372B847A6100BBB4DD /* OnboardPageEnum.swift in Sources */,
 				6ECF92DF2D6EA72E007B8F1F /* SystemStatusView.swift in Sources */,
 				6ECF928B2D6E6A87007B8F1F /* GDPRConsentView.swift in Sources */,
