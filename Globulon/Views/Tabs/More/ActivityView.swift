@@ -137,6 +137,7 @@ struct ActivityView: View {
                 Spacer()
             }
         }
+        .navigationBarTitle("Activity")
     }
     
     func updateCameraPosition() {
