@@ -133,6 +133,6 @@ import Combine
     
     // Handle connectivity change and post a notification
     private func handleConnectivityChange(isConnected: Bool) {
-        PostNotification.connectivityChangeNotification(isConnected: isConnected)
+        NotificationManager.connectivityChangeNotification(isConnected: isConnected)
     }
 }

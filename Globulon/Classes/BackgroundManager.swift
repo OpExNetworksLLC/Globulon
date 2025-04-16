@@ -69,7 +69,7 @@ import SwiftUI
     /// Handle the app refresh task
     private func handleAppRefresh(task: BGAppRefreshTask) {
         self.updateTaskState(to: .running, logMessage: "🔥 Background app refresh task is now running.")
-        PostNotification.sendNotification(title: "Task Running", body: "App refresh task is now running.")
+        NotificationManager.sendNotification(title: "Task Running", body: "App refresh task is now running.")
 
         let operation = Task {
             do {
@@ -78,15 +78,15 @@ import SwiftUI
                 let completionDate = Date()
                 UserDefaults.standard.set(completionDate, forKey: "LastAppRefreshTaskCompletionDate")
                 self.updateTaskState(to: .completed, logMessage: "🏁 App refresh task completed at \(formattedDate(completionDate)).")
-                PostNotification.sendNotification(title: "Task Completed", body: "App refresh task completed at: \(formattedDate(completionDate))")
+                NotificationManager.sendNotification(title: "Task Completed", body: "App refresh task completed at: \(formattedDate(completionDate))")
             } catch {
                 if Task.isCancelled {
                     self.updateTaskState(to: .expired, logMessage: "💀 App refresh task expired before completion.")
-                    PostNotification.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
+                    NotificationManager.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
                 } else {
                     task.setTaskCompleted(success: false)
                     self.updateTaskState(to: .failed, logMessage: "❌ App refresh task failed with error.")
-                    PostNotification.sendNotification(title: "Task Failed", body: "App refresh task failed.")
+                    NotificationManager.sendNotification(title: "Task Failed", body: "App refresh task failed.")
                 }
             }
 
@@ -97,7 +97,7 @@ import SwiftUI
         task.expirationHandler = {
             operation.cancel()
             self.updateTaskState(to: .expired, logMessage: "💀 App refresh task expired before completion.")
-            PostNotification.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
+            NotificationManager.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
         }
     }
 
@@ -106,13 +106,13 @@ import SwiftUI
         let taskIdentifier = self.backgroundAppRefreshTask
         
         //self.updateTaskState(to: .pending, logMessage: "scheduleAppRefreshTask: '\(taskIdentifier)'")
-        //PostNotification.sendNotification(title: "Schedule Task", body: "App Refresh placeholder")
+        //NotificationManager.sendNotification(title: "Schedule Task", body: "App Refresh placeholder")
 
         
         BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
             if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
                 self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
-                PostNotification.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
+                NotificationManager.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
                 return
             }
 
@@ -124,10 +124,10 @@ import SwiftUI
             do {
                 try BGTaskScheduler.shared.submit(request)
                 self.updateTaskState(to: .scheduledRFSH, logMessage: "✅ App refresh task '\(taskIdentifier)' successfully scheduled.")
-                PostNotification.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
+                NotificationManager.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
             } catch {
                 self.updateTaskState(to: .failed, logMessage: "❌ Failed to schedule app refresh task.")
-                PostNotification.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
+                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
             }
         }
     }
@@ -149,7 +149,7 @@ import SwiftUI
     /// Handle long-running processing task
     private func handleProcessingTask(task: BGProcessingTask) {
         self.updateTaskState(to: .running, logMessage: "🔥 Background processing task is now running.")
-        PostNotification.sendNotification(title: "Task Running", body: "Background processing task is now running.")
+        NotificationManager.sendNotification(title: "Task Running", body: "Background processing task is now running.")
 
         let operation = Task {
             do {
@@ -159,11 +159,11 @@ import SwiftUI
                 let completionDate = Date()
                 UserDefaults.standard.set(completionDate, forKey: "LastBackgroundTaskCompletionDate")
                 self.updateTaskState(to: .completed, logMessage: "🏁 Background processing task completed at \(formattedDate(completionDate)).")
-                PostNotification.sendNotification(title: "Task Completed", body: "Background processing task completed at: \(formattedDate(completionDate))")
+                NotificationManager.sendNotification(title: "Task Completed", body: "Background processing task completed at: \(formattedDate(completionDate))")
             } catch {
                 task.setTaskCompleted(success: false)
                 self.updateTaskState(to: .failed, logMessage: "❌ Background processing task failed with error.")
-                PostNotification.sendNotification(title: "Task Failed", body: "Background processing task failed.")
+                NotificationManager.sendNotification(title: "Task Failed", body: "Background processing task failed.")
             }
 
             scheduleProcessingTask()
@@ -171,7 +171,7 @@ import SwiftUI
         task.expirationHandler = {
             operation.cancel()
             self.updateTaskState(to: .expired, logMessage: "💀 Background processing task expired before completion.")
-            PostNotification.sendNotification(title: "Task Expired", body: "Background processing task expired before completion.")
+            NotificationManager.sendNotification(title: "Task Expired", body: "Background processing task expired before completion.")
             task.setTaskCompleted(success: false)
         }
     }
@@ -182,7 +182,7 @@ import SwiftUI
         BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
             if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
                 self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
-                PostNotification.sendNotification(title: "Task Pending", body: "Processing task is already pending.")
+                NotificationManager.sendNotification(title: "Task Pending", body: "Processing task is already pending.")
                 return
             }
             let request = BGProcessingTaskRequest(identifier: taskIdentifier)
@@ -220,10 +220,10 @@ import SwiftUI
             do {
                 try BGTaskScheduler.shared.submit(request)
                 self.updateTaskState(to: .scheduledBKG, logMessage: "✅ Processing task '\(taskIdentifier)' successfully scheduled.")
-                PostNotification.sendNotification(title: "Task Scheduled", body: "Processing task has been scheduled.")
+                NotificationManager.sendNotification(title: "Task Scheduled", body: "Processing task has been scheduled.")
             } catch {
                 self.updateTaskState(to: .failed, logMessage: "‼️ Failed to schedule processing task.")
-                PostNotification.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the processing task.")
+                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the processing task.")
             }
         }
     }
@@ -238,19 +238,19 @@ import SwiftUI
     func cancelBackgroundTask() {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
         updateTaskState(to: .cancelled, logMessage: "⛔️ Background process task '\(backgroundTaskIdentifier)' has been cancelled.")
-        PostNotification.sendNotification(title: "Task Cancelled", body: "Background process task has been cancelled.")
+        NotificationManager.sendNotification(title: "Task Cancelled", body: "Background process task has been cancelled.")
     }
     
     func cancelAppRefreshTask() {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundAppRefreshTask)
         updateTaskState(to: .cancelled, logMessage: "⛔️ Background app refresh task '\(backgroundAppRefreshTask)' has been cancelled.")
-        PostNotification.sendNotification(title: "Task Cancelled", body: "Background app refresh task has been cancelled.")
+        NotificationManager.sendNotification(title: "Task Cancelled", body: "Background app refresh task has been cancelled.")
     }
     
     func cancelAllBackgroundTasks() {
         BGTaskScheduler.shared.cancelAllTaskRequests()
         updateTaskState(to: .allCancelled, logMessage: "⛔️ All background tasks have been cancelled.")
-        PostNotification.sendNotification(title: "All Tasks Cancelled", body: "All background tasks have been cancelled.")
+        NotificationManager.sendNotification(title: "All Tasks Cancelled", body: "All background tasks have been cancelled.")
     }
     
     

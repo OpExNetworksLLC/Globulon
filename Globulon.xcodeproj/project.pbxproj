@@ -29,7 +29,6 @@
 		6E6D9B262B8403B2004325A1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6D9B252B8403B2004325A1 /* AppSettings.swift */; };
 		6E7274962B804A1700B5547C /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274952B804A1700B5547C /* AppEnvironment.swift */; };
 		6E7274982B804A9E00B5547C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274972B804A9E00B5547C /* AppDefaults.swift */; };
-		6E7F55852BAB3B7F004136DA /* PostNotificationClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7F55842BAB3B7F004136DA /* PostNotificationClass.swift */; };
 		6E88DC182B846C5200BBB4DD /* SwiftUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88DC172B846C5200BBB4DD /* SwiftUIWebView.swift */; };
 		6E88DC1E2B846E3C00BBB4DD /* SystemInfoClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */; };
 		6E88DC202B846E6E00BBB4DD /* AppInfoClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */; };
@@ -188,7 +187,6 @@
 		6E6D9B252B8403B2004325A1 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		6E7274952B804A1700B5547C /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6E7274972B804A9E00B5547C /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
-		6E7F55842BAB3B7F004136DA /* PostNotificationClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostNotificationClass.swift; sourceTree = "<group>"; };
 		6E88DC172B846C5200BBB4DD /* SwiftUIWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIWebView.swift; sourceTree = "<group>"; };
 		6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemInfoClass.swift; sourceTree = "<group>"; };
 		6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfoClass.swift; sourceTree = "<group>"; };
@@ -366,13 +364,6 @@
 			path = More;
 			sourceTree = "<group>";
 		};
-		6E680D602D7BD7A2002F7F43 /* Activity */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Activity;
-			sourceTree = "<group>";
-		};
 		6E680D612D7BD7B1002F7F43 /* Motion */ = {
 			isa = PBXGroup;
 			children = (
@@ -524,17 +515,16 @@
 				6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */,
 				6EB56D1F2B855BA800C106F0 /* ArticlesClass.swift */,
 				6EB56D2A2B855EA400C106F0 /* AuthenticationClass.swift */,
+				6ECF92742D6E6418007B8F1F /* BackgroundManager.swift */,
 				6EB56D152B8559AA00C106F0 /* BiometricsClass.swift */,
 				6E94F7312B7C944100AFA97F /* DateInfoClass.swift */,
 				6ECF92DC2D6EA68B007B8F1F /* GitHubManager.swift */,
 				6E97DC2D2DA9B7FF00468F43 /* LocationManager.swift */,
-				6E3F449B2D77B2460020229A /* MotionManager.swift */,
 				6E94F7142B7C701B00AFA97F /* LogEventClass.swift */,
+				6E3F449B2D77B2460020229A /* MotionManager.swift */,
 				6E08F52E2BA905B7004E6329 /* NetworkManager.swift */,
 				6ECF92A22D6E9CBD007B8F1F /* NotificationManager.swift */,
-				6E7F55842BAB3B7F004136DA /* PostNotificationClass.swift */,
 				6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */,
-				6ECF92742D6E6418007B8F1F /* BackgroundManager.swift */,
 				6ECF92762D6E647B007B8F1F /* BluetoothHandlerClass.swift */,
 				6ECF92862D6E6A03007B8F1F /* CarPlayManager.swift */,
 				6ECF92882D6E6A30007B8F1F /* SceneDelegateClass.swift */,
@@ -690,7 +680,6 @@
 			isa = PBXGroup;
 			children = (
 				6E2A88EA2BE7F47100DFC163 /* Home */,
-				6E680D602D7BD7A2002F7F43 /* Activity */,
 				6E680D622D7BD8CC002F7F43 /* Travel */,
 				6E680D612D7BD7B1002F7F43 /* Motion */,
 				6E3F44AD2D77B75F0020229A /* More */,
@@ -820,7 +809,6 @@
 				6EB56CF62B85310900C106F0 /* TextNavCancel.swift in Sources */,
 				6EB56D142B8558C700C106F0 /* UserSecurityView.swift in Sources */,
 				6EAA35912BAE5E6800CA3C30 /* DataStructures.swift in Sources */,
-				6E7F55852BAB3B7F004136DA /* PostNotificationClass.swift in Sources */,
 				6E88DC352B8479DA00BBB4DD /* AppStatus.swift in Sources */,
 				6EC603C52C6AE745001BB460 /* ActivityManager.swift in Sources */,
 				6E88DC372B847A6100BBB4DD /* OnboardPageEnum.swift in Sources */,
