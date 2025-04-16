@@ -210,6 +210,7 @@ struct SystemStatusView: View {
             .padding(.trailing, -16)
         }
     }
+    
     struct BluetoothSectionView: View {
 
         @ObservedObject var bluetoothHandler: BluetoothHandler
@@ -273,9 +274,9 @@ struct SystemStatusView: View {
                             bluetoothHandler.stopBluetoothUpdates()
                         } label: {
                             HStack {
-                                Image(systemName: "stop")
+                                Image(systemName: "pause")
                                     .resizable()
-                                    .frame(width: 16, height: 16)
+                                    .frame(width: 8, height: 16)
                                     .padding(.leading, 8)
                                 Text("Pause")
                                 Spacer()
@@ -410,9 +411,9 @@ struct SystemStatusView: View {
                         locationManager.stopLocationUpdates()
                     } label: {
                         HStack {
-                            Image(systemName: "stop")
+                            Image(systemName: "pause")
                                 .resizable()
-                                .frame(width: 16, height: 16)
+                                .frame(width: 8, height: 16)
                                 .padding(.leading, 8)
                             Text("Pause")
                             Spacer()
@@ -513,10 +514,91 @@ struct SystemStatusView: View {
                     Text("\(backgroundManager.taskState.statusDescription)")
                 }
                 HStack {
+                    Button(role: .destructive) {
+                        print("stop all")
+                        BackgroundManager.shared.cancelAllBackgroundTasks()
+                    } label: {
+                        HStack{
+                            Image(systemName: "stop")
+                                .resizable()
+                                .frame(width: 16,height: 16)
+                                .padding(.leading, 8)
+                            Text("Stop All")
+                            Spacer()
+                        }
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .frame(width: 100, height: 32)
+                        .background(
+                            RoundedRectangle(
+                                cornerRadius: 5,
+                                style: .continuous
+                            )
+                            .stroke(.blue, lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .padding(.trailing, 1)
+                    Spacer()
+                }
+                HStack {
                     Text("Last Background:")
                     Spacer()
                     Text("\((UserDefaults.standard.object(forKey: "LastBackgroundTaskCompletionDate") as? Date)?.formatted() ?? "Never")")
                 }
+                
+                HStack {
+                    Button(role: .destructive) {
+                        print("play background")
+                        BackgroundManager.shared.scheduleProcessingTask()
+                    } label: {
+                        HStack{
+                            Image(systemName: "play")
+                                .resizable()
+                                .frame(width: 16, height: 16)
+                                .padding(.leading, 8)
+                            Text("Start")
+                            Spacer()
+                        }
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .frame(width: 100, height: 32)
+                        .background(
+                            RoundedRectangle(
+                                cornerRadius: 5,
+                                style: .continuous
+                            )
+                            .stroke(.blue, lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .padding(.trailing, 4)
+                    
+                    Button(role: .destructive) {
+                        print("stop background")
+                        BackgroundManager.shared.cancelBackgroundTask()
+                    } label: {
+                        HStack{
+                            Image(systemName: "stop")
+                                .resizable()
+                                .frame(width: 16,height: 16)
+                                .padding(.leading, 8)
+                            Text("Stop")
+                            Spacer()
+                        }
+                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
+                        .frame(width: 100, height: 32)
+                        .background(
+                            RoundedRectangle(
+                                cornerRadius: 5,
+                                style: .continuous
+                            )
+                            .stroke(.blue, lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Spacer()
+                }
+                
                 HStack {
                     Text("Last App Refresh:")
                     Spacer()
@@ -533,7 +615,7 @@ struct SystemStatusView: View {
                                 .resizable()
                                 .frame(width: 16, height: 16)
                                 .padding(.leading, 8)
-                            Text("Refresh")
+                            Text("Start")
                             Spacer()
                         }
                         .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
@@ -550,19 +632,19 @@ struct SystemStatusView: View {
                     .padding(.trailing, 4)
                     
                     Button(role: .destructive) {
-                        print("play background")
-                        BackgroundManager.shared.scheduleProcessingTask()
+                        print("stop refresh")
+                        BackgroundManager.shared.cancelAppRefreshTask()
                     } label: {
                         HStack{
-                            Image(systemName: "play")
+                            Image(systemName: "stop")
                                 .resizable()
-                                .frame(width: 16, height: 16)
+                                .frame(width: 16,height: 16)
                                 .padding(.leading, 8)
-                            Text("Background")
+                            Text("Stop")
                             Spacer()
                         }
                         .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 132, height: 32)
+                        .frame(width: 100, height: 32)
                         .background(
                             RoundedRectangle(
                                 cornerRadius: 5,
@@ -575,86 +657,6 @@ struct SystemStatusView: View {
                     .padding(.trailing, 4)
     
                 }
-                
-                HStack {
-                    Button(role: .destructive) {
-                        print("stop refresh")
-                        BackgroundManager.shared.cancelAppRefreshTask()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("Refresh")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 4)
-
-                    
-                    Button(role: .destructive) {
-                        print("stop background")
-                        BackgroundManager.shared.cancelBackgroundTask()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("Background")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 132, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 4)
-                    
-                    Button(role: .destructive) {
-                        print("stop all")
-                        BackgroundManager.shared.cancelAllBackgroundTasks()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("All")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 60, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 1)
-                    Spacer()
-                }
-
             }
             .offset(x: -8)
             .padding(.trailing, -16)
