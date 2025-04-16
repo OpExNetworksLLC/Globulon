@@ -21,7 +21,7 @@ import SwiftUI
 struct StatusView: View {
     @Binding var isShowSideMenu: Bool
     
-    @ObservedObject var backgroundTaskHandler = BackgroundTaskHandler.shared
+    @ObservedObject var backgroundManager = BackgroundManager.shared
     
     @StateObject var networkManager         = NetworkManager.shared
     @StateObject var notificationManager   = NotificationManager.shared
@@ -72,7 +72,7 @@ struct StatusView: View {
                         activityManager: activityManager
                     )
                     BackgroundSectionView(
-                        backgroundTaskHandler: backgroundTaskHandler
+                        backgroundManager: backgroundManager
                     )
 
                 }
@@ -475,7 +475,7 @@ struct StatusView: View {
     }
 
     struct BackgroundSectionView: View {
-        @ObservedObject var backgroundTaskHandler: BackgroundTaskHandler
+        @ObservedObject var backgroundManager: BackgroundManager
         
         var body: some View {
             Section(header: Text("BACKGROUND")) {
@@ -483,7 +483,7 @@ struct StatusView: View {
                 HStack {
                     Text("Current State:")
                     Spacer()
-                    Text("\(backgroundTaskHandler.taskState.statusDescription)")
+                    Text("\(backgroundManager.taskState.statusDescription)")
                 }
                 HStack {
                     Text("Last Background:")
@@ -499,7 +499,7 @@ struct StatusView: View {
                 HStack {
                     Button(role: .destructive) {
                         print("play refresh")
-                        BackgroundTaskHandler.shared.scheduleAppRefresh()
+                        BackgroundManager.shared.scheduleAppRefresh()
                     } label: {
                         HStack{
                             Image(systemName: "play")
@@ -524,7 +524,7 @@ struct StatusView: View {
                     
                     Button(role: .destructive) {
                         print("play background")
-                        BackgroundTaskHandler.shared.scheduleProcessingTask()
+                        BackgroundManager.shared.scheduleProcessingTask()
                     } label: {
                         HStack{
                             Image(systemName: "play")
@@ -552,7 +552,7 @@ struct StatusView: View {
                 HStack {
                     Button(role: .destructive) {
                         print("stop refresh")
-                        BackgroundTaskHandler.shared.cancelAppRefreshTask()
+                        BackgroundManager.shared.cancelAppRefreshTask()
                     } label: {
                         HStack{
                             Image(systemName: "stop")
@@ -578,7 +578,7 @@ struct StatusView: View {
                     
                     Button(role: .destructive) {
                         print("stop background")
-                        BackgroundTaskHandler.shared.cancelBackgroundTask()
+                        BackgroundManager.shared.cancelBackgroundTask()
                     } label: {
                         HStack{
                             Image(systemName: "stop")
@@ -603,7 +603,7 @@ struct StatusView: View {
                     
                     Button(role: .destructive) {
                         print("stop all")
-                        BackgroundTaskHandler.shared.cancelAllBackgroundTasks()
+                        BackgroundManager.shared.cancelAllBackgroundTasks()
                     } label: {
                         HStack{
                             Image(systemName: "stop")

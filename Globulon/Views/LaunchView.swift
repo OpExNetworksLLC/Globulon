@@ -89,8 +89,8 @@ struct LaunchView: View {
                     
                     /// OPTION: Schedule any apps you want scheduled when the app starts
                     ///
-                    ///`BackgroundTaskHandler.shared.scheduleAppRefresh()
-                    ///`BackgroundTaskHandler.shared.scheduleProcessingTask()
+                    ///`BackgroundManager.shared.scheduleAppRefresh()
+                    ///`BackgroundManager.shared.scheduleProcessingTask()
                     
                     /*
                     /// Launch an async process that completes based on priority..

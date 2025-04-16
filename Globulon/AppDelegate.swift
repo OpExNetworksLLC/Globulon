@@ -88,7 +88,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Register background activities
         ///
-        BackgroundTaskHandler.shared.registerBackgroundTask()
+        BackgroundManager.shared.registerBackgroundTask()
         
         /// Start Firebase...
         ///
@@ -228,7 +228,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Register background activities
         ///
-        BackgroundTaskHandler.shared.registerBackgroundTask()
+        BackgroundManager.shared.registerBackgroundTask()
         return true
     }
     

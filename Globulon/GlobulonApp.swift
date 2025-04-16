@@ -155,7 +155,7 @@ import FirebaseAnalytics
                 ///`persistanceController.save()
                 
                 /// OPTION:  Schedule any background task(s)
-                ///`BackgroundTaskHandler.shared.scheduleProcessingTask()
+                ///`BackgroundManager.shared.scheduleProcessingTask()
                 
             case .inactive:
                 //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")

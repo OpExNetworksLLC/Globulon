@@ -143,7 +143,7 @@
 		6ECF91892D6E46F3007B8F1F /* DEV_NOTES.md in Resources */ = {isa = PBXBuildFile; fileRef = 6ECF91882D6E46F3007B8F1F /* DEV_NOTES.md */; };
 		6ECF926D2D6E505D007B8F1F /* AuthModeEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF926C2D6E505D007B8F1F /* AuthModeEnum.swift */; };
 		6ECF92712D6E5417007B8F1F /* ModelContainerProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF92702D6E5417007B8F1F /* ModelContainerProvider.swift */; };
-		6ECF92752D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF92742D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift */; };
+		6ECF92752D6E6418007B8F1F /* BackgroundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF92742D6E6418007B8F1F /* BackgroundManager.swift */; };
 		6ECF92772D6E647B007B8F1F /* BluetoothHandlerClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF92762D6E647B007B8F1F /* BluetoothHandlerClass.swift */; };
 		6ECF927D2D6E66E6007B8F1F /* AnalyticsConsentDetails.html in Resources */ = {isa = PBXBuildFile; fileRef = 6ECF927C2D6E66E6007B8F1F /* AnalyticsConsentDetails.html */; };
 		6ECF92832D6E68F2007B8F1F /* AnimatedSideBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ECF92822D6E68F2007B8F1F /* AnimatedSideBar.swift */; };
@@ -278,7 +278,7 @@
 		6ECF91882D6E46F3007B8F1F /* DEV_NOTES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DEV_NOTES.md; sourceTree = "<group>"; };
 		6ECF926C2D6E505D007B8F1F /* AuthModeEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModeEnum.swift; sourceTree = "<group>"; };
 		6ECF92702D6E5417007B8F1F /* ModelContainerProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelContainerProvider.swift; sourceTree = "<group>"; };
-		6ECF92742D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskHandlerClass.swift; sourceTree = "<group>"; };
+		6ECF92742D6E6418007B8F1F /* BackgroundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundManager.swift; sourceTree = "<group>"; };
 		6ECF92762D6E647B007B8F1F /* BluetoothHandlerClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandlerClass.swift; sourceTree = "<group>"; };
 		6ECF927C2D6E66E6007B8F1F /* AnalyticsConsentDetails.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = AnalyticsConsentDetails.html; sourceTree = "<group>"; };
 		6ECF92822D6E68F2007B8F1F /* AnimatedSideBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimatedSideBar.swift; sourceTree = "<group>"; };
@@ -534,7 +534,7 @@
 				6ECF92A22D6E9CBD007B8F1F /* NotificationManager.swift */,
 				6E7F55842BAB3B7F004136DA /* PostNotificationClass.swift */,
 				6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */,
-				6ECF92742D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift */,
+				6ECF92742D6E6418007B8F1F /* BackgroundManager.swift */,
 				6ECF92762D6E647B007B8F1F /* BluetoothHandlerClass.swift */,
 				6ECF92862D6E6A03007B8F1F /* CarPlayManager.swift */,
 				6ECF92882D6E6A30007B8F1F /* SceneDelegateClass.swift */,
@@ -814,7 +814,7 @@
 				6EB56D2D2B855F5700C106F0 /* AppDelegate.swift in Sources */,
 				6ECF92712D6E5417007B8F1F /* ModelContainerProvider.swift in Sources */,
 				6EB56CFC2B85322800C106F0 /* ImagePicker.swift in Sources */,
-				6ECF92752D6E6418007B8F1F /* BackgroundTaskHandlerClass.swift in Sources */,
+				6ECF92752D6E6418007B8F1F /* BackgroundManager.swift in Sources */,
 				6EA2424D2B86E42000C02D88 /* ForgotPasswordView.swift in Sources */,
 				6E08F52F2BA905B7004E6329 /* NetworkManager.swift in Sources */,
 				6EB56CF62B85310900C106F0 /* TextNavCancel.swift in Sources */,

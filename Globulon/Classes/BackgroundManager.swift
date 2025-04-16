@@ -1,5 +1,5 @@
 //
-//  BackgroundTaskHandlerClass.swift
+//  BackgroundManager.swift
 //  Globulon
 //
 //  Created by David Holeman on 02/25/25.
@@ -23,9 +23,9 @@ import Combine
 import UserNotifications
 import SwiftUI
 
-@MainActor class BackgroundTaskHandler: ObservableObject {
+@MainActor class BackgroundManager: ObservableObject {
     
-    static let shared = BackgroundTaskHandler()
+    static let shared = BackgroundManager()
     
     @Published var taskState: BackgroundTaskState = .idle
         
@@ -266,7 +266,7 @@ import SwiftUI
         DispatchQueue.main.async {
             self.taskState = newState
             if let message = logMessage {
-                LogEvent.print(module: "BackgroundTaskHandler", message: message)
+                LogEvent.print(module: "BackgroundManager", message: message)
             }
         }
     }
