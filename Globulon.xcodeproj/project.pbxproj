@@ -645,14 +645,14 @@
 			children = (
 				6EB56CF02B85306C00C106F0 /* AvatarPickerView.swift */,
 				6EB56D092B8556E400C106F0 /* DeveloperSettingsView.swift */,
+				6EB56D0D2B85577900C106F0 /* SettingsInfoView.swift */,
+				6EB56D0B2B85574B00C106F0 /* SystemInfoView.swift */,
+				6ECF92DE2D6EA72E007B8F1F /* SystemStatusView.swift */,
 				6EB56CFF2B8532BB00C106F0 /* UserAccountView.swift */,
 				6EB56CEE2B85303E00C106F0 /* UserProfileView.swift */,
 				6EB56D132B8558C700C106F0 /* UserSecurityView.swift */,
 				6EB56D0F2B85588F00C106F0 /* UserSettingsView.swift */,
 				6EB56D112B8558A800C106F0 /* UserSupportView.swift */,
-				6EB56D0B2B85574B00C106F0 /* SystemInfoView.swift */,
-				6EB56D0D2B85577900C106F0 /* SettingsInfoView.swift */,
-				6ECF92DE2D6EA72E007B8F1F /* SystemStatusView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1046,7 +1046,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1093,7 +1093,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 81;
+				CURRENT_PROJECT_VERSION = 82;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
