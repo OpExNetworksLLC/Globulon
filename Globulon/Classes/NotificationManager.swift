@@ -71,36 +71,71 @@ import SwiftUI
     }
     
     class func sendNotification(title: String, body: String) {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-        content.sound = .default
-        
-        print(">>>\(content.title) - \(content.body)")
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // Trigger now
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+        Task { @MainActor in
+            let content = UNMutableNotificationContent()
+            content.title = title
+            content.body = body
+            content.sound = .default
+
+            print(">>> \(content.title) - \(content.body)")
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+
+            do {
+                try await UNUserNotificationCenter.current().add(request)
+            } catch {
                 LogEvent.print(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
             }
         }
     }
-    
+
     class func connectivityChangeNotification(isConnected: Bool) {
-        let content = UNMutableNotificationContent()
-        content.title = "Internet Connectivity Changed"
-        content.body = isConnected ? "You're now connected to the internet." : "You've lost internet connectivity."
-        content.sound = UNNotificationSound.default
-        
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // Trigger now
-        
-        UNUserNotificationCenter.current().add(request) { error in
-            if let error = error {
+        Task { @MainActor in
+            let content = UNMutableNotificationContent()
+            content.title = "Internet Connectivity Changed"
+            content.body = isConnected ? "You're now connected to the internet." : "You've lost internet connectivity."
+            content.sound = .default
+
+            let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+
+            do {
+                try await UNUserNotificationCenter.current().add(request)
+            } catch {
                 LogEvent.print(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
             }
         }
     }
+//    class func sendNotification(title: String, body: String) {
+//        let content = UNMutableNotificationContent()
+//        content.title = title
+//        content.body = body
+//        content.sound = .default
+//        
+//        print(">>>\(content.title) - \(content.body)")
+//        
+//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // Trigger now
+//        
+//        UNUserNotificationCenter.current().add(request) { error in
+//            if let error = error {
+//                LogEvent.print(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
+//            }
+//        }
+//    }
+//    
+//    class func connectivityChangeNotification(isConnected: Bool) {
+//        let content = UNMutableNotificationContent()
+//        content.title = "Internet Connectivity Changed"
+//        content.body = isConnected ? "You're now connected to the internet." : "You've lost internet connectivity."
+//        content.sound = UNNotificationSound.default
+//        
+//        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil) // Trigger now
+//        
+//        UNUserNotificationCenter.current().add(request) { error in
+//            if let error = error {
+//                LogEvent.print(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
+//            }
+//        }
+//    }
 }
 
 

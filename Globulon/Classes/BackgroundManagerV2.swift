@@ -1,16 +1,14 @@
 //
-//  BackgroundManager.swift
+//  BackgroundManagerV2.swift
 //  Globulon
 //
-//  Created by David Holeman on 02/25/25.
+//  Created by David Holeman on 4/17/25.
 //  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 /**
- - Version: 1.0.0
+ - Version: 2.0.0
  - Date: 09-27-2024
- 
- - Note: This version only works under Swift5.   It crashes if run under Swift6
 
  # Force background execution in simulator
  This command can be executed when the app is paused at 11db prompt to force the background task to execute:
@@ -25,9 +23,9 @@ import Combine
 import UserNotifications
 import SwiftUI
 
-@MainActor class BackgroundManager: ObservableObject {
+@MainActor class BackgroundManagerV2: ObservableObject {
     
-    static let shared = BackgroundManager()
+    static let shared = BackgroundManagerV2()
     
     @Published var taskState: BackgroundTaskState = .idle
         

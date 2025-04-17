@@ -37,7 +37,7 @@ import FirebaseAnalytics
     private let backgroundProcessingTaskIdentifier = "com.opexnetworks.Globulon.backgroundProcessing"
     
     init() {
-        
+  
         //deleteDefaultStore()
         
         /// Save the prior logfile
