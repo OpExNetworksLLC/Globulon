@@ -53,6 +53,7 @@ import SwiftUI
     let backgroundAppRefreshTask = "com.opexnetworks." + AppSettings.appName + ".appRefreshTask"
     let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
     
+    ///  Keys used to store if background tasks and processes have been scheduled.
     let backgroundAppRefreshTaskScheduledKey = "backgroundAppRefreshTaskScheduledKey"
     let backgroundTaskIdentifierScheduledKey = "backgroundTaskIdentifierScheduledKey"
     
@@ -136,7 +137,6 @@ import SwiftUI
         }
         
     }
-
 
     /// Short task work simulation
     private func doSomeShortTaskWork() async throws {
