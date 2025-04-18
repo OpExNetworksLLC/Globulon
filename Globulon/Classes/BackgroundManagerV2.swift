@@ -8,7 +8,7 @@
 
 /**
  - Version: 2.0.0
- - Date: 09-27-2024
+ - Date: 2025-04-17
 
  # Force background execution in simulator
  This command can be executed when the app is paused at 11db prompt to force the background task to execute:
@@ -49,87 +49,94 @@ import SwiftUI
         }
     }
     
-    /// App refresh task identifiers
+    /// Task identifiers
     let backgroundAppRefreshTask = "com.opexnetworks." + AppSettings.appName + ".appRefreshTask"
+    let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
+    
+    private init() {}
     
     func registerBackgroundTask() {
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: backgroundAppRefreshTask, using: nil) { [weak self] task in
-            guard let self = self, let task = task as? BGAppRefreshTask else { return }
-            self.handleAppRefresh(task: task)
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: backgroundAppRefreshTask, using: nil) { task in
+            Task {
+                await self.handleAppRefresh(task: task as! BGAppRefreshTask)
+            }
         }
         self.updateTaskState(to: .idle, logMessage: "✅ Background app refresh task '\(backgroundAppRefreshTask)' registered.")
         
-        BGTaskScheduler.shared.register(forTaskWithIdentifier: backgroundTaskIdentifier, using: nil) { [weak self] task in
-            guard let self = self, let task = task as? BGProcessingTask else { return }
-            self.handleProcessingTask(task: task)
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: backgroundTaskIdentifier, using: nil) { task in
+            Task {
+                await self.handleProcessingTask(task: task as! BGProcessingTask)
+            }
         }
         self.updateTaskState(to: .idle, logMessage: "✅ Background processing task '\(backgroundTaskIdentifier)' registered.")
     }
     
     /// Handle the app refresh task
-    private func handleAppRefresh(task: BGAppRefreshTask) {
-        self.updateTaskState(to: .running, logMessage: "🔥 Background app refresh task is now running.")
+    private func handleAppRefresh(task: BGAppRefreshTask) async {
+        self.updateTaskState(to: .running, logMessage: "🔥 App refresh task is now running.")
         NotificationManager.sendNotification(title: "Task Running", body: "App refresh task is now running.")
 
-        let operation = Task {
-            do {
-                try await doSomeShortTaskWork()
-                task.setTaskCompleted(success: true)
-                let completionDate = Date()
-                UserDefaults.standard.set(completionDate, forKey: "LastAppRefreshTaskCompletionDate")
-                self.updateTaskState(to: .completed, logMessage: "🏁 App refresh task completed at \(formattedDate(completionDate)).")
-                NotificationManager.sendNotification(title: "Task Completed", body: "App refresh task completed at: \(formattedDate(completionDate))")
-            } catch {
-                if Task.isCancelled {
-                    self.updateTaskState(to: .expired, logMessage: "💀 App refresh task expired before completion.")
-                    NotificationManager.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
-                } else {
-                    task.setTaskCompleted(success: false)
-                    self.updateTaskState(to: .failed, logMessage: "❌ App refresh task failed with error.")
-                    NotificationManager.sendNotification(title: "Task Failed", body: "App refresh task failed.")
-                }
-            }
-
-            // Schedule the next app refresh task regardless of outcome
-            scheduleAppRefresh()
-        }
 
         task.expirationHandler = {
-            operation.cancel()
-            self.updateTaskState(to: .expired, logMessage: "💀 App refresh task expired before completion.")
-            NotificationManager.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
+            self.taskState = .expired
+            task.setTaskCompleted(success: false)
+            print("💀 Task expired")
         }
+
+        do {
+            try await doSomeShortTaskWork()
+            task.setTaskCompleted(success: true)
+            taskState = .completed
+            print("✅ Task completed")
+        } catch {
+            task.setTaskCompleted(success: false)
+            taskState = .failed
+            print("❌ Task failed with error: \(error)")
+        }
+
+        scheduleAppRefresh()
     }
 
     /// Schedule app refresh task
     func scheduleAppRefresh() {
-        let taskIdentifier = self.backgroundAppRefreshTask
+        //let taskIdentifier = self.backgroundAppRefreshTask
         
         //self.updateTaskState(to: .pending, logMessage: "scheduleAppRefreshTask: '\(taskIdentifier)'")
         //NotificationManager.sendNotification(title: "Schedule Task", body: "App Refresh placeholder")
-
         
-        BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
-            if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
-                self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
-                NotificationManager.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
-                return
-            }
-
-            let request = BGAppRefreshTaskRequest(identifier: taskIdentifier)
-            if let nextHour = Calendar.current.nextDate(after: Date(), matching: DateComponents(minute: 0), matchingPolicy: .nextTime) {
-                request.earliestBeginDate = nextHour
-            }
-
-            do {
-                try BGTaskScheduler.shared.submit(request)
-                self.updateTaskState(to: .scheduledRFSH, logMessage: "✅ App refresh task '\(taskIdentifier)' successfully scheduled.")
-                NotificationManager.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
-            } catch {
-                self.updateTaskState(to: .failed, logMessage: "❌ Failed to schedule app refresh task.")
-                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
-            }
+        let request = BGAppRefreshTaskRequest(identifier: self.backgroundAppRefreshTask)
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            self.taskState = .scheduled
+            print("✅ App refresh scheduled")
+        } catch {
+            self.taskState = .failed
+            print("❌ Failed to schedule task: \(error)")
         }
+    
+        
+//        BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
+//            if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
+//                self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
+//                NotificationManager.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
+//                return
+//            }
+//
+//            let request = BGAppRefreshTaskRequest(identifier: taskIdentifier)
+//            if let nextHour = Calendar.current.nextDate(after: Date(), matching: DateComponents(minute: 0), matchingPolicy: .nextTime) {
+//                request.earliestBeginDate = nextHour
+//            }
+//
+//            do {
+//                try BGTaskScheduler.shared.submit(request)
+//                self.updateTaskState(to: .scheduledRFSH, logMessage: "✅ App refresh task '\(taskIdentifier)' successfully scheduled.")
+//                NotificationManager.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
+//            } catch {
+//                self.updateTaskState(to: .failed, logMessage: "❌ Failed to schedule app refresh task.")
+//                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
+//            }
+//        }
     }
 
 
@@ -143,11 +150,9 @@ import SwiftUI
     
 
     //MARK: Background task management
-    
-    let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
 
     /// Handle long-running processing task
-    private func handleProcessingTask(task: BGProcessingTask) {
+    private func handleProcessingTask(task: BGProcessingTask) async {
         self.updateTaskState(to: .running, logMessage: "🔥 Background processing task is now running.")
         NotificationManager.sendNotification(title: "Task Running", body: "Background processing task is now running.")
 

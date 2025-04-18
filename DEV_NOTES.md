@@ -1,5 +1,4 @@
 # Globulon Developer Notes
-## Sub Notes
 
 ## Xcode Project setup:
 ### Target Settings:
@@ -10,4 +9,4 @@
         Swift Language Version: 5 (or 6)
 
     Swift Compiler - Custom Flags:
-        Other Swift Flags:          -DKEYCHAIN_DISABLED, -DFIREBASE_ENABLED
+        Other Swift Flags: -DKEYCHAIN_DISABLED, -DFIREBASE_ENABLED

@@ -25,9 +25,9 @@ import Combine
 import UserNotifications
 import SwiftUI
 
-@MainActor class BackgroundManager: ObservableObject {
+@MainActor class BackgroundManagerV1: ObservableObject {
     
-    static let shared = BackgroundManager()
+    static let shared = BackgroundManagerV1()
     
     @Published var taskState: BackgroundTaskState = .idle
         

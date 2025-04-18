@@ -12,3 +12,5 @@ import Foundation
 
 typealias TravelView = TravelViewV3
 typealias LoginView = LoginViewV2
+
+typealias BackgroundManager = BackgroundManagerV2
