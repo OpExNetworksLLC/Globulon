@@ -10,6 +10,8 @@
 		6E08F52F2BA905B7004E6329 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52E2BA905B7004E6329 /* NetworkManager.swift */; };
 		6E19D6E22BA2501B00B2AE8C /* IntroAcceptTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */; };
 		6E2220B72DB1911200A93F62 /* BackgroundManagerV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */; };
+		6E27FC042DB30F1C00C91FFF /* BluetoothHandlerV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E27FC032DB30F1C00C91FFF /* BluetoothHandlerV3.swift */; };
+		6E27FC062DB3154600C91FFF /* BluetoothHandlerV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E27FC052DB3154600C91FFF /* BluetoothHandlerV4.swift */; };
 		6E2993B32BC1DF5900CA14AE /* AppAliases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2993B22BC1DF5900CA14AE /* AppAliases.swift */; };
 		6E2A22CD2B89649A0030F23E /* IntroStartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CC2B89649A0030F23E /* IntroStartView.swift */; };
 		6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */; };
@@ -169,6 +171,8 @@
 		6E08F52E2BA905B7004E6329 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroAcceptTermsView.swift; sourceTree = "<group>"; };
 		6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundManagerV2.swift; sourceTree = "<group>"; };
+		6E27FC032DB30F1C00C91FFF /* BluetoothHandlerV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandlerV3.swift; sourceTree = "<group>"; };
+		6E27FC052DB3154600C91FFF /* BluetoothHandlerV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandlerV4.swift; sourceTree = "<group>"; };
 		6E2993B22BC1DF5900CA14AE /* AppAliases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppAliases.swift; sourceTree = "<group>"; };
 		6E2A22CC2B89649A0030F23E /* IntroStartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroStartView.swift; sourceTree = "<group>"; };
 		6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroLaunchView.swift; sourceTree = "<group>"; };
@@ -529,6 +533,8 @@
 				6ECF92A22D6E9CBD007B8F1F /* NotificationManager.swift */,
 				6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */,
 				6ECF92762D6E647B007B8F1F /* BluetoothHandlerClass.swift */,
+				6E27FC032DB30F1C00C91FFF /* BluetoothHandlerV3.swift */,
+				6E27FC052DB3154600C91FFF /* BluetoothHandlerV4.swift */,
 				6ECF92862D6E6A03007B8F1F /* CarPlayManager.swift */,
 				6ECF92882D6E6A30007B8F1F /* SceneDelegateClass.swift */,
 			);
@@ -821,6 +827,7 @@
 				6ECF92E72D6EACD8007B8F1F /* BiometricTypeEnum.swift in Sources */,
 				6ECF92832D6E68F2007B8F1F /* AnimatedSideBar.swift in Sources */,
 				6E88DC202B846E6E00BBB4DD /* AppInfoClass.swift in Sources */,
+				6E27FC042DB30F1C00C91FFF /* BluetoothHandlerV3.swift in Sources */,
 				6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */,
 				6E54AD982BA7A03500A502DC /* Extensions.swift in Sources */,
 				6EB56D682B8568D400C106F0 /* OnboardLaunchView.swift in Sources */,
@@ -869,6 +876,7 @@
 				6EABA1FB2DA71B0E00A76A6B /* Conversions.swift in Sources */,
 				6EABA1FC2DA71B0E00A76A6B /* countGPSDataAll.swift in Sources */,
 				6E2220B72DB1911200A93F62 /* BackgroundManagerV2.swift in Sources */,
+				6E27FC062DB3154600C91FFF /* BluetoothHandlerV4.swift in Sources */,
 				6EABA1FD2DA71B0E00A76A6B /* FormatDates.swift in Sources */,
 				6EABA1FE2DA71B0E00A76A6B /* FormatPhoneNumbers.swift in Sources */,
 				6EABA1FF2DA71B0E00A76A6B /* FormatSpeed.swift in Sources */,

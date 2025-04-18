@@ -246,7 +246,9 @@ struct SystemStatusView: View {
                 HStack {
                         Button(role: .destructive) {
                             print("start")
-                            bluetoothHandler.startBluetoothUpdates()
+                            Task {
+                                await bluetoothHandler.startBluetoothUpdates()
+                            }
                         } label: {
                             HStack {
                                 Image(systemName: "play")

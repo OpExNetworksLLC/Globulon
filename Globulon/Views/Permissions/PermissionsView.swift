@@ -347,9 +347,11 @@ struct PermissionsView: View {
 
                                 Button(action: {
                                     if !self.isBluetoothAllowed {
-                                        bluetoothHandler.requestBluetoothPermission()
-                                        self.isBluetoothAllowed = true
-                                        isPermissionAllowed = true
+                                        Task {
+                                            await bluetoothHandler.requestBluetoothPermission()
+                                            self.isBluetoothAllowed = true
+                                            isPermissionAllowed = true
+                                        }
                                     }
                                 }) {
                                     HStack {

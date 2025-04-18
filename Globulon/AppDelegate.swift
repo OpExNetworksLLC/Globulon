@@ -69,7 +69,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         ///
         let bluetoothHandler = BluetoothHandler.shared
         if bluetoothHandler.updatesLive == true {
-            bluetoothHandler.startBluetoothUpdates()
+            Task {
+                await bluetoothHandler.startBluetoothUpdates()
+            }
         }
         
         

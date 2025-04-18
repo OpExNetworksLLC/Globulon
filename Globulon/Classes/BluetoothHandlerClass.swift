@@ -15,8 +15,6 @@ import Foundation
 import CoreBluetooth
 import Combine
 
-typealias BluetoothHandler = BluetoothHandlerV2
-
 @MainActor
 class BluetoothHandlerV2:  NSObject, ObservableObject, @preconcurrency CBCentralManagerDelegate, CBPeripheralDelegate  {
     
