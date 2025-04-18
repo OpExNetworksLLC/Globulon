@@ -53,6 +53,9 @@ import SwiftUI
     let backgroundAppRefreshTask = "com.opexnetworks." + AppSettings.appName + ".appRefreshTask"
     let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
     
+    let backgroundAppRefreshTaskScheduledKey = "backgroundAppRefreshTaskScheduledKey"
+    let backgroundTaskIdentifierScheduledKey = "backgroundTaskIdentifierScheduledKey"
+    
     private init() {}
     
     func registerBackgroundTask() {
@@ -80,18 +83,23 @@ import SwiftUI
         task.expirationHandler = {
             self.taskState = .expired
             task.setTaskCompleted(success: false)
-            print("💀 Task expired")
+            self.updateTaskState(to: .expired, logMessage: "💀 App refresh task expired before completion.")
+            NotificationManager.sendNotification(title: "Task Expired", body: "App refresh task expired before completion \(self.formattedDate(Date())).")
         }
 
         do {
             try await doSomeShortTaskWork()
             task.setTaskCompleted(success: true)
             taskState = .completed
-            print("✅ Task completed")
+            let completionDate = Date()
+            UserDefaults.standard.set(completionDate, forKey: "LastAppRefreshTaskCompletionDate")
+            self.updateTaskState(to: .completed, logMessage: "🏁 App refresh task completed at \(formattedDate(completionDate)).")
+            NotificationManager.sendNotification(title: "Task Completed", body: "App refresh task completed at: \(formattedDate(completionDate))")
         } catch {
             task.setTaskCompleted(success: false)
             taskState = .failed
-            print("❌ Task failed with error: \(error)")
+            self.updateTaskState(to: .failed, logMessage: "❌ App refresh task failed with error.")
+            NotificationManager.sendNotification(title: "Task Failed", body: "App refresh task failed.")
         }
 
         scheduleAppRefresh()
@@ -99,44 +107,34 @@ import SwiftUI
 
     /// Schedule app refresh task
     func scheduleAppRefresh() {
-        //let taskIdentifier = self.backgroundAppRefreshTask
         
-        //self.updateTaskState(to: .pending, logMessage: "scheduleAppRefreshTask: '\(taskIdentifier)'")
-        //NotificationManager.sendNotification(title: "Schedule Task", body: "App Refresh placeholder")
-        
-        let request = BGAppRefreshTaskRequest(identifier: self.backgroundAppRefreshTask)
-        
+        let taskIdentifier = self.backgroundAppRefreshTask
+
+        // Check if the task has already been scheduled
+        if UserDefaults.standard.bool(forKey: backgroundAppRefreshTaskScheduledKey) {
+            self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
+            NotificationManager.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
+            return
+        }
+
+        let request = BGAppRefreshTaskRequest(identifier: taskIdentifier)
+        if let nextHour = Calendar.current.nextDate(after: Date(), matching: DateComponents(minute: 0), matchingPolicy: .nextTime) {
+            request.earliestBeginDate = nextHour
+        }
+
         do {
             try BGTaskScheduler.shared.submit(request)
+            UserDefaults.standard.set(true, forKey: backgroundAppRefreshTaskScheduledKey)
             self.taskState = .scheduled
-            print("✅ App refresh scheduled")
+            self.updateTaskState(to: .scheduledRFSH, logMessage: "✅ App refresh task '\(taskIdentifier)' successfully scheduled.")
+            NotificationManager.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
         } catch {
+            UserDefaults.standard.set(false, forKey: backgroundAppRefreshTaskScheduledKey)
             self.taskState = .failed
-            print("❌ Failed to schedule task: \(error)")
+            self.updateTaskState(to: .failed, logMessage: "❌ Failed to schedule app refresh task.")
+            NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
         }
-    
         
-//        BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
-//            if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
-//                self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
-//                NotificationManager.sendNotification(title: "Task Pending", body: "App refresh task is already pending.")
-//                return
-//            }
-//
-//            let request = BGAppRefreshTaskRequest(identifier: taskIdentifier)
-//            if let nextHour = Calendar.current.nextDate(after: Date(), matching: DateComponents(minute: 0), matchingPolicy: .nextTime) {
-//                request.earliestBeginDate = nextHour
-//            }
-//
-//            do {
-//                try BGTaskScheduler.shared.submit(request)
-//                self.updateTaskState(to: .scheduledRFSH, logMessage: "✅ App refresh task '\(taskIdentifier)' successfully scheduled.")
-//                NotificationManager.sendNotification(title: "Task Scheduled", body: "App refresh task scheduled for the next hour.")
-//            } catch {
-//                self.updateTaskState(to: .failed, logMessage: "❌ Failed to schedule app refresh task.")
-//                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the app refresh task.")
-//            }
-//        }
     }
 
 
@@ -184,53 +182,57 @@ import SwiftUI
     /// Schedule long-running processing task
     func scheduleProcessingTask() {
         let taskIdentifier = self.backgroundTaskIdentifier
-        BGTaskScheduler.shared.getPendingTaskRequests { taskRequests in
-            if taskRequests.contains(where: { $0.identifier == taskIdentifier }) {
-                self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
-                NotificationManager.sendNotification(title: "Task Pending", body: "Processing task is already pending.")
-                return
-            }
-            let request = BGProcessingTaskRequest(identifier: taskIdentifier)
-            
-            /// Options:
-            ///`request.requiresNetworkConnectivity = true
-            
-            /// Set the earliest begin date to 15 minutes from now
-            /// eg:
-            ///`request.earliestBeginDate = Date().addingTimeInterval(15 * 60)
-            
-            /// Create date components for 9:00 AM
-            var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
-            dateComponents.hour = 9
-            dateComponents.minute = 0
-
-            /// Create a date for 9:00 AM today
-            let calendar = Calendar.current
-            if let dateAtNineAM = calendar.date(from: dateComponents) {
-                /// If the current time is past 9:00 AM, set to 9:00 AM the next day
-                if Date() > dateAtNineAM {
-                    /// Move to the next day at 9:00 AM
-                    if let tomorrowAtNineAM = calendar.date(byAdding: .day, value: 1, to: dateAtNineAM) {
-                        request.earliestBeginDate = tomorrowAtNineAM
-                    }
-                } else {
-                    /// Set to 9:00 AM today if it's still in the future
-                    request.earliestBeginDate = dateAtNineAM
+        
+        // Check if the task has already been scheduled
+        if UserDefaults.standard.bool(forKey: backgroundTaskIdentifierScheduledKey) {
+            self.updateTaskState(to: .pending, logMessage: "⚠️ Task Pending: '\(taskIdentifier)' is already pending.")
+            NotificationManager.sendNotification(title: "Task Pending", body: "Processing task is already pending.")
+            return
+        }
+        
+        let request = BGProcessingTaskRequest(identifier: taskIdentifier)
+        
+        /// Options:
+        ///`request.requiresNetworkConnectivity = true
+        
+        /// Set the earliest begin date to 15 minutes from now
+        /// eg:
+        ///`request.earliestBeginDate = Date().addingTimeInterval(15 * 60)
+        
+        /// Create date components for 9:00 AM
+        var dateComponents = Calendar.current.dateComponents([.year, .month, .day], from: Date())
+        dateComponents.hour = 9
+        dateComponents.minute = 0
+        
+        /// Create a date for 9:00 AM today
+        let calendar = Calendar.current
+        if let dateAtNineAM = calendar.date(from: dateComponents) {
+            /// If the current time is past 9:00 AM, set to 9:00 AM the next day
+            if Date() > dateAtNineAM {
+                /// Move to the next day at 9:00 AM
+                if let tomorrowAtNineAM = calendar.date(byAdding: .day, value: 1, to: dateAtNineAM) {
+                    request.earliestBeginDate = tomorrowAtNineAM
                 }
             } else {
-                // Fallback if for some reason the date couldn't be calculated
-                print("Could not determine the 9:00 AM date.")
+                /// Set to 9:00 AM today if it's still in the future
+                request.earliestBeginDate = dateAtNineAM
             }
-            
-            do {
-                try BGTaskScheduler.shared.submit(request)
-                self.updateTaskState(to: .scheduledBKG, logMessage: "✅ Processing task '\(taskIdentifier)' successfully scheduled.")
-                NotificationManager.sendNotification(title: "Task Scheduled", body: "Processing task has been scheduled.")
-            } catch {
-                self.updateTaskState(to: .failed, logMessage: "‼️ Failed to schedule processing task.")
-                NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the processing task.")
-            }
+        } else {
+            // Fallback if for some reason the date couldn't be calculated
+            print("Could not determine the 9:00 AM date.")
         }
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+            UserDefaults.standard.set(true, forKey: backgroundTaskIdentifierScheduledKey)
+            self.updateTaskState(to: .scheduledBKG, logMessage: "✅ Processing task '\(taskIdentifier)' successfully scheduled.")
+            NotificationManager.sendNotification(title: "Task Scheduled", body: "Processing task has been scheduled.")
+        } catch {
+            UserDefaults.standard.set(false, forKey: backgroundTaskIdentifierScheduledKey)
+            self.updateTaskState(to: .failed, logMessage: "‼️ Failed to schedule processing task.")
+            NotificationManager.sendNotification(title: "Task Scheduling Failed", body: "Failed to schedule the processing task.")
+        }
+
     }
 
     // Long processing work simulation
@@ -242,18 +244,22 @@ import SwiftUI
     
     func cancelBackgroundTask() {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundTaskIdentifier)
+        UserDefaults.standard.set(false, forKey: backgroundTaskIdentifierScheduledKey)
         updateTaskState(to: .cancelled, logMessage: "⛔️ Background process task '\(backgroundTaskIdentifier)' has been cancelled.")
         NotificationManager.sendNotification(title: "Task Cancelled", body: "Background process task has been cancelled.")
     }
     
     func cancelAppRefreshTask() {
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: backgroundAppRefreshTask)
+        UserDefaults.standard.set(false, forKey: backgroundAppRefreshTaskScheduledKey)
         updateTaskState(to: .cancelled, logMessage: "⛔️ Background app refresh task '\(backgroundAppRefreshTask)' has been cancelled.")
         NotificationManager.sendNotification(title: "Task Cancelled", body: "Background app refresh task has been cancelled.")
     }
     
     func cancelAllBackgroundTasks() {
         BGTaskScheduler.shared.cancelAllTaskRequests()
+        UserDefaults.standard.set(false, forKey: backgroundAppRefreshTaskScheduledKey)
+        UserDefaults.standard.set(false, forKey: backgroundTaskIdentifierScheduledKey)
         updateTaskState(to: .allCancelled, logMessage: "⛔️ All background tasks have been cancelled.")
         NotificationManager.sendNotification(title: "All Tasks Cancelled", body: "All background tasks have been cancelled.")
     }
