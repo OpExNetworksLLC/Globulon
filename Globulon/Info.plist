@@ -2,18 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
-    <string>false</string>
-    <key>BGTaskSchedulerPermittedIdentifiers</key>
-    <array>
-        <string>com.opexnetworks.Globulon.appRefreshTask</string>
-        <string>com.opexnetworks.Globulon.backgroundTask</string>
-    </array>
-    <key>UIBackgroundModes</key>
-    <array>
-        <string>location</string>
-        <string>fetch</string>
-        <string>processing</string>
-    </array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.opexnetworks.Globulon.appRefreshTask</string>
+		<string>com.opexnetworks.Globulon.backgroundTask</string>
+	</array>
+	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
+	<string>false</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>
