@@ -11,7 +11,7 @@ import CoreBluetooth
 import UIKit
 
 @MainActor
-final class BluetoothHandlerV4: NSObject, ObservableObject {
+final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCentralManagerDelegate, CBPeripheralDelegate {
     
     static let shared = BluetoothHandlerV4()
     
@@ -288,10 +288,9 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
         completion(result)
     }
     
-}
-
-extension BluetoothHandlerV4: CBCentralManagerDelegate {
-    nonisolated func centralManagerDidUpdateState(_ central: CBCentralManager) {
+    // MARK: - CBCentralManagerDelegate
+    
+    func centralManagerDidUpdateState(_ central: CBCentralManager) {
         let newState = central.state
 
         Task { @MainActor in
@@ -321,6 +320,32 @@ extension BluetoothHandlerV4: CBCentralManagerDelegate {
                 self.startScanning()
             }
         }
+    }
+    
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+        if !discoveredDevices.contains(peripheral) {
+            deviceMap[peripheral.identifier] = peripheral
+            discoveredDevices.append(peripheral)
+        }
+    }
+    
+    func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
+        if !connectedDevices.contains(peripheral) {
+            connectedDevices.append(peripheral)
+        }
+    }
+    
+    func centralManager(_ central: CBCentralManager, didDisconnectPeripheral peripheral: CBPeripheral, error: Error?) {
+        connectedDevices.removeAll { $0.identifier == peripheral.identifier }
+    }
+    
+    func connect(to peripheral: CBPeripheral) {
+        peripheral.delegate = self
+        centralManager?.connect(peripheral, options: nil)
+    }
+    
+    func disconnect(from peripheral: CBPeripheral) {
+        centralManager?.cancelPeripheralConnection(peripheral)
     }
     
     func bluetoothStateString(from state: CBManagerState) -> String {
@@ -379,4 +404,97 @@ extension BluetoothHandlerV4: CBCentralManagerDelegate {
 
         return "\(stateName): \(explanation)"
     }
+
+    
 }
+
+//extension BluetoothHandlerV4: CBCentralManagerDelegate {
+//    nonisolated func centralManagerDidUpdateState(_ central: CBCentralManager) {
+//        let newState = central.state
+//
+//        Task { @MainActor in
+//            /*
+//            let previousState = self.bluetoothState
+//            */
+//            self.bluetoothState = newState
+//
+//            // 🔁 Notify async stream listeners about the new state
+//            bluetoothStateChangeContinuation?.yield(newState)
+//
+//            self.isAvailable = newState == .poweredOn
+//            self.isAuthorized = newState != .unauthorized
+//            self.isConnected = !self.connectedDevices.isEmpty
+//
+//            /*
+//            if previousState != newState {
+//                LogEvent.print(module: "BluetoothHandler.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
+//            }
+//            */
+//
+//            if newState == .poweredOn {
+//                if let continuation = self.poweredOnContinuation {
+//                    continuation.resume()
+//                    self.poweredOnContinuation = nil
+//                }
+//                self.startScanning()
+//            }
+//        }
+//    }
+    
+//    func bluetoothStateString(from state: CBManagerState) -> String {
+//        switch state {
+//        case .unknown: return ".unknown"
+//        case .resetting: return ".resetting"
+//        case .unsupported: return ".unsupported"
+//        case .unauthorized: return ".unauthorized"
+//        case .poweredOff: return ".poweredOff"
+//        case .poweredOn: return ".poweredOn"
+//        @unknown default: return ".unknown(default)"
+//        }
+//    }
+//    
+//    func bluetoothStateDescription() -> String {
+//        guard let centralManager = self.centralManager else {
+//            return "Central Manager is not initialized."
+//        }
+//        let state = centralManager.state
+//
+//        let stateName: String
+//        switch state {
+//        case .unknown:
+//            stateName = "unknown"
+//        case .resetting:
+//            stateName = "resetting"
+//        case .unsupported:
+//            stateName = "unsupported"
+//        case .unauthorized:
+//            stateName = "unauthorized"
+//        case .poweredOff:
+//            stateName = "poweredOff"
+//        case .poweredOn:
+//            stateName = "poweredOn"
+//        @unknown default:
+//            stateName = "unknown(default)"
+//        }
+//
+//        let explanation: String
+//        switch state {
+//        case .unknown:
+//            explanation = "The Bluetooth state is unknown."
+//        case .resetting:
+//            explanation = "The Bluetooth connection is resetting."
+//        case .unsupported:
+//            explanation = "Bluetooth is not supported on this device."
+//        case .unauthorized:
+//            explanation = "The app is not authorized to use Bluetooth."
+//        case .poweredOff:
+//            explanation = "Bluetooth is currently powered off."
+//        case .poweredOn:
+//            explanation = "Bluetooth is powered on and available."
+//        @unknown default:
+//            explanation = "An unknown Bluetooth state occurred."
+//        }
+//
+//        return "\(stateName): \(explanation)"
+//    }
+//}
