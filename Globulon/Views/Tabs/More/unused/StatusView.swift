@@ -94,7 +94,6 @@ struct StatusView: View {
                 /// Update anytime a new value is received
                 .onReceive(bluetoothHandler.$isAvailable) { newValue in
                     self.isBluetoothAvailable = newValue
-                    print("*** Bluetooth availability: \(newValue)")
                 }
             }
         }
@@ -217,7 +216,6 @@ struct StatusView: View {
                 }
                 HStack {
                         Button(role: .destructive) {
-                            print("start")
                             Task {
                                 await bluetoothHandler.startBluetoothUpdates()
                             }
@@ -355,7 +353,6 @@ struct StatusView: View {
                 }
                 HStack {
                     Button(role: .destructive) {
-                        print("start")
                         locationManager.startLocationUpdates()
                     } label: {
                         HStack {
@@ -418,7 +415,6 @@ struct StatusView: View {
                     }
                     HStack {
                         Button(role: .destructive) {
-                            print("start")
                             activityManager.startActivityUpdates()
                         } label: {
                             HStack {

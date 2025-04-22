@@ -73,20 +73,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let bluetoothHandler = BluetoothHandler.shared
         bluetoothHandler.getBluetoothPermission { result in
             if result {
-                if bluetoothHandler.updatesLive != true {
-                    print(">>> updatesLive: false so startBluetoothUpdates")
-                    
+                if bluetoothHandler.updatesLive == true {
                     Task {
-                        print("task awaiting waitForBluetoothPoweredOn")
                         await bluetoothHandler.awaitBluetoothPoweredOn()
-                        print(">>> Bluetooth is now powered on")
-                        
-                        print("task awaiting startBluetoothUpdates")
                         await bluetoothHandler.startBluetoothUpdates()
-                        print(">>> task awaited")
-                        print(">>> bluetooth state desc: \(bluetoothHandler.bluetoothStateDescription())")
-
                     }
+                } else {
+                    LogEvent.print(module: "AppDelegate", message: "Bluetooth updates are not started")
                 }
             }
         }

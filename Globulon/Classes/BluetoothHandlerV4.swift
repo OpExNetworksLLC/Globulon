@@ -82,8 +82,12 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
         */
     }
     
+    /// Permissions should be checked and this function called when
+    /// - The service is poweredOn in settings
+    /// - The user has granted permission
+    ///
     func startBluetoothUpdates() async {
-                
+        
         if centralManager == nil {
             centralManager = CBCentralManager(delegate: self, queue: nil)
         }
@@ -94,16 +98,14 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
             return
         }
         
-        LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "starting ...")
+        LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Checking ...")
 
-        
         switch manager.state {
         case .unknown:
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if self.centralManager?.state == .poweredOn {
                     self.startScanning()
-                    self.updatesLive = true
                     LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State \".poweredOn\" after \".unknown\" state.")
                 } else {
                     LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Scan could not start - still not powered on.")
@@ -111,9 +113,11 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
             }
 
         case .poweredOn:
+            print("2")
+            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
             startScanning()
             self.updatesLive = true
-            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
+
 
         default:
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth not powered on.")
@@ -123,7 +127,6 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
     }
     
     private var poweredOnContinuation: CheckedContinuation<Void, Never>?
-    
     private var bluetoothStateChangeStream: AsyncStream<CBManagerState>?
     private var bluetoothStateChangeContinuation: AsyncStream<CBManagerState>.Continuation?
 
@@ -162,6 +165,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
     
     func startScanning() {
         guard centralManager?.state == .poweredOn else { return }
+        LogEvent.print(module: "BluetoothHandler.startScanning()", message: "started ...")
         let connected = centralManager?.retrieveConnectedPeripherals(withServices: []) ?? []
         connectedDevices = connected
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
@@ -178,6 +182,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject {
             self.connectedDevices.removeAll()
             self.updatesLive = false
             self.centralManager = nil
+            LogEvent.print(module: "BluetoothHandler.stopScanning()", message: "... finished")
         }
     }
 
@@ -290,7 +295,9 @@ extension BluetoothHandlerV4: CBCentralManagerDelegate {
         let newState = central.state
 
         Task { @MainActor in
+            /*
             let previousState = self.bluetoothState
+            */
             self.bluetoothState = newState
 
             // 🔁 Notify async stream listeners about the new state
@@ -300,9 +307,11 @@ extension BluetoothHandlerV4: CBCentralManagerDelegate {
             self.isAuthorized = newState != .unauthorized
             self.isConnected = !self.connectedDevices.isEmpty
 
+            /*
             if previousState != newState {
-                print("Bluetooth state changed from \(previousState) to \(newState)")
+                LogEvent.print(module: "BluetoothHandler.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
             }
+            */
 
             if newState == .poweredOn {
                 if let continuation = self.poweredOnContinuation {
@@ -316,13 +325,13 @@ extension BluetoothHandlerV4: CBCentralManagerDelegate {
     
     func bluetoothStateString(from state: CBManagerState) -> String {
         switch state {
-        case .unknown: return "unknown"
-        case .resetting: return "resetting"
-        case .unsupported: return "unsupported"
-        case .unauthorized: return "unauthorized"
-        case .poweredOff: return "poweredOff"
-        case .poweredOn: return "poweredOn"
-        @unknown default: return "unknown(default)"
+        case .unknown: return ".unknown"
+        case .resetting: return ".resetting"
+        case .unsupported: return ".unsupported"
+        case .unauthorized: return ".unauthorized"
+        case .poweredOff: return ".poweredOff"
+        case .poweredOn: return ".poweredOn"
+        @unknown default: return ".unknown(default)"
         }
     }
     
