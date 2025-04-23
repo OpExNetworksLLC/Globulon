@@ -69,7 +69,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// - Must have permission
         /// - Start the updates if not already started
         ///
-        
         let bluetoothHandler = BluetoothHandler.shared
         bluetoothHandler.getBluetoothPermission { result in
             if result {

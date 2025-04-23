@@ -1,5 +1,5 @@
 //
-//  BluetoothHandlerV4.swift
+//  BluetoothHandler.swift
 //  Globulon
 //
 //  Created by David Holeman on 4/18/25.
@@ -21,9 +21,9 @@ import CoreBluetooth
 import UIKit
 
 @MainActor
-final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCentralManagerDelegate, CBPeripheralDelegate {
+final class BluetoothHandler: NSObject, ObservableObject, @preconcurrency CBCentralManagerDelegate, CBPeripheralDelegate {
     
-    static let shared = BluetoothHandlerV4()
+    static let shared = BluetoothHandler()
     
     @Published var discoveredDevices: [CBPeripheral] = []
     @Published var connectedDevices: [CBPeripheral] = []
@@ -46,6 +46,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     private var deviceMap: [UUID: CBPeripheral] = [:] // Track devices by UUID for easy management
 
     private var shouldStartScanning: Bool = false
+    private var hasStartedScanning: Bool = false
     
     private override init() {
         super.init()
@@ -188,7 +189,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if self.centralManager?.state == .poweredOn {
-                    self.startScanning()
+                    //self.startScanning()
                 }
             }
         case .poweredOn:
@@ -286,7 +287,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     }
     
     /// This does not trigger the permission request which is important since we only wnat to enquire if is authorized
-    /// 
+    ///
     func getBluetoothAuthorized(completion: @escaping (Bool) -> Void) {
         let permission = CBManager.authorization
         var result = false
@@ -351,11 +352,9 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         let newState = central.state
+        let previousState = bluetoothState // Save old state before updating
 
         Task { @MainActor in
-            /*
-            let previousState = self.bluetoothState
-            */
             self.bluetoothState = newState
 
             // 🔁 Notify async stream listeners about the new state
@@ -365,11 +364,9 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             self.isAuthorized = newState != .unauthorized
             self.isConnected = !self.connectedDevices.isEmpty
 
-            /*
             if previousState != newState {
                 LogEvent.print(module: "BluetoothHandler.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
             }
-            */
 
             if newState == .poweredOn {
                 if let cont = self.poweredOnContinuation {
@@ -377,6 +374,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
                     self.poweredOnContinuation = nil
                 }
                 if self.updatesLive {
+                    LogEvent.print(module: "BluetoothHandler.centralManagerDidUpdateState()", message: "Bluetooth powered on.")
                     self.startScanning()
                 }
             }
@@ -513,7 +511,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
 //        @unknown default: return ".unknown(default)"
 //        }
 //    }
-//    
+//
 //    func bluetoothStateDescription() -> String {
 //        guard let centralManager = self.centralManager else {
 //            return "Central Manager is not initialized."
