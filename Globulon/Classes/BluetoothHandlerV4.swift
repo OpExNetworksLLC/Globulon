@@ -6,6 +6,16 @@
 //  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
+/**
+ - Version: 2.0.0 (2024.04.25)
+     - Key improvements included:
+        - proper handling of Start and Pause functions via `shouldStartScanning` and `startScanning()`
+        - modified `centralManagerDidUpdateState` to start scanning only  if `updatesLive` is enabled
+
+ - Note: This version is Swift 6 and Conncurrency compliant
+ 
+ */
+
 import Foundation
 import CoreBluetooth
 import UIKit
@@ -110,7 +120,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     private func showBluetoothSettingsAlert() async {
         let alert = UIAlertController(
             title: "Bluetooth Permission Needed",
-            message: "Please enable Bluetooth in Settings to allow full functionality.",
+            message: "Please enable Bluetooth in Settings to allow full functionality.  This app may may restart automatically after enabling Bluetooth.",
             preferredStyle: .alert
         )
         
@@ -128,6 +138,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             topVC.present(alert, animated: true)
         }
     }
+    
     private func topViewController(base: UIViewController? = nil) -> UIViewController? {
         let root = base ?? UIApplication.shared
             .connectedScenes
@@ -155,7 +166,6 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 sec delay
         }
     }
-
     
     func startBluetoothUpdates() async {
         if centralManager == nil {
@@ -192,49 +202,6 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
         }
     }
     
-    /// Permissions should be checked and this function called when
-    /// - The service is poweredOn in settings
-    /// - The user has granted permission
-    ///
-//    func startBluetoothUpdates() async {
-//        
-//        if centralManager == nil {
-//            centralManager = CBCentralManager(delegate: self, queue: nil)
-//        }
-//
-//        guard let manager = centralManager else {
-//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Central manager is unavailable.")
-//            self.updatesLive = false
-//            return
-//        }
-//        
-//        LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Checking ...")
-//
-//        switch manager.state {
-//        case .unknown:
-//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                if self.centralManager?.state == .poweredOn {
-//                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State \".poweredOn\" after \".unknown\" state.")
-//                    self.updatesLive = true
-//                    self.startScanning()
-//                } else {
-//                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Scan could not start - still not powered on.")
-//                }
-//            }
-//
-//        case .poweredOn:
-//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
-//            self.updatesLive = true
-//            //startScanning()
-//
-//        default:
-//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth not powered on.")
-//            stopScanning()
-//            self.updatesLive = false
-//        }
-//    }
-    
     private var poweredOnContinuation: CheckedContinuation<Void, Never>?
     private var bluetoothStateChangeStream: AsyncStream<CBManagerState>?
     private var bluetoothStateChangeContinuation: AsyncStream<CBManagerState>.Continuation?
@@ -247,6 +214,17 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
         }
     }
 
+    func stopBluetoothUpdates() {
+        stopScanning()
+        DispatchQueue.main.async {
+            self.discoveredDevices.removeAll()
+            self.connectedDevices.removeAll()
+            self.updatesLive = false
+            self.centralManager = nil
+            LogEvent.print(module: "BluetoothHandler.stopScanning()", message: "... finished")
+        }
+    }
+    
     func awaitBluetoothPoweredOn() async {
         if centralManager == nil {
             centralManager = CBCentralManager(delegate: self, queue: nil)
@@ -271,6 +249,8 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
         }
     }
     
+    // MARK: - Scanning
+    
     func startScanning() {
         guard centralManager?.state == .poweredOn, shouldStartScanning else { return }
         LogEvent.print(module: "BluetoothHandler.startScanning()", message: "started ...")
@@ -279,28 +259,11 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
     
-//    func startScanning() {
-//        guard centralManager?.state == .poweredOn else { return }
-//        LogEvent.print(module: "BluetoothHandler.startScanning()", message: "started ...")
-//        let connected = centralManager?.retrieveConnectedPeripherals(withServices: []) ?? []
-//        connectedDevices = connected
-//        centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
-//    }
-    
     func stopScanning() {
         centralManager?.stopScan()
     }
     
-    func stopBluetoothUpdates() {
-        stopScanning()
-        DispatchQueue.main.async {
-            self.discoveredDevices.removeAll()
-            self.connectedDevices.removeAll()
-            self.updatesLive = false
-            self.centralManager = nil
-            LogEvent.print(module: "BluetoothHandler.stopScanning()", message: "... finished")
-        }
-    }
+
 
     // MARK: - Get bluetooth permissions
     

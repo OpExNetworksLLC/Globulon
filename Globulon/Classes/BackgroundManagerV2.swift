@@ -9,6 +9,12 @@
 /**
  - Version: 2.0.0
  - Date: 2025-04-17
+ 
+ - Version: 2.0.0 (2024.04.27)
+     - Key improvements included:
+        - 
+
+ - Note: This version is Swift 6 and Conncurrency compliant
 
  # Force background execution in simulator
  This command can be executed when the app is paused at 11db prompt to force the background task to execute:
