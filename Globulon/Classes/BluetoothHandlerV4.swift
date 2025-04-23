@@ -35,6 +35,7 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     private var centralManager: CBCentralManager?
     private var deviceMap: [UUID: CBPeripheral] = [:] // Track devices by UUID for easy management
 
+    private var shouldStartScanning: Bool = false
     
     private override init() {
         super.init()
@@ -156,22 +157,20 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     }
 
     
-    /// Permissions should be checked and this function called when
-    /// - The service is poweredOn in settings
-    /// - The user has granted permission
-    ///
     func startBluetoothUpdates() async {
-        
         if centralManager == nil {
             centralManager = CBCentralManager(delegate: self, queue: nil)
         }
+
+        shouldStartScanning = true
+        self.updatesLive = true
 
         guard let manager = centralManager else {
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Central manager is unavailable.")
             self.updatesLive = false
             return
         }
-        
+
         LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Checking ...")
 
         switch manager.state {
@@ -179,25 +178,62 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if self.centralManager?.state == .poweredOn {
-                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State \".poweredOn\" after \".unknown\" state.")
-                    self.updatesLive = true
                     self.startScanning()
-                } else {
-                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Scan could not start - still not powered on.")
                 }
             }
-
         case .poweredOn:
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
-            self.updatesLive = true
-            startScanning()
-
+            self.startScanning()
         default:
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth not powered on.")
             stopScanning()
             self.updatesLive = false
+            shouldStartScanning = false
         }
     }
+    
+    /// Permissions should be checked and this function called when
+    /// - The service is poweredOn in settings
+    /// - The user has granted permission
+    ///
+//    func startBluetoothUpdates() async {
+//        
+//        if centralManager == nil {
+//            centralManager = CBCentralManager(delegate: self, queue: nil)
+//        }
+//
+//        guard let manager = centralManager else {
+//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Central manager is unavailable.")
+//            self.updatesLive = false
+//            return
+//        }
+//        
+//        LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Checking ...")
+//
+//        switch manager.state {
+//        case .unknown:
+//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                if self.centralManager?.state == .poweredOn {
+//                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State \".poweredOn\" after \".unknown\" state.")
+//                    self.updatesLive = true
+//                    self.startScanning()
+//                } else {
+//                    LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Scan could not start - still not powered on.")
+//                }
+//            }
+//
+//        case .poweredOn:
+//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
+//            self.updatesLive = true
+//            //startScanning()
+//
+//        default:
+//            LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth not powered on.")
+//            stopScanning()
+//            self.updatesLive = false
+//        }
+//    }
     
     private var poweredOnContinuation: CheckedContinuation<Void, Never>?
     private var bluetoothStateChangeStream: AsyncStream<CBManagerState>?
@@ -236,12 +272,20 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
     }
     
     func startScanning() {
-        guard centralManager?.state == .poweredOn else { return }
+        guard centralManager?.state == .poweredOn, shouldStartScanning else { return }
         LogEvent.print(module: "BluetoothHandler.startScanning()", message: "started ...")
         let connected = centralManager?.retrieveConnectedPeripherals(withServices: []) ?? []
         connectedDevices = connected
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
     }
+    
+//    func startScanning() {
+//        guard centralManager?.state == .poweredOn else { return }
+//        LogEvent.print(module: "BluetoothHandler.startScanning()", message: "started ...")
+//        let connected = centralManager?.retrieveConnectedPeripherals(withServices: []) ?? []
+//        connectedDevices = connected
+//        centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
+//    }
     
     func stopScanning() {
         centralManager?.stopScan()
@@ -277,44 +321,6 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             completion(isPoweredOn)
         }
     }
-    
-//    /// This does not trigger the permission request which is imporant because we only want to know if is powered on
-//    func getBluetoothAvailablity(completion: @escaping (Bool) -> Void) {
-//        let permission = CBManager.authorization
-//        var result = false
-//        
-//        switch permission {
-//        case .allowedAlways:
-//            /// Allowed
-//            if let centralManager = centralManager {
-//                /// Safely unwrap and check the state
-//                let state = centralManager.state
-//                if state == .poweredOn {
-//                    self.isAvailable = true
-//                    result = true
-//                } else {
-//                    self.isAvailable = false
-//                    result = false
-//                }
-//            } else {
-//                /// centralManager is nil, handle gracefully
-//                self.isAvailable = false
-//                result = false
-//            }
-//        case .restricted, .denied, .notDetermined:
-//            /// Permission not granted or not determined
-//            self.isAvailable = false
-//            result = false
-//        @unknown default:
-//            /// Handle unknown cases cautiously
-//            self.isAvailable = false
-//            result = false
-//        }
-//        
-//        /// Log the result
-//        LogEvent.print(module: "BluetoothHandler.getBluetoothAvailablity()", message: "\(result)")
-//        completion(result)
-//    }
     
     /// This does not trigger the permission request which is important since we only wnat to enquire if is authorized
     /// 
@@ -407,7 +413,9 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
                     cont.resume()
                     self.poweredOnContinuation = nil
                 }
-                self.startScanning()
+                if self.updatesLive {
+                    self.startScanning()
+                }
             }
         }
     }

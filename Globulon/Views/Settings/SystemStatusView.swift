@@ -245,6 +245,7 @@ struct SystemStatusView: View {
                 HStack {
                         Button(role: .destructive) {
                             Task {
+                                await bluetoothHandler.requestBluetoothPermissionAgain()
                                 await bluetoothHandler.startBluetoothUpdates()
                             }
                         } label: {
