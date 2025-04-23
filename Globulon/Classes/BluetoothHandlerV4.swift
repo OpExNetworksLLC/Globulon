@@ -82,6 +82,80 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
         */
     }
     
+    func requestBluetoothPermissionAgain() async {
+        // If permission is already granted, no need to do anything
+        if CBManager.authorization == .allowedAlways {
+            self.isPermission = true
+            return
+        }
+
+        // Show alert to open settings
+        await showBluetoothSettingsAlert()
+
+        // Wait for user to potentially return from settings
+        await waitForAuthorizationChange(maxWaitTime: 1)
+
+        // Check permission again after delay
+        let currentAuth = CBManager.authorization
+        self.isPermission = currentAuth == .allowedAlways
+        
+        print(">>> Bluetooth permission is \(currentAuth) \(self.isPermission)")
+
+        if !self.isPermission {
+            handleBluetoothPermissionDeclined()
+        }
+    }
+    
+    private func showBluetoothSettingsAlert() async {
+        let alert = UIAlertController(
+            title: "Bluetooth Permission Needed",
+            message: "Please enable Bluetooth in Settings to allow full functionality.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Open Settings", style: .default) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString),
+               UIApplication.shared.canOpenURL(url) {
+                Task { @MainActor in
+                    await UIApplication.shared.open(url)
+                }
+            }
+        })
+        
+        if let topVC = topViewController() {
+            topVC.present(alert, animated: true)
+        }
+    }
+    private func topViewController(base: UIViewController? = nil) -> UIViewController? {
+        let root = base ?? UIApplication.shared
+            .connectedScenes
+            .compactMap { ($0 as? UIWindowScene)?.keyWindow }
+            .first?.rootViewController
+        
+        if let nav = root as? UINavigationController {
+            return topViewController(base: nav.visibleViewController)
+        } else if let tab = root as? UITabBarController {
+            return topViewController(base: tab.selectedViewController)
+        } else if let presented = root?.presentedViewController {
+            return topViewController(base: presented)
+        }
+        return root
+    }
+    
+    private func waitForAuthorizationChange(maxWaitTime: TimeInterval = 10) async {
+        let startTime = Date()
+
+        while Date().timeIntervalSince(startTime) < maxWaitTime {
+            let auth = CBManager.authorization
+            if auth != .notDetermined {
+                return
+            }
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 sec delay
+        }
+    }
+
+    
     /// Permissions should be checked and this function called when
     /// - The service is poweredOn in settings
     /// - The user has granted permission
@@ -105,19 +179,18 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if self.centralManager?.state == .poweredOn {
-                    self.startScanning()
                     LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "State \".poweredOn\" after \".unknown\" state.")
+                    self.updatesLive = true
+                    self.startScanning()
                 } else {
                     LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Scan could not start - still not powered on.")
                 }
             }
 
         case .poweredOn:
-            print("2")
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth powered on.")
-            startScanning()
             self.updatesLive = true
-
+            startScanning()
 
         default:
             LogEvent.print(module: "BluetoothHandler.startBluetoothUpdates()", message: "Bluetooth not powered on.")
@@ -147,17 +220,16 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             return
         }
 
-        var shouldResume = true
-
         await withCheckedContinuation { continuation in
+            // Store and guard against multiple resumes
             self.poweredOnContinuation = continuation
 
-            // Double-check after a short delay in case the state gets updated instantly
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                if self.centralManager?.state == .poweredOn, shouldResume {
-                    continuation.resume()
-                    self.poweredOnContinuation = nil
-                    shouldResume = false
+                if self.centralManager?.state == .poweredOn {
+                    if let cont = self.poweredOnContinuation {
+                        cont.resume()
+                        self.poweredOnContinuation = nil
+                    }
                 }
             }
         }
@@ -188,43 +260,61 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
 
     // MARK: - Get bluetooth permissions
     
-    /// This does not trigger the permission request which is imporant because we only want to know if is powered on
-    func getBluetoothAvailablity(completion: @escaping (Bool) -> Void) {
-        let permission = CBManager.authorization
-        var result = false
-        
-        switch permission {
-        case .allowedAlways:
-            /// Allowed
-            if let centralManager = centralManager {
-                /// Safely unwrap and check the state
-                let state = centralManager.state
-                if state == .poweredOn {
-                    self.isAvailable = true
-                    result = true
-                } else {
-                    self.isAvailable = false
-                    result = false
-                }
-            } else {
-                /// centralManager is nil, handle gracefully
+    func getBluetoothAvailability(completion: @escaping (Bool) -> Void) {
+        Task { @MainActor in
+            await awaitBluetoothPoweredOn()
+
+            guard let state = centralManager?.state else {
                 self.isAvailable = false
-                result = false
+                LogEvent.print(module: "BluetoothHandler.getBluetoothAvailability()", message: "Central manager unavailable.")
+                completion(false)
+                return
             }
-        case .restricted, .denied, .notDetermined:
-            /// Permission not granted or not determined
-            self.isAvailable = false
-            result = false
-        @unknown default:
-            /// Handle unknown cases cautiously
-            self.isAvailable = false
-            result = false
+
+            let isPoweredOn = state == .poweredOn
+            self.isAvailable = isPoweredOn
+            LogEvent.print(module: "BluetoothHandler.getBluetoothAvailability()", message: "\(isPoweredOn)")
+            completion(isPoweredOn)
         }
-        
-        /// Log the result
-        LogEvent.print(module: "BluetoothHandler.getBluetoothAvailablity()", message: "\(result)")
-        completion(result)
     }
+    
+//    /// This does not trigger the permission request which is imporant because we only want to know if is powered on
+//    func getBluetoothAvailablity(completion: @escaping (Bool) -> Void) {
+//        let permission = CBManager.authorization
+//        var result = false
+//        
+//        switch permission {
+//        case .allowedAlways:
+//            /// Allowed
+//            if let centralManager = centralManager {
+//                /// Safely unwrap and check the state
+//                let state = centralManager.state
+//                if state == .poweredOn {
+//                    self.isAvailable = true
+//                    result = true
+//                } else {
+//                    self.isAvailable = false
+//                    result = false
+//                }
+//            } else {
+//                /// centralManager is nil, handle gracefully
+//                self.isAvailable = false
+//                result = false
+//            }
+//        case .restricted, .denied, .notDetermined:
+//            /// Permission not granted or not determined
+//            self.isAvailable = false
+//            result = false
+//        @unknown default:
+//            /// Handle unknown cases cautiously
+//            self.isAvailable = false
+//            result = false
+//        }
+//        
+//        /// Log the result
+//        LogEvent.print(module: "BluetoothHandler.getBluetoothAvailablity()", message: "\(result)")
+//        completion(result)
+//    }
     
     /// This does not trigger the permission request which is important since we only wnat to enquire if is authorized
     /// 
@@ -313,8 +403,8 @@ final class BluetoothHandlerV4: NSObject, ObservableObject, @preconcurrency CBCe
             */
 
             if newState == .poweredOn {
-                if let continuation = self.poweredOnContinuation {
-                    continuation.resume()
+                if let cont = self.poweredOnContinuation {
+                    cont.resume()
                     self.poweredOnContinuation = nil
                 }
                 self.startScanning()

@@ -84,7 +84,7 @@ struct SystemStatusView: View {
                     bluetoothHandler.getBluetoothPermission { result in
                         self.isBluetoothPermission = result
                     }
-                    bluetoothHandler.getBluetoothAvailablity { result in
+                    bluetoothHandler.getBluetoothAvailability { result in
                         self.isBluetoothAvailable = result
                     }
                 }
