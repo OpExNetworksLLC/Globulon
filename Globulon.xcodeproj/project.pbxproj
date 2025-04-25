@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		6E08F52F2BA905B7004E6329 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E08F52E2BA905B7004E6329 /* NetworkManager.swift */; };
+		6E11E2BE2DBB3785002F84C3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6E11E2BD2DBB3785002F84C3 /* PrivacyInfo.xcprivacy */; };
 		6E19D6E22BA2501B00B2AE8C /* IntroAcceptTermsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */; };
 		6E2220B72DB1911200A93F62 /* BackgroundManagerV2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */; };
 		6E27FC062DB3154600C91FFF /* BluetoothHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E27FC052DB3154600C91FFF /* BluetoothHandler.swift */; };
@@ -166,6 +167,7 @@
 
 /* Begin PBXFileReference section */
 		6E08F52E2BA905B7004E6329 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		6E11E2BD2DBB3785002F84C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6E19D6E12BA2501B00B2AE8C /* IntroAcceptTermsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroAcceptTermsView.swift; sourceTree = "<group>"; };
 		6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundManagerV2.swift; sourceTree = "<group>"; };
 		6E27FC052DB3154600C91FFF /* BluetoothHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothHandler.swift; sourceTree = "<group>"; };
@@ -444,6 +446,7 @@
 		6E94F6F32B7C563C00AFA97F /* Globulon */ = {
 			isa = PBXGroup;
 			children = (
+				6E11E2BD2DBB3785002F84C3 /* PrivacyInfo.xcprivacy */,
 				6ECEC4042C27740200232E80 /* GoogleService-Info.plist */,
 				6E94F7222B7C787300AFA97F /* Info.plist */,
 				6E9A19D42BAFE67F000E5128 /* Globulon.entitlements */,
@@ -781,6 +784,7 @@
 				6ECF91872D6E46B6007B8F1F /* README.md in Resources */,
 				6E5DDDA22D7BDEB60018F250 /* .gitignore in Resources */,
 				6ECEC4052C27740200232E80 /* GoogleService-Info.plist in Resources */,
+				6E11E2BE2DBB3785002F84C3 /* PrivacyInfo.xcprivacy in Resources */,
 				6ECF927D2D6E66E6007B8F1F /* AnalyticsConsentDetails.html in Resources */,
 				6E94F6FE2B7C563D00AFA97F /* Preview Assets.xcassets in Resources */,
 				6E949E972C3CDC8D00E42D6D /* LaunchScreen.storyboard in Resources */,
@@ -1046,7 +1050,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 82;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1094,7 +1098,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Globulon/Globulon.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 82;
+				CURRENT_PROJECT_VERSION = 83;
 				DEVELOPMENT_ASSET_PATHS = "\"Globulon/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

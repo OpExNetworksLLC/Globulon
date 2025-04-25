@@ -1,8 +1,8 @@
 //
 //  ArticlesClass.swift
-//  Globulon
+//  GeoGato
 //
-//  Created by David Holeman on 02/25/25.
+//  Created by David Holeman on 4/24/25.
 //  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
@@ -37,15 +37,16 @@ struct ArticleJSON: Decodable {
     let author: String
 }
 
+@MainActor
 class Articles {
-    @MainActor class func load(completion: @escaping @Sendable (Bool, String) -> Void) {
+    @MainActor class func load(completion: @escaping @Sendable (Bool, String) -> Void) async {
         LogEvent.print(module: "Articles.load()", message: "▶️ starting...")
 
         let articlesLocation = UserSettings().articlesLocation
         
         switch articlesLocation.description {
         case "remote":
-            handleRemoteLoading(completion: completion)
+            await handleRemoteLoading(completion: completion)
         case "local", "error":
             handleLocalLoading(completion: completion)
         default:
@@ -55,7 +56,7 @@ class Articles {
         LogEvent.print(module: "Articles.load()", message: "⏹️ ...finished")
     }
     
-    @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) {
+    @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) async {
         LogEvent.print(module: "Articles.load()", message: "source (.remote)")
         
         guard NetworkManager.shared.isConnected else {
@@ -67,20 +68,24 @@ class Articles {
             completion(false, "Invalid URL for articles file.")
             return
         }
-        
-        isURLReachable(url: url) { isReachable in
+    isURLReachable(url: url) { isReachable in
+        Task { @MainActor in
             guard isReachable else {
                 completion(false, "URL is not reachable.")
                 return
             }
-            
+
             isUpdateRequired { updateRequired in
                 if updateRequired {
-                    fetchAndUpdateArticles { success, message in
-                        if success {
-                            printSectionsAndArticles()
+                    Task {
+                        await fetchAndUpdateArticles { success, message in
+                            await MainActor.run {
+                                if success {
+                                    printSectionsAndArticles()
+                                }
+                                completion(success, message)
+                            }
                         }
-                        completion(success, message)
                     }
                 } else {
                     completion(true, "Remote update is not required")
@@ -88,32 +93,35 @@ class Articles {
             }
         }
     }
+    }
     
     private class func handleLocalLoading(completion: @escaping @Sendable (Bool, String) -> Void) {
         LogEvent.print(module: "Articles.load()", message: "source (.local)")
-        
+
         isUpdateRequired { updateRequired in
-            if updateRequired {
-                let fetched = fetchArticles(from: .local)
-                let message = fetched ? "Local sections and articles loaded" : "Sections and articles failed to load"
-                if fetched {
-                    UserSettings.init().articlesDate = articlesDate()
-                    printSectionsAndArticles()
+            Task { @MainActor in
+                if updateRequired {
+                    let fetched = fetchArticles(from: .local)
+                    let message = fetched ? "Local sections and articles loaded" : "Sections and articles failed to load"
+                    if fetched {
+                        UserSettings.init().articlesDate = articlesDate()
+                        printSectionsAndArticles()
+                    }
+                    completion(fetched, message)
+                } else {
+                    completion(true, "A local update was not required")
                 }
-                completion(fetched, message)
-            } else {
-                completion(true, "A local update was not required")
             }
         }
     }
     
-    private class func fetchAndUpdateArticles(completion: @escaping @Sendable (Bool, String) -> Void) {
+    private class func fetchAndUpdateArticles(completion: @escaping @Sendable (Bool, String) async -> Void) async {
         let fetched = fetchArticles(from: .remote)
         let message = fetched ? "Sections and articles loaded" : "Sections and articles failed to load"
         if fetched {
             printSectionsAndArticles()
         }
-        completion(fetched, message)
+        await completion(fetched, message)
     }
     
     private class func fetchArticles(from location: ArticleLocations) -> Bool {
@@ -152,8 +160,7 @@ class Articles {
     private class func decodeSections(from data: Data) -> Int {
         do {
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
-            let context = ModelContext(ModelContainerProvider.shared)
-            //let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContainerProvider.sharedContext
             
             for section in decoded.sections {
                 let sectionEntity = HelpSection(id: section.section_name, section: section.section_desc, rank: section.section_rank)
@@ -171,8 +178,7 @@ class Articles {
     private class func decodeArticles(from data: Data) -> Int {
         do {
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
-            let context = ModelContext(ModelContainerProvider.shared)
-            //let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContainerProvider.sharedContext
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
             var articleCount = 0
             
@@ -253,8 +259,7 @@ class Articles {
     }
     
     private class func deleteEntity(named entityName: String) {
-        let context = ModelContext(ModelContainerProvider.shared)
-        //let context = ModelContext(SharedModelContainer.shared.container)
+        let context = ModelContainerProvider.sharedContext
         
         do {
             if entityName == "HelpArticle" {
@@ -291,8 +296,7 @@ class Articles {
     
     class func printSectionsAndArticles() {
         do {
-            let context = ModelContext(ModelContainerProvider.shared)
-            //let context = ModelContext(SharedModelContainer.shared.container)
+            let context = ModelContainerProvider.sharedContext
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
             var sortedSections: [HelpSection] {
                 sections.sorted { $0.rank < $1.rank }

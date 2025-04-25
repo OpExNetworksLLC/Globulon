@@ -440,19 +440,16 @@ struct DeveloperSettingsView: View {
                 
                 /// Load articles
                 Button(action: {
-                    Articles.load { success, message in
-                        /*
-                        Task { @MainActor in
-                            showAlertLoadArticlesMessage = message
-                            showAlertLoadArticlesSuccess = true
-                        }
-                        */
-                        DispatchQueue.main.async {
-                            showAlertLoadArticlesMessage = message
-                            showAlertLoadArticlesSuccess = true
+                    Task {
+                        await Articles.load { success, message in
+                            DispatchQueue.main.async {
+                                showAlertLoadArticlesMessage = message
+                                showAlertLoadArticlesSuccess = true
+                            }
                         }
                     }
                 }
+
                 ) {
                     HStack {
                         Text("Load Articles").offset(x: -16)

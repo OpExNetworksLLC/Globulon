@@ -293,10 +293,8 @@ import Combine
             
             /// Find the first entry in the buffer that  indicates no speed and thus no real motion
             if locationDataBuffer[index].speed <= 0.0 {
-                let context = ModelContext(ModelContainerProvider.shared)
-                //let context = ModelContext(SharedModelContainer.shared.container)
-                //let container = AppEnvironment.sharedModelContainer
-                //let context = ModelContext(container)
+                //let context = ModelContext(ModelContainerProvider.shared)
+                let context = ModelContainerProvider.sharedContext
                 
                 LogEvent.print(module: "LocationManager.saveLocationDataBuffer()", message: "\(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
                 
@@ -348,10 +346,8 @@ import Combine
     }
     
     func saveLocation(location: CLLocation) {
-        let context = ModelContext(ModelContainerProvider.shared)
-        //let context = ModelContext(SharedModelContainer.shared.container)
-        //let container = AppEnvironment.sharedModelContainer
-        //let context = ModelContext(container)
+        //let context = ModelContext(ModelContainerProvider.shared)
+        let context = ModelContainerProvider.sharedContext
         
         var state = ""
         if UIApplication.shared.applicationState == .background {

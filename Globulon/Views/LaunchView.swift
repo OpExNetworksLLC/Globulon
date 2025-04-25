@@ -69,20 +69,22 @@ struct LaunchView: View {
                     
                     
                     // TODO:  Just wiping the data store clean for testing
-//                    let container = SharedModelContainer.shared.container
-//                    Task {
-//                        do {
-//                            try ModelContainer.resetPersistentStore()
-//                            print("Persistent store successfully reset.")
-//                        } catch {
-//                            print("Error resetting persistent store: \(error)")
-//                        }
-//                    }
-//
+                    /*
+                    let container = SharedModelContainer.shared.container
+                    Task {
+                        do {
+                            try ModelContainer.resetPersistentStore()
+                            print("Persistent store successfully reset.")
+                        } catch {
+                            print("Error resetting persistent store: \(error)")
+                        }
+                    }
+                    */
+
                     
                     /// Load the help articles if needed
                     ///
-                    Articles.load { success, message in
+                    await Articles.load { success, message in
                         LogEvent.print(module: "LaunchView.task", message: message)
                     }
                     
