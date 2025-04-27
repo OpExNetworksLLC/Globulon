@@ -3,7 +3,7 @@
 //  Globulon
 //
 //  Created by David Holeman on 02/25/25.
-//  Copyright © 2024 OpEx Networks, LLC. All rights reserved.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
 import SwiftUI

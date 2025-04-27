@@ -144,10 +144,12 @@ struct MasterView: View {
             
             #if FIREBASE_ENABLED
             /// let's ensure we have the username and password to work with
+            /*
             print("^firebase login info:")
-//            print("^username: \(username)")
-//            print("^userPassword: \(userPassword)")
-//            print("^password: \(password)")
+            print("^username: \(username)")
+            print("^userPassword: \(userPassword)")
+            print("^password: \(password)")
+            */
             #endif
         }
     }

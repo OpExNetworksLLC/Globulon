@@ -120,7 +120,6 @@ struct UserSecurityView: View {
                     
                     Section(header: Text("Reset Password")) {
                         #if KEYCHAIN_ENABLED
-                        //if AppSettings.login.isKeychainLoginEnabled {
                             Group {
                                 HStack {
                                     Text("PASSWORD \(isPasswordStrengthLabel)")
@@ -270,7 +269,6 @@ struct UserSecurityView: View {
                                 
                                 
                             } // end group
-                        //}
                         #endif
                         
                         #if FIREBASE_ENABLED
@@ -288,8 +286,6 @@ struct UserSecurityView: View {
                                             showFirebasePasswordResetFailedAlert = true
                                         }
                                     }
-                                    
-                                    //
                                 }) {
                                     Text("Send password reset")
                                 }
@@ -339,7 +335,6 @@ struct UserSecurityView: View {
                     let passwordNew = passwordVerify
                     
                     #if KEYCHAIN_ENABLED
-                    //if AppSettings.login.isKeychainLoginEnabled {
                         Authentication.keychain.updatePassword(username: userEmail, passwordOld: userPassword, passwordNew: passwordNew) { success, error in
                             if success {
                                 userPassword = passwordNew
@@ -349,21 +344,7 @@ struct UserSecurityView: View {
                                 showKeychainPasswordChangeFailedAlert = true
                             }
                         }
-                    //}
                     #endif
-                    
-//                    if AppSettings.login.isFirebaseLoginEnabled {
-//                        Authentication.firebase.passwordReset(email: userEmail) { success, error in
-//                            if success {
-//                                showFirebasePasswordResetSentMessage = "Reset sent, check your email.  If you don't see in your inbox check your \"Junk\" email folder"
-//                                showFirebasePasswordResetSentAlert = true
-//                            } else {
-//                                showFirebasePasswordResetFailedMessage = error?.localizedDescription ?? ""
-//                                showFirebasePasswordResetFailedAlert = true
-//                            }
-//                        }
-//                    }
-                    
                 }
                 self.presentationMode.wrappedValue.dismiss()
             }) {
@@ -375,16 +356,6 @@ struct UserSecurityView: View {
             } message: {
                 Text(showKeychainPasswordChangeFailedMessage)
             }
-//            .alert("Reset Sent", isPresented: $showFirebasePasswordResetSentAlert) {
-//                Button("Ok", role: .cancel) { self.dismiss() }
-//            } message: {
-//                Text(showFirebasePasswordResetSentMessage)
-//            }
-//            .alert("Reset Problem", isPresented: $showFirebasePasswordResetFailedAlert) {
-//                Button("Ok", role: .cancel) { }
-//            } message: {
-//                Text(showFirebasePasswordResetFailedMessage)
-//            }
         })
         .onAppear {
             /// Load up when the view appears so that if you make a change and come back while still in the setting menu the values are current.
@@ -401,7 +372,6 @@ struct UserSecurityView: View {
             let userEmail = userSettings.email
             
             #if KEYCHAIN_ENABLED
-            //if AppSettings.login.isKeychainLoginEnabled {
                 Authentication.keychain.retrievePassword(username: userEmail) { success, password, error in
                     if success {
                         passwordEntry = password
@@ -412,22 +382,7 @@ struct UserSecurityView: View {
                         showKeychainPasswordChangeFailedAlert = true
                     }
                 }
-            //}
             #endif
-            
-            //            if AppSettings.login.isFirebaseLoginEnabled {
-            //                /// Firebase only permits a reset for security reasons if you want to change your password.
-            //                Authentication.firebase.passwordReset(email: userEmail) { success, error in
-            //                    if success {
-            //                        showFirebasePasswordResetSentMessage = "Reset sent, check your email.  If you don't see in your inbox check your \"Junk\" email folder"
-            //                        showFirebasePasswordResetSentAlert = true
-            //                    } else {
-            //                        showFirebasePasswordResetFailedMessage = error?.localizedDescription ?? ""
-            //                        showFirebasePasswordResetFailedAlert = true
-            //                    }
-            //                }
-            //            }
-            
         }
         // end NavigationView
     }
