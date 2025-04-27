@@ -10,3 +10,10 @@
 
     Swift Compiler - Custom Flags:
         Other Swift Flags: -DKEYCHAIN_DISABLED, -DFIREBASE_ENABLED
+
+
+## Reference info
+### Create privacy manifest
+https://developer.apple.com/documentation/bundleresources/privacy-manifest-files
+https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacycollecteddatatypes/nsprivacycollecteddatatype
+https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacycollecteddatatypes/nsprivacycollecteddatatypepurposes
