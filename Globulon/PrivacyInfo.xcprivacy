@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <!-- Privacy Category: User Defaults -->
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+    </array>
+    
+    <!-- Privacy Collected Data: Types -->
 	<key>NSPrivacyCollectedDataTypes</key>
 	<array>
         <!-- Privacy Report: Email -->
@@ -97,33 +111,37 @@
             </array>
         </dict>
 	</array>
-    <!--  -->
-	<key>NSPrivacyAccessedAPITypes</key>
-	<array>
-		<dict>
-			<key>NSPrivacyAccessedAPIType</key>
-			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>CA92.1</string>
-			</array>
-		</dict>
-	</array>
+    
+    <!-- PERMISSIONS: -->
+    <!-- Identifiers -->
 	<key>NSUserTrackingUsageDescription</key>
 	<string>This app uses your identifier to provide a better user experience.</string>
+    
+    <!-- Face ID -->
 	<key>NSFaceIDUsageDescription</key>
 	<string>This app uses Face ID to provide a secure and quick sign-in option.</string>
+    
+    <!-- Location -->
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app uses your location to provide location-based services.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs your location to work in the background.</string>
+    
+    <!-- Photo Library -->
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to your photo library to select a profile picture.</string>
+    
+    <!-- Camera -->
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs access to your camera to take photos for your profile picture.</string>
+    
+    <!-- Motion -->
 	<key>NSMotionUsageDescription</key>
 	<string>This app uses motion data to track your physical activity and improve app experiences.</string>
+    
+    <!-- Notifications -->
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>This app uses notifications to keep you informed about updates, alerts, and messages.</string>
+    
 </dict>
 </plist>
