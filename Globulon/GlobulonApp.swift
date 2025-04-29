@@ -38,6 +38,9 @@ import FirebaseAnalytics
     
     init() {
   
+        VersionManager.shared.resetRelease()
+        _ = VersionManager.shared.checkRelease()
+        
         //deleteDefaultStore()
         
         /// Save the prior logfile

@@ -29,6 +29,7 @@
 		6E680D3A2D7BC89C002F7F43 /* ConeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D382D7BC89C002F7F43 /* ConeView.swift */; };
 		6E680D3B2D7BC89C002F7F43 /* TravelViewV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D392D7BC89C002F7F43 /* TravelViewV3.swift */; };
 		6E680D5F2D7BC8C5002F7F43 /* MoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E680D5E2D7BC8C5002F7F43 /* MoreView.swift */; };
+		6E69CC512DC1326200852E76 /* VersionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E69CC502DC1326200852E76 /* VersionManager.swift */; };
 		6E6D9B262B8403B2004325A1 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E6D9B252B8403B2004325A1 /* AppSettings.swift */; };
 		6E7274962B804A1700B5547C /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274952B804A1700B5547C /* AppEnvironment.swift */; };
 		6E7274982B804A9E00B5547C /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E7274972B804A9E00B5547C /* AppDefaults.swift */; };
@@ -188,6 +189,7 @@
 		6E680D382D7BC89C002F7F43 /* ConeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConeView.swift; sourceTree = "<group>"; };
 		6E680D392D7BC89C002F7F43 /* TravelViewV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TravelViewV3.swift; sourceTree = "<group>"; };
 		6E680D5E2D7BC8C5002F7F43 /* MoreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreView.swift; sourceTree = "<group>"; };
+		6E69CC502DC1326200852E76 /* VersionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionManager.swift; sourceTree = "<group>"; };
 		6E6D9B252B8403B2004325A1 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		6E7274952B804A1700B5547C /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6E7274972B804A9E00B5547C /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
@@ -522,6 +524,7 @@
 				6EB56D152B8559AA00C106F0 /* BiometricsClass.swift */,
 				6E94F7312B7C944100AFA97F /* DateInfoClass.swift */,
 				6ECF92DC2D6EA68B007B8F1F /* GitHubManager.swift */,
+				6E69CC502DC1326200852E76 /* VersionManager.swift */,
 				6E97DC2D2DA9B7FF00468F43 /* LocationManager.swift */,
 				6E94F7142B7C701B00AFA97F /* LogEventClass.swift */,
 				6E3F449B2D77B2460020229A /* MotionManager.swift */,
@@ -882,6 +885,7 @@
 				6ECF92992D6E9BBA007B8F1F /* BluetoothView.swift in Sources */,
 				6ECF92892D6E6A30007B8F1F /* SceneDelegateClass.swift in Sources */,
 				6ECF92E12D6EAB73007B8F1F /* NotificationExtensions.swift in Sources */,
+				6E69CC512DC1326200852E76 /* VersionManager.swift in Sources */,
 				6E89635C2B7D8BEC003ABB4F /* HomeView.swift in Sources */,
 				6E6D9B262B8403B2004325A1 /* AppSettings.swift in Sources */,
 				6ECF92852D6E69A4007B8F1F /* AsyncProcessor.swift in Sources */,
