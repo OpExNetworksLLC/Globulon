@@ -51,17 +51,22 @@ class VersionManager: ObservableObject {
     }
     
     func isNewRelease() -> Bool {
-        var savedRelease = retrieveRelease()
-        if savedRelease.isEmpty {
-            savedRelease = "\"\""
-            return true
-        } else {
-            LogEvent.print(module: "VersionManager.isNewRelease()", message: "A newer release was detected:  Old release: \(savedRelease) New release: \(Self.release)")
+        let savedRelease = retrieveRelease()
 
+        if savedRelease.isEmpty {
+            LogEvent.print(module: "VersionManager.isNewRelease()", message: "Saved app release is empty. Current release: \(Self.release)")
+            return true
         }
-        return Self.release.compare(savedRelease, options: .numeric) == .orderedDescending
+
+        let isNew = Self.release.compare(savedRelease, options: .numeric) == .orderedDescending
+        if isNew {
+            LogEvent.print(module: "VersionManager.isNewRelease()", message: "Newer app release detected. Old: \(savedRelease), New: \(Self.release)")
+        } else {
+            LogEvent.print(module: "VersionManager.isNewRelease()", message: "No new app release. Current release: \(Self.release)")
+        }
+
+        return isNew
     }
-    
     func checkRelease() -> Bool {
         if isNewRelease() {
             var result = retrieveRelease()

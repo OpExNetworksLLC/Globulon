@@ -96,74 +96,14 @@ import FirebaseAnalytics
         /// Print out the settings in the log
         LogEvent.print(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
         
-        
         //LogEvent.getLogFileURL()
         
         LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
     }
     
-    // MARK: - Async Startup Logic
-    private func startupSequence() async {
-        
-        LogEvent.print(module: "GlobulonApp.startupSequence", message: "▶️ starting...")
-        
-        let versionManager = VersionManager.shared
-        versionManager.resetRelease()
-        
-        Articles.deleteArticles()
-        UserSettings.init().articlesDate = DateInfo.zeroDate
 
-        if versionManager.isNewRelease() {
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: "New app release detected: \(VersionManager.release)")
-            
-            let (success, message) = await Articles.loadAsync()
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
-            
-            if success {
-                await MainActor.run {
-                    VersionManager.shared.isVersionUpdate = true
-                }
-            }
-            
-            versionManager.saveRelease()
-        } else {
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release not detected: \(VersionManager.release)")
-        }
-        
-        /// Check the permissions and availability of various handlers
-        ///
-        /// Location Handler
-        LocationManager.shared.getAuthorizedWhenInUse { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
-        }
-        LocationManager.shared.getAuthorizedAlways { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedAlways()", message: "\(result)")
-        }
-        LocationManager.shared.getAuthorizedDescription { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedDescription()", message: "\(result)")
-        }
-        
-        /// Activity Handler
-        ActivityManager.shared.getMotionActivityAvailability { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityAvailability()", message: "\(result)")
-        }
-        ActivityManager.shared.getMotionActivityPermission { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityPermission()", message: "\(result)")
-        }
-        
-        ActivityManager.shared.getActivityMonitoringStatus { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
-            
-            /** OPTION:  Use this code to start the handle
-            ```
-            if !result {
-            ActivityManager.shared.startActivityUpdates()
-            }
-            ```
-            */
-        }
-        LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
-    }
+    
+    // MARK: - Main body
     
     var body: some Scene {
         WindowGroup {
@@ -205,5 +145,82 @@ import FirebaseAnalytics
                 break
             }
         }
+    }
+    
+    // MARK: - Async Startup Logic
+    
+    /// The startup sequence is triggered as a task from the MasterView in a task.  Doing this outside the init() function allows us to
+    /// support executing async tasks in order.  Init() does not honor an order regarding asycn calls so we can't force a wait until an
+    /// async process finishes there.
+    ///
+    private func startupSequence() async {
+        
+        LogEvent.print(module: "GlobulonApp.startupSequence", message: "▶️ starting...")
+        
+        let versionManager = VersionManager.shared
+        
+        var isSaveRelease = false
+        
+        // Debug stuff (remove)
+        /*
+        versionManager.resetRelease()
+        Articles.deleteArticles()
+        UserSettings.init().articlesDate = DateInfo.zeroDate
+        */
+
+        if versionManager.isNewRelease() {
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            
+            let (success, message) = await Articles.loadAsync()
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
+            
+            if success {
+                await MainActor.run {
+                    VersionManager.shared.isVersionUpdate = true
+                    isSaveRelease = true
+                }
+            }
+        }
+        
+        /// Check the permissions and availability of various handlers
+        ///
+        /// Location Handler
+        LocationManager.shared.getAuthorizedWhenInUse { result in
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
+        }
+        LocationManager.shared.getAuthorizedAlways { result in
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedAlways()", message: "\(result)")
+        }
+        LocationManager.shared.getAuthorizedDescription { result in
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedDescription()", message: "\(result)")
+        }
+        
+        /// Activity Handler
+        ActivityManager.shared.getMotionActivityAvailability { result in
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityAvailability()", message: "\(result)")
+        }
+        ActivityManager.shared.getMotionActivityPermission { result in
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityPermission()", message: "\(result)")
+        }
+        
+        ActivityManager.shared.getActivityMonitoringStatus { result in
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
+            
+            /** OPTION:  Use this code to start the handle
+            ```
+            if !result {
+            ActivityManager.shared.startActivityUpdates()
+            }
+            ```
+            */
+        }
+        
+        /// If any of the prior actions trigger a change that completes as a result of detecting a new version then save the new release version
+        ///
+        if isSaveRelease {
+            versionManager.saveRelease()
+        }
+        
+        LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
     }
 }
