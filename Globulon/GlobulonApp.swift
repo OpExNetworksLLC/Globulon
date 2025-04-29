@@ -32,16 +32,14 @@ import FirebaseAnalytics
     @StateObject private var appStatus = AppStatus()
     @StateObject private var userStatus = UserStatus()
     @StateObject private var appEnvironment = AppEnvironment()
+
     
     private let backgroundFetchTaskIdentifier = "com.opexnetworks.Globulon.backgroundFetch"
     private let backgroundProcessingTaskIdentifier = "com.opexnetworks.Globulon.backgroundProcessing"
     
+    private var isVersionManagerSuccess = false
+    
     init() {
-  
-        VersionManager.shared.resetRelease()
-        _ = VersionManager.shared.checkRelease()
-        
-        //deleteDefaultStore()
         
         /// Save the prior logfile
         LogEvent.ArchiveLogFile()
@@ -58,6 +56,35 @@ import FirebaseAnalytics
         ///`UserSettings.init().isAutoLogin = true
         ///
         UserSettings.init().isAutoLogin = false
+        
+        /// Check app version
+        ///
+        let versionManager = VersionManager.shared
+        
+        // TEST STUFF: reset stuff to emulate a new release
+        versionManager.resetRelease()
+        Articles.deleteArticles()
+        UserSettings.init().articlesDate = DateInfo.zeroDate
+
+        if versionManager.isNewRelease()  {
+            LogEvent.print(module: "GlobulonApp.init()", message: "New app release detected: \(VersionManager.release)")
+
+            Task {
+                let (success, message) = await Articles.loadAsync()
+                LogEvent.print(module: "LaunchView.task", message: message)
+
+                if success {
+                    await MainActor.run {
+                        VersionManager.shared.isVersionUpdate = true
+                    }
+                }
+
+                // ✅ Place your "next steps" code here — this happens *after* loading
+                versionManager.saveRelease()
+            }
+        } else {
+            LogEvent.print(module: "GlobulonApp.init()", message: "New app release not detected: \(VersionManager.release)")
+        }
         
         //deleteDefaultStore()
         
@@ -130,7 +157,9 @@ import FirebaseAnalytics
             ```
             */
         }
+        
         //LogEvent.getLogFileURL()
+        
         LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
         
     }

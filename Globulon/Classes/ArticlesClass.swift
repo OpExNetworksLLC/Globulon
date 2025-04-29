@@ -315,3 +315,14 @@ class Articles {
         }
     }
 }
+extension Articles {
+    static func loadAsync() async -> (Bool, String) {
+        await withCheckedContinuation { continuation in
+            Task {
+                await Articles.load { success, message in
+                    continuation.resume(returning: (success, message))
+                }
+            }
+        }
+    }
+}

@@ -84,9 +84,11 @@ struct LaunchView: View {
                     
                     /// Load the help articles if needed
                     ///
+                    /*
                     await Articles.load { success, message in
                         LogEvent.print(module: "LaunchView.task", message: message)
                     }
+                    */
                     
                     
                     /// OPTION: Schedule any apps you want scheduled when the app starts

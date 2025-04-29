@@ -13,7 +13,7 @@ class VersionManager: ObservableObject {
     
     static let shared = VersionManager()
 
-    @Published var version = false
+    @Published var isVersionUpdate = false
     
     static var version: String {
         return Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
@@ -35,6 +35,7 @@ class VersionManager: ObservableObject {
     
     func saveRelease() {
         UserDefaults.standard.set(Self.release, forKey: "app_release")
+        LogEvent.print(module: "VersionManager.saveRelease()", message: "release saved: \(Self.release)")
     }
     
     func retrieveRelease() -> String {
@@ -50,12 +51,13 @@ class VersionManager: ObservableObject {
     }
     
     func isNewRelease() -> Bool {
-        let savedRelease = retrieveRelease()
+        var savedRelease = retrieveRelease()
         if savedRelease.isEmpty {
-            //LogEvent.print(module: "VersionManager.isNewRelease()", message: "blank")
+            savedRelease = "\"\""
             return true
         } else {
-            //LogEvent.print(module: "VersionManager.isNewRelease()", message: "old release: \(savedRelease) new release: \(Self.release)")
+            LogEvent.print(module: "VersionManager.isNewRelease()", message: "A newer release was detected:  Old release: \(savedRelease) New release: \(Self.release)")
+
         }
         return Self.release.compare(savedRelease, options: .numeric) == .orderedDescending
     }

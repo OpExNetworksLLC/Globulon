@@ -24,9 +24,14 @@ struct AppSettings {
         static let error = "NoArticles"
     }
     
-    // Hosted up on github
+    /// Hosted up on GitHub
+    ///
     static let licenseURL = "https://opexnetworks.github.io/Apps/GeoGato/License.html"
     static let privacyURL = "https://opexnetworks.github.io/Apps/GeoGato/Privacy.html"
+    
+    //static let licenseURL = "https://opexnetworks.com/apps/globulon/license.html"
+    //static let privacyURL = "https://opexnetworks.com/apps/globulon/privacy.html"
+
     
     /// A local HTML file with full disclosure on what exact events and data is collected
     static let analyticsConsentURL = "AnalyticsConsentDetails.html"
