@@ -57,35 +57,6 @@ import FirebaseAnalytics
         ///
         UserSettings.init().isAutoLogin = false
         
-        /// Check app version
-        ///
-        let versionManager = VersionManager.shared
-        
-        // TEST STUFF: reset stuff to emulate a new release
-        versionManager.resetRelease()
-        Articles.deleteArticles()
-        UserSettings.init().articlesDate = DateInfo.zeroDate
-
-        if versionManager.isNewRelease()  {
-            LogEvent.print(module: "GlobulonApp.init()", message: "New app release detected: \(VersionManager.release)")
-
-            Task {
-                let (success, message) = await Articles.loadAsync()
-                LogEvent.print(module: "LaunchView.task", message: message)
-
-                if success {
-                    await MainActor.run {
-                        VersionManager.shared.isVersionUpdate = true
-                    }
-                }
-
-                // ✅ Place your "next steps" code here — this happens *after* loading
-                versionManager.saveRelease()
-            }
-        } else {
-            LogEvent.print(module: "GlobulonApp.init()", message: "New app release not detected: \(VersionManager.release)")
-        }
-        
         //deleteDefaultStore()
         
         /// Based on`.userMode`chance some settings and values
@@ -125,29 +96,63 @@ import FirebaseAnalytics
         /// Print out the settings in the log
         LogEvent.print(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
         
+        
+        //LogEvent.getLogFileURL()
+        
+        LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
+    }
+    
+    // MARK: - Async Startup Logic
+    private func startupSequence() async {
+        
+        LogEvent.print(module: "GlobulonApp.startupSequence", message: "▶️ starting...")
+        
+        let versionManager = VersionManager.shared
+        versionManager.resetRelease()
+        
+        Articles.deleteArticles()
+        UserSettings.init().articlesDate = DateInfo.zeroDate
+
+        if versionManager.isNewRelease() {
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            
+            let (success, message) = await Articles.loadAsync()
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
+            
+            if success {
+                await MainActor.run {
+                    VersionManager.shared.isVersionUpdate = true
+                }
+            }
+            
+            versionManager.saveRelease()
+        } else {
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release not detected: \(VersionManager.release)")
+        }
+        
         /// Check the permissions and availability of various handlers
         ///
         /// Location Handler
         LocationManager.shared.getAuthorizedWhenInUse { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
         }
         LocationManager.shared.getAuthorizedAlways { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedAlways()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedAlways()", message: "\(result)")
         }
         LocationManager.shared.getAuthorizedDescription { result in
-            LogEvent.print(module: AppSettings.appName + ".LocationManager.getAuthorizedDescription()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedDescription()", message: "\(result)")
         }
         
         /// Activity Handler
         ActivityManager.shared.getMotionActivityAvailability { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getMotionActivityAvailability()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityAvailability()", message: "\(result)")
         }
         ActivityManager.shared.getMotionActivityPermission { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getMotionActivityPermission()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityPermission()", message: "\(result)")
         }
         
         ActivityManager.shared.getActivityMonitoringStatus { result in
-            LogEvent.print(module: AppSettings.appName + ".ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
+            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
             
             /** OPTION:  Use this code to start the handle
             ```
@@ -157,11 +162,7 @@ import FirebaseAnalytics
             ```
             */
         }
-        
-        //LogEvent.getLogFileURL()
-        
-        LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
-        
+        LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
     }
     
     var body: some Scene {
@@ -171,6 +172,10 @@ import FirebaseAnalytics
                 .environmentObject(UserStatus())
                 .environmentObject(AppStatus())
                 .environmentObject(AppEnvironment())
+                // 👇 Here's where we start the startup sequence task
+                .task {
+                    await startupSequence()
+                }
         }
         /// Heres is where we make the Shared Model Container available as a singleton across the App for use in views
         ///
