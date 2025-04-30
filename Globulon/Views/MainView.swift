@@ -490,7 +490,7 @@ struct MainView: View {
                     Button {
                         isShowVersionSheet.toggle()
                     } label: {
-                        Text("version: \(AppInfo.version) (\(AppInfo.build))")
+                        Text("version: \(VersionManager.releaseDesc)")
                             .font(.system(size: 12, weight: .regular, design: .default))
                     }
                     .sheet(isPresented: $isShowVersionSheet, content: {

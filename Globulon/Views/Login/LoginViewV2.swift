@@ -292,7 +292,7 @@ struct LoginViewV2: View {
         var body: some View {
             VStack(alignment: .leading) {
                 if isLogoButton {
-                    Text("Version : \(AppInfo.version) (\(AppInfo.build))")
+                    Text("Version : \(VersionManager.releaseDesc)")
                         .font(.system(size: 10, design: .monospaced))
                     Text("AuthMode: \(UserSettings().authMode.description)")
                         .font(.system(size: 10, design: .monospaced))

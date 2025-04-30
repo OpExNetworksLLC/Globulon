@@ -27,7 +27,7 @@ struct SettingsInfoView: View {
         VStack {
             HStack() {
                 Text("Version..........:")
-                Text("\(AppInfo.version) (\(AppInfo.build))")
+                Text("\(VersionManager.releaseDesc)")
                 Spacer()
             }
             .padding(.bottom, 8)

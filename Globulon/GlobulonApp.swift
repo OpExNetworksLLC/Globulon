@@ -42,7 +42,6 @@ import FirebaseAnalytics
     private var isVersionManagerSuccess = false
     
     
-    
     init() {
         
         /// Save the prior logfile
@@ -104,7 +103,6 @@ import FirebaseAnalytics
         
         LogEvent.print(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
     }
-    
 
     
     // MARK: - Main body
@@ -259,8 +257,35 @@ import FirebaseAnalytics
             versionManager.saveRelease()
         }
         
+        /// BACKGROUND
+        ///
+        /// Schedule any apps you want automatically scheduled when the app starts
+        ///
+        ///`BackgroundManager.shared.scheduleAppRefresh()
+        ///`BackgroundManager.shared.scheduleProcessingTask()
+        
+        /// ASYNC PROCESSING
+        ///
+        /// Launch an async process that completes based on priority..
+        /// Status can be checked by checking published variables.
+        /// OPTION: Set the level of priority you want this task to have.  The higher the level
+        /// the more impact on the user experience as they are entering the app.
+        ///
+        /// `Task(priority: .background)`
+        ///
+        let processor = AsyncProcessor()
+        Task(priority: .low) {
+            if !processor.isProcessing {
+                LogEvent.print(module: "LaunchView.task", message: "▶️ starting AsyncProcessor()...")
+                
+                await processor.performAsyncTask()
+                
+                LogEvent.print(module: "LaunchView.task", message: "⏹️ ...finished AsyncProcessor()")
+            } else {
+                LogEvent.print(module: "LaunchView.task", message: "AsyncProcessor() is processing")
+            }
+        }
+        
         LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
     }
 }
-
-

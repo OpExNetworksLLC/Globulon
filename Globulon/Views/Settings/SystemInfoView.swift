@@ -39,7 +39,7 @@ struct SystemInfoView: View {
             .padding(.bottom, 8)
             HStack() {
                 Text("App Version...:")
-                Text("\(AppInfo.version) (\(AppInfo.build))")
+                Text("\(VersionManager.releaseDesc)")
                 Spacer()
             }
             .padding(.bottom, 8)

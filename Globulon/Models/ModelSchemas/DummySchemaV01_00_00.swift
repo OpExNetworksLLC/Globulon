@@ -8,7 +8,6 @@
 
 import Foundation
 import SwiftData
-import CoreLocation
 
 enum DummySchema: VersionedSchema {
     static var versionIdentifier: Schema.Version {

@@ -24,7 +24,7 @@ struct VersionSheetView: View {
                 VStack(alignment: .leading) {
                     Text("Version Details:")
                         .padding(.bottom, 8)
-                    Text("Version : \(AppInfo.version) (\(AppInfo.build))")
+                    Text("Version : \(VersionManager.releaseDesc))")
                         .font(.system(size: 14, design: .monospaced))
                     #if FIREBASE_ENABLED
                         Text("AuthMode: remote (firebase)")

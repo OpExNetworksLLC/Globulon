@@ -6,9 +6,17 @@
 //  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
 //
 
+/**
+ - Version: 1.0.0 (2025.04.30)
+ - Attention:
+    - You will want the graphics to be the same here for the screen layout as for the LaunchView so that
+      the transition from this to the LaunchView appears seamless
+ - Note:
+    - Version: 1.0.0 (2025.04.30)
+        - Added firebase analytics
+*/
+
 import SwiftUI
-import SwiftData
-import BackgroundTasks
 
 struct StartupSequenceView: View {
     @Environment(\.presentationMode) var presentationMode
@@ -56,59 +64,11 @@ struct StartupSequenceView: View {
                     //.foregroundColor(.white)
                 }
                 
-            } else {
-                VStack {
-                    Spacer()
-                    ZStack {
-                        Image(colorScheme == .dark ? "appLogoDarkMode" : "appLogoTransparent")
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .scaleEffect(scale)
-                            .onAppear {
-                                DispatchQueue.main.asyncAfter(deadline: .now()) {
-                                    withAnimation(.easeInOut(duration: 3)) {
-                                        // Update the binding value to trigger animation
-                                        self.scale = self.scale == 1.0 ? 200 : 1.0
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                                            NotificationCenter.default.post(name: Notification.Name("isLaunchCompleted"), object: nil)
-                                        }
-                                        self.presentationMode.wrappedValue.dismiss()
-                                    }
-                                }
-                            }
-                            .padding(.top, -14)
-                    }
-                    
-                    /// Spacer below the graphic
-                    Spacer()
-                    
-                    Text(AppSettings.appCopyright)
-                        .font(.system(size: 12))
-                        .padding(.bottom, 4) // This ensures a consistent distance from the bottom
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
- 
             }
         }
     }
-
 }
 
 #Preview {
     StartupSequenceView()
-}
-
-// MARK: - Startup
-struct StartupScreenView: View {
-    var body: some View {
-        VStack {
-            ProgressView("Starting Up...")
-                .progressViewStyle(CircularProgressViewStyle())
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
-        .onAppear {
-            Swift.print(">>> StartupScreenView.onAppear")
-        }
-    }
 }
