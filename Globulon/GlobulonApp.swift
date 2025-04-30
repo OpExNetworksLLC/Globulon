@@ -32,6 +32,7 @@ import FirebaseAnalytics
     @StateObject private var appStatus = AppStatus()
     @StateObject private var userStatus = UserStatus()
     @StateObject private var appEnvironment = AppEnvironment()
+    @StateObject private var userSettings = UserSettings()
 
     
     private let backgroundFetchTaskIdentifier = "com.opexnetworks.Globulon.backgroundFetch"
@@ -167,9 +168,25 @@ import FirebaseAnalytics
         Articles.deleteArticles()
         UserSettings.init().articlesDate = DateInfo.zeroDate
         */
+        userSettings.lastAuth = DateInfo.zeroDate
 
         if versionManager.isNewRelease() {
             LogEvent.print(module: "GlobulonApp.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            
+            let (success, message) = await Articles.loadAsync()
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
+            
+            if success {
+                await MainActor.run {
+                    VersionManager.shared.isVersionUpdate = true
+                    isSaveRelease = true
+                }
+            }
+        }
+        
+        if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()),
+           userSettings.lastAuth < oneWeekAgo {
+            LogEvent.print(module: "GlobulonApp.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
             
             let (success, message) = await Articles.loadAsync()
             LogEvent.print(module: "GlobulonApp.startupSequence", message: message)

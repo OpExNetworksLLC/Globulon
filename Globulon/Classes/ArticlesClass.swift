@@ -88,7 +88,7 @@ class Articles {
                         }
                     }
                 } else {
-                    completion(true, "Remote update is not required")
+                    completion(true, "Remote articles update is not required")
                 }
             }
         }
@@ -109,7 +109,7 @@ class Articles {
                     }
                     completion(fetched, message)
                 } else {
-                    completion(true, "A local update was not required")
+                    completion(true, "A local articles update was not required")
                 }
             }
         }
