@@ -34,11 +34,14 @@ import FirebaseAnalytics
     @StateObject private var appEnvironment = AppEnvironment()
     @StateObject private var userSettings = UserSettings()
 
+    @State private var isStartupSequenceComplete = false
     
     private let backgroundFetchTaskIdentifier = "com.opexnetworks.Globulon.backgroundFetch"
     private let backgroundProcessingTaskIdentifier = "com.opexnetworks.Globulon.backgroundProcessing"
     
     private var isVersionManagerSuccess = false
+    
+    
     
     init() {
         
@@ -99,7 +102,7 @@ import FirebaseAnalytics
         
         //LogEvent.getLogFileURL()
         
-        LogEvent.print(module: "GlobulonApp.init()", message: "⏹️ ...finished")
+        LogEvent.print(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
     }
     
 
@@ -108,16 +111,34 @@ import FirebaseAnalytics
     
     var body: some Scene {
         WindowGroup {
-            MasterView()
-                .environmentObject(UserSettings())
-                .environmentObject(UserStatus())
-                .environmentObject(AppStatus())
-                .environmentObject(AppEnvironment())
-                // 👇 Here's where we start the startup sequence task
-                .task {
-                    await startupSequence()
-                }
+            if isStartupSequenceComplete {
+                MasterView()
+                    .environmentObject(userSettings)
+                    .environmentObject(userStatus)
+                    .environmentObject(appStatus)
+                    .environmentObject(AppEnvironment.shared)
+            } else {
+                StartupScreenView() // Optional: or use ProgressView/spinner
+                    .task {
+                        try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds artificial delay
+                        await startupSequence()
+                        isStartupSequenceComplete = true
+                        print(">>> Startup sequence complete")
+                    }
+            }
         }
+//        WindowGroup {
+//            MasterView()
+//                .environmentObject(UserSettings())
+//                .environmentObject(UserStatus())
+//                .environmentObject(AppStatus())
+//                .environmentObject(AppEnvironment())
+//                // 👇 Here's where we start the startup sequence task
+//                .task {
+//                    await startupSequence()
+//                }
+//        }
+        
         /// Heres is where we make the Shared Model Container available as a singleton across the App for use in views
         ///
         ///.modelContainer(AppEnvironment.sharedModelContainer)
@@ -156,7 +177,7 @@ import FirebaseAnalytics
     ///
     private func startupSequence() async {
         
-        LogEvent.print(module: "GlobulonApp.startupSequence", message: "▶️ starting...")
+        LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "▶️ starting...")
         
         let versionManager = VersionManager.shared
         
@@ -171,10 +192,10 @@ import FirebaseAnalytics
         userSettings.lastAuth = DateInfo.zeroDate
 
         if versionManager.isNewRelease() {
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
             let (success, message) = await Articles.loadAsync()
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
             
             if success {
                 await MainActor.run {
@@ -186,10 +207,10 @@ import FirebaseAnalytics
         
         if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()),
            userSettings.lastAuth < oneWeekAgo {
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
             
             let (success, message) = await Articles.loadAsync()
-            LogEvent.print(module: "GlobulonApp.startupSequence", message: message)
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
             
             if success {
                 await MainActor.run {
@@ -239,5 +260,20 @@ import FirebaseAnalytics
         }
         
         LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
+    }
+}
+
+// MARK: - Startup
+struct StartupScreenView: View {
+    var body: some View {
+        VStack {
+            ProgressView("Starting Up...")
+                .progressViewStyle(CircularProgressViewStyle())
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemBackground))
+        .onAppear {
+            Swift.print(">>> StartupScreenView.onAppear")
+        }
     }
 }
