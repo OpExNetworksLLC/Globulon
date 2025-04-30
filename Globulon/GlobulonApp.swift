@@ -118,9 +118,9 @@ import FirebaseAnalytics
                     .environmentObject(appStatus)
                     .environmentObject(AppEnvironment.shared)
             } else {
-                StartupScreenView() // Optional: or use ProgressView/spinner
+                StartupSequenceView() // Optional: or use ProgressView/spinner
                     .task {
-                        try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds artificial delay
+                        //try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds artificial delay
                         await startupSequence()
                         isStartupSequenceComplete = true
                         print(">>> Startup sequence complete")
@@ -263,17 +263,4 @@ import FirebaseAnalytics
     }
 }
 
-// MARK: - Startup
-struct StartupScreenView: View {
-    var body: some View {
-        VStack {
-            ProgressView("Starting Up...")
-                .progressViewStyle(CircularProgressViewStyle())
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(.systemBackground))
-        .onAppear {
-            Swift.print(">>> StartupScreenView.onAppear")
-        }
-    }
-}
+
