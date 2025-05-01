@@ -11,35 +11,21 @@ import CoreLocation
 import SwiftData
 import MapKit
 
-// Structures for the JSON file that contains the FAQ content
-struct ArticlesJSON: Decodable {
-    let updated_at: String
-    let sections: [SectionsJSON]
-    let articles: [ArticleJSON]
-}
-
-struct SectionsJSON: Decodable {
-    let section_name: String
-    let section_desc: String
-    let section_rank: String
-}
-
-struct ArticleJSON: Decodable {
-    let id: String
-    let title: String
-    let summary: String
-    let search: String
-    let section_names: [String]
-    let label_names: [String]
-    let created_at: String
-    let updated_at: String
-    let body: String
-    let author: String
-}
 
 @MainActor
-class Articles {
+class ArticlesV1 {
+    
+    private static var isLoading = false
+    
     @MainActor class func load(completion: @escaping @Sendable (Bool, String) -> Void) async {
+        guard !isLoading else {
+            completion(false, "Articles already loading")
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+        
         LogEvent.print(module: "Articles.load()", message: "▶️ starting...")
 
         let articlesLocation = UserSettings().articlesLocation
@@ -58,42 +44,74 @@ class Articles {
     
     @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) async {
         LogEvent.print(module: "Articles.load()", message: "source (.remote)")
-        
+
         guard NetworkManager.shared.isConnected else {
             completion(false, "No internet connection. Connect to the internet and try again.")
             return
         }
-        
+
         guard let url = URL(string: AppSettings.articlesLocation.remote) else {
             completion(false, "Invalid URL for articles file.")
             return
         }
-    isURLReachable(url: url) { isReachable in
-        Task { @MainActor in
-            guard isReachable else {
-                completion(false, "URL is not reachable.")
-                return
-            }
 
-            isUpdateRequired { updateRequired in
-                if updateRequired {
-                    Task {
-                        await fetchAndUpdateArticles { success, message in
-                            await MainActor.run {
-                                if success {
-                                    printSectionsAndArticles()
-                                }
-                                completion(success, message)
-                            }
-                        }
-                    }
-                } else {
-                    completion(true, "Remote articles update is not required")
+        let isReachable = await isURLReachable(url: url)
+        guard isReachable else {
+            completion(false, "URL is not reachable.")
+            return
+        }
+
+        let updateRequired = await isUpdateRequired()
+        if updateRequired {
+            await fetchAndUpdateArticles { success, message in
+                if success {
+                    await printSectionsAndArticles()
                 }
+                completion(success, message)
             }
+        } else {
+            completion(true, "Remote articles update is not required")
         }
     }
-    }
+    
+//    @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) async {
+//        LogEvent.print(module: "Articles.load()", message: "source (.remote)")
+//        
+//        guard NetworkManager.shared.isConnected else {
+//            completion(false, "No internet connection. Connect to the internet and try again.")
+//            return
+//        }
+//        
+//        guard let url = URL(string: AppSettings.articlesLocation.remote) else {
+//            completion(false, "Invalid URL for articles file.")
+//            return
+//        }
+//        isURLReachable(url: url) { isReachable in
+//            Task { @MainActor in
+//                guard isReachable else {
+//                    completion(false, "URL is not reachable.")
+//                    return
+//                }
+//                
+//                isUpdateRequired { updateRequired in
+//                    if updateRequired {
+//                        Task {
+//                            await fetchAndUpdateArticles { success, message in
+//                                await MainActor.run {
+//                                    if success {
+//                                        printSectionsAndArticles()
+//                                    }
+//                                    completion(success, message)
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        completion(true, "Remote articles update is not required")
+//                    }
+//                }
+//            }
+//        }
+//    }
     
     private class func handleLocalLoading(completion: @escaping @Sendable (Bool, String) -> Void) {
         LogEvent.print(module: "Articles.load()", message: "source (.local)")
@@ -298,8 +316,12 @@ class Articles {
         do {
             let context = ModelContainerProvider.sharedContext
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
-            var sortedSections: [HelpSection] {
-                sections.sorted { $0.rank < $1.rank }
+// TODO:
+//            var sortedSections: [HelpSection] {
+//                sections.sorted { $0.rank < $1.rank }
+//            }
+            let sortedSections = sections.sorted {
+                $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
             for section in sortedSections {
                 print("Sorted Section: \(section.section) (\(section.toArticles?.count ?? 0))")
@@ -314,15 +336,61 @@ class Articles {
             LogEvent.print(module: "Articles.printSectionsAndArticles", message: "Error: \(error)")
         }
     }
-}
-extension Articles {
-    static func loadAsync() async -> (Bool, String) {
-        await withCheckedContinuation { continuation in
-            Task {
-                await Articles.load { success, message in
-                    continuation.resume(returning: (success, message))
+
+    private class func isURLReachable(url: URL) async -> Bool {
+        var request = URLRequest(url: url)
+        request.httpMethod = "HEAD"
+
+        return await withCheckedContinuation { continuation in
+            URLSession.shared.dataTask(with: request) { _, response, _ in
+                if let httpResponse = response as? HTTPURLResponse {
+                    continuation.resume(returning: httpResponse.statusCode == 200)
+                } else {
+                    continuation.resume(returning: false)
                 }
-            }
+            }.resume()
         }
     }
+    
+    private class func isUpdateRequired() async -> Bool {
+        do {
+            let data = try loadData(from: UserSettings().articlesLocation)
+            let articlesDate = decodeArticlesDate(from: data)
+            let currentArticlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+
+            if currentArticlesDate < articlesDate {
+                LogEvent.print(module: "Articles.isUpdateRequired()", message: "Yes \(currentArticlesDate) = \(articlesDate)")
+                return true
+            } else {
+                LogEvent.print(module: "Articles.isUpdateRequired()", message: "No \(currentArticlesDate) > \(articlesDate)")
+                return false
+            }
+        } catch {
+            LogEvent.print(module: "Articles.isUpdateRequired", message: "Error: \(error)")
+            return false
+        }
+    }
+    
 }
+//extension Articles {
+//    static func loadAsync() async -> (Bool, String) {
+//        await withCheckedContinuation { continuation in
+//            Task { @MainActor in
+//                await Articles.load { success, message in
+//                    continuation.resume(returning: (success, message))
+//                }
+//            }
+//        }
+//    }
+//}
+//extension Articles {
+//    static func loadAsync() async -> (Bool, String) {
+//        await withCheckedContinuation { continuation in
+//            Task {
+//                await Articles.load { success, message in
+//                    continuation.resume(returning: (success, message))
+//                }
+//            }
+//        }
+//    }
+//}

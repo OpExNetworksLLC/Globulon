@@ -95,7 +95,8 @@ struct FilteredList: View {
         helpSection.filter { section in
             section.toArticles?.contains { $0.search.contains(searchString) } == true
         }
-        .sorted { $0.rank < $1.rank }
+        //.sorted { $0.rank < $1.rank }
+        .sorted { $0.rank.localizedStandardCompare($1.rank) == .orderedAscending }
     }
     
     var body: some View {

@@ -80,6 +80,7 @@ import FirebaseAnalytics
             
             /// Override any user settings:
             ///
+            userSettings.articlesLocation = .remote
             
             /// Automatically purge so I don't have to manually
             _ = purgeGPSData()
@@ -182,24 +183,27 @@ import FirebaseAnalytics
         var isSaveRelease = false
         
         // Debug stuff (remove)
-        /*
+        //
         versionManager.resetRelease()
         Articles.deleteArticles()
         UserSettings.init().articlesDate = DateInfo.zeroDate
-        */
-        userSettings.lastAuth = DateInfo.zeroDate
+        
+        //userSettings.lastAuth = DateInfo.zeroDate
 
         if versionManager.isNewRelease() {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
-            let (success, message) = await Articles.loadAsync()
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-            
-            if success {
-                await MainActor.run {
-                    VersionManager.shared.isVersionUpdate = true
-                    isSaveRelease = true
+            Task {
+                let (success, message) = await Articles.load()
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+                
+                if success {
+                    await MainActor.run {
+                        VersionManager.shared.isVersionUpdate = true
+                        isSaveRelease = true
+                    }
                 }
+                
             }
         }
         
@@ -207,14 +211,17 @@ import FirebaseAnalytics
            userSettings.lastAuth < oneWeekAgo {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
             
-            let (success, message) = await Articles.loadAsync()
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-            
-            if success {
-                await MainActor.run {
-                    VersionManager.shared.isVersionUpdate = true
-                    isSaveRelease = true
+            Task {
+                let (success, message) = await Articles.load()
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+                
+                if success {
+                    await MainActor.run {
+                        VersionManager.shared.isVersionUpdate = true
+                        isSaveRelease = true
+                    }
                 }
+                
             }
         }
         

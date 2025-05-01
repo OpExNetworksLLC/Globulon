@@ -19,18 +19,22 @@ struct AppSettings {
     static let pinnedUnicode = "\u{2605}"
 
     struct articlesLocation {
-        static let remote = "https://opexnetworks.github.io/Apps/GeoGato/Articles.json"
+        //static let remote = "https://opexnetworks.github.io/Apps/GeoGato/Articles.json"
+        static let remote = "https://opexnetworks.com/apps/globulon/articles.json"
+
         static let local = "Articles"
         static let error = "NoArticles"
     }
     
     /// Hosted up on GitHub
     ///
-    static let licenseURL = "https://opexnetworks.github.io/Apps/GeoGato/License.html"
-    static let privacyURL = "https://opexnetworks.github.io/Apps/GeoGato/Privacy.html"
+    //static let licenseURL = "https://opexnetworks.github.io/Apps/GeoGato/License.html"
+    //static let privacyURL = "https://opexnetworks.github.io/Apps/GeoGato/Privacy.html"
     
-    //static let licenseURL = "https://opexnetworks.com/apps/globulon/license.html"
-    //static let privacyURL = "https://opexnetworks.com/apps/globulon/privacy.html"
+    /// Hosted on opexnetworks.com
+    /// 
+    static let licenseURL = "https://opexnetworks.com/apps/globulon/license.html"
+    static let privacyURL = "https://opexnetworks.com/apps/globulon/privacy.html"
 
     
     /// A local HTML file with full disclosure on what exact events and data is collected

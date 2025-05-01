@@ -441,11 +441,10 @@ struct DeveloperSettingsView: View {
                 /// Load articles
                 Button(action: {
                     Task {
-                        await Articles.load { success, message in
-                            DispatchQueue.main.async {
-                                showAlertLoadArticlesMessage = message
-                                showAlertLoadArticlesSuccess = true
-                            }
+                        let (_, message) = await Articles.load()
+                        DispatchQueue.main.async {
+                            showAlertLoadArticlesMessage = message
+                            showAlertLoadArticlesSuccess = true
                         }
                     }
                 }
