@@ -50,8 +50,11 @@ final class ArticlesV2 {
         }
         
         if try await isUpdateRequired() {
+            print(">>> Update for remote articles is required ...")
             let fetched = try fetchArticles(from: .remote)
             if fetched {
+                print(">>> date from articlesDate user settings: \(UserSettings.init().articlesDate)")
+                print(">>> date from articles file: ")
                 printSectionsAndArticles()
                 return (true, "Sections and articles loaded")
             } else {
@@ -68,7 +71,8 @@ final class ArticlesV2 {
         if try await isUpdateRequired() {
             let fetched = try fetchArticles(from: .local)
             if fetched {
-                UserSettings().articlesDate = try articlesDate()
+                UserSettings.init().articlesDate = try articlesDate()
+                print(">>> \(UserSettings.init().articlesDate)")
                 printSectionsAndArticles()
                 return (true, "Local sections and articles loaded")
             } else {
@@ -94,21 +98,24 @@ final class ArticlesV2 {
             }
             return try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
         case .remote:
-            //-
+            //->
             guard let url = URL(string: AppSettings.articlesLocation.remote) else {
                 throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
             }
 
             let data = try Data(contentsOf: url, options: .alwaysMapped)
-
+            let articlesDate = try decodeArticlesDate(from: data)
+            
+            print(">>> articlesDate from loadData.remote: \(articlesDate)")
+            
             if let jsonString = String(data: data, encoding: .utf8) {
-                print("🧪 Remote JSON content:\n\(jsonString)")
+                print("🧪 JSON opened successfully:")
             } else {
                 print("❌ Unable to decode remote data as UTF-8 string.")
             }
 
             return data
-            //
+            //<-
             
 //            guard let url = URL(string: AppSettings.articlesLocation.remote) else {
 //                throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
@@ -127,21 +134,12 @@ final class ArticlesV2 {
         let context = ModelContainerProvider.sharedContext
         
         for section in decoded.sections {
-
-            print("🧪 INSERTING SECTION - name: \(section.section_name), desc: \(section.section_desc), rank: \(section.section_rank)")
-
             let sectionEntity = HelpSection(id: section.section_name, section: section.section_desc, rank: section.section_rank)
             context.insert(sectionEntity)
         }
         
         try context.save()
-        
-        
-        let testSections = try context.fetch(FetchDescriptor<HelpSection>())
-        for s in testSections {
-            print("✅ SAVED: \(s.section) - Rank: \(s.rank)")
-        }
-        
+
         return decoded.sections.count
     }
     
@@ -177,6 +175,9 @@ final class ArticlesV2 {
         let data = try loadData(from: UserSettings().articlesLocation)
         let articlesDate = try decodeArticlesDate(from: data)
         let currentArticlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+        
+        print(">>> isUpdateRequired: \(currentArticlesDate) < \(articlesDate)")
+        
         return currentArticlesDate < articlesDate
     }
     
@@ -184,35 +185,6 @@ final class ArticlesV2 {
         let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
         return DateInfo.convertToDate(date: decoded.updated_at)
     }
-    
-//    private static func isURLReachable(url: URL) async throws -> Bool {
-//        let start = Date()
-//        print(">>> Checking URL reachability at \(start)...")
-//        
-//        var request = URLRequest(url: url)
-//        print(">>> \(request)")
-//        
-//        request.httpMethod = "GET"
-//        request.timeoutInterval = 10
-//        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-//        
-//        do {
-//            let (_, response) = try await URLSession.shared.data(for: request)
-//            let duration = Date().timeIntervalSince(start)
-//            print(">>> Response received in \(duration) seconds: \(response)")
-//            
-//            guard let httpResponse = response as? HTTPURLResponse else {
-//                print(">>> No HTTP response")
-//                return false
-//            }
-//            print(">>> HTTP status code: \(httpResponse.statusCode)")
-//            return (200...299).contains(httpResponse.statusCode)
-//        } catch {
-//            let duration = Date().timeIntervalSince(start)
-//            print(">>> Error after \(duration) seconds: \(error)")
-//            throw error
-//        }
-//    }
     
     private static func isURLReachable(url: URL) async throws -> Bool {
         var request = URLRequest(url: url)
@@ -280,7 +252,7 @@ final class ArticlesV2 {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
             for section in sortedSections {
-                print("Sorted Section: *\(section.rank)* \(section.section) (\(section.toArticles?.count ?? 0))")
+                print("Sorted Section: [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
                 
                 var index = 0
                 while index < section.toArticles?.count ?? 0 {

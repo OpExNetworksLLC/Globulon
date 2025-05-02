@@ -184,48 +184,76 @@ import FirebaseAnalytics
         
         // Debug stuff (remove)
         //
-        versionManager.resetRelease()
+//        versionManager.resetRelease()
         Articles.deleteArticles()
-        UserSettings.init().articlesDate = DateInfo.zeroDate
+//        UserSettings.init().articlesDate = DateInfo.zeroDate
         
         //userSettings.lastAuth = DateInfo.zeroDate
 
-        if versionManager.isNewRelease() {
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
-            
-            Task {
-                let (success, message) = await Articles.load()
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-                
-                if success {
-                    await MainActor.run {
-                        VersionManager.shared.isVersionUpdate = true
-                        isSaveRelease = true
-                    }
-                }
-                
-            }
-        }
+//        if versionManager.isNewRelease() {
+//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+//            
+//            Task {
+//                let (success, message) = await Articles.load()
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+//                
+//                if success {
+//                    await MainActor.run {
+//                        VersionManager.shared.isVersionUpdate = true
+//                        isSaveRelease = true
+//                    }
+//                }
+//                
+//            }
+//        }
+//
+//        if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()),
+//            userSettings.lastAuth < oneWeekAgo {
+//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
+//            
+//            Task {
+//                let (success, message) = await Articles.load()
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+//                
+//                if success {
+//                    await MainActor.run {
+//                        VersionManager.shared.isVersionUpdate = true
+//                        isSaveRelease = true
+//                    }
+//                }
+//                
+//            }
+//        }
         
-        /*
-        if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()),
-           userSettings.lastAuth < oneWeekAgo {
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
-            
+        let isNewRelease = versionManager.isNewRelease()
+        let isPastOneWeek: Bool = {
+            if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
+                return userSettings.lastAuth < oneWeekAgo
+            }
+            return false
+        }()
+
+        if isNewRelease || isPastOneWeek {
+            if isNewRelease {
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            } else {
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
+            }
+
             Task {
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+
                 let (success, message) = await Articles.load()
                 LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
                 
                 if success {
                     await MainActor.run {
                         VersionManager.shared.isVersionUpdate = true
-                        isSaveRelease = true
+                        isSaveRelease = isNewRelease
                     }
                 }
-                
             }
         }
-        */
         
         /// Check the permissions and availability of various handlers
         ///

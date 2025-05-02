@@ -324,7 +324,7 @@ class ArticlesV1 {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
             for section in sortedSections {
-                print("Sorted Section: \(section.section) (\(section.toArticles?.count ?? 0))")
+                print("Sorted Section: [\(section.section)] (\(section.toArticles?.count ?? 0))")
                 
                 var index = 0
                 while index < section.toArticles?.count ?? 0 {
