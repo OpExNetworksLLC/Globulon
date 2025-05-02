@@ -7,151 +7,125 @@ import MapKit
 final class ArticlesV2 {
     
     private static let loadingState = LoadingState()
-    
+
     static func load() async -> (Bool, String) {
         guard await loadingState.begin() else {
             return (false, "Articles already loading")
         }
         defer { Task { await loadingState.end() } }
-        
+
         LogEvent.print(module: "Articles.load()", message: "▶️ starting...")
-        
-        let articlesLocation = UserSettings().articlesLocation
-        
+
+        let location = UserSettings().articlesLocation
+        let result: (Bool, String)
+
         do {
-            switch articlesLocation.description {
+            switch location.description {
             case "remote":
-                let result = try await handleRemoteLoading()
-                return result
+                result = try await handleLoading(from: .remote)
             case "local", "error":
-                let result = try await handleLocalLoading()
-                return result
+                result = try await handleLoading(from: location)
             default:
-                return (false, "Invalid articles location")
+                result = (false, "Invalid articles location")
             }
         } catch {
-            return (false, "Failed to load articles: \(error.localizedDescription)")
+            result = (false, "Failed to load articles: \(error.localizedDescription)")
         }
+
+        return result
     }
-    
-    private static func handleRemoteLoading() async throws -> (Bool, String) {
-        LogEvent.print(module: "Articles.load()", message: "source (.remote)")
-        
-        guard NetworkManager.shared.isConnected else {
-            return (false, "No internet connection. Connect to the internet and try again.")
+
+    private static func handleLoading(from location: ArticleLocations) async throws -> (Bool, String) {
+        LogEvent.print(module: "Articles.handleLoading()", message: "Source: \(location.description)")
+
+        if location == .remote {
+            guard NetworkManager.shared.isConnected else {
+                return (false, "No internet connection. Connect to the internet and try again.")
+            }
+
+            guard let url = URL(string: AppSettings.articlesLocation.remote), try await isURLReachable(url: url) else {
+                return (false, "Remote URL is invalid or unreachable.")
+            }
         }
-        
-        guard let url = URL(string: AppSettings.articlesLocation.remote) else {
-            return (false, "Invalid URL for articles file.")
-        }
-        
-        guard try await isURLReachable(url: url) else {
-            return (false, "URL is not reachable.")
-        }
-        
-        if try await isUpdateRequired() {
-            print(">>> Update for remote articles is required ...")
-            let fetched = try fetchArticles(from: .remote)
+
+        if try await isUpdateRequired(for: location) {
+            LogEvent.print(module: "Articles.handleLoading()", message: "🔁 Update is required for \(location.description)")
+            
+            deleteArticles()
+            LogEvent.print(module: "Articles.handleLoading()", message: "🧼 Old data deleted")
+
+            let fetched = try fetchAndStoreArticles(from: location)
             if fetched {
-                print(">>> date from articlesDate user settings: \(UserSettings.init().articlesDate)")
-                print(">>> date from articles file: ")
+                let newDate = try articlesDate(for: location)
+                UserSettings().articlesDate = newDate
+                LogEvent.print(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
+
                 printSectionsAndArticles()
-                return (true, "Sections and articles loaded")
+                return (true, "\(location.description.capitalized) sections and articles loaded")
             } else {
-                return (false, "Sections and articles failed to load")
+                return (false, "Failed to load sections and articles from \(location.description)")
             }
         } else {
-            return (true, "Remote articles update is not required")
+            LogEvent.print(module: "Articles.handleLoading()", message: "🔄 Update not required for \(location.description)")
+            return (true, "\(location.description.capitalized) articles update not required")
         }
     }
-    
-    private static func handleLocalLoading() async throws -> (Bool, String) {
-        LogEvent.print(module: "Articles.handleLocalLoading()", message: "source (.local)")
-        
-        if try await isUpdateRequired() {
-            let fetched = try fetchArticles(from: .local)
-            if fetched {
-                UserSettings.init().articlesDate = try articlesDate()
-                print(">>> \(UserSettings.init().articlesDate)")
-                printSectionsAndArticles()
-                return (true, "Local sections and articles loaded")
-            } else {
-                return (false, "Sections and articles failed to load")
-            }
-        } else {
-            return (true, "A local articles update was not required")
-        }
-    }
-    
-    private static func fetchArticles(from location: ArticleLocations) throws -> Bool {
+
+    private static func fetchAndStoreArticles(from location: ArticleLocations) throws -> Bool {
         let data = try loadData(from: location)
+        
+        // Validate data before deletion
+        _ = try decodeArticlesDate(from: data)
+        LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "✅ Validated articles JSON format")
+
+        deleteArticles()
+        LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "🧼 Old data deleted after validation")
+
         let sectionsCount = try decodeSections(from: data)
         let articlesCount = try decodeArticles(from: data)
         return sectionsCount > 0 && articlesCount > 0
     }
-    
+
     private static func loadData(from location: ArticleLocations) throws -> Data {
         switch location {
-        case .local:
-            guard let path = Bundle.main.path(forResource: AppSettings.articlesLocation.local, ofType: "json") else {
+        case .local, .error:
+            let fileName = location == .local ? AppSettings.articlesLocation.local : AppSettings.articlesLocation.error
+            guard let path = Bundle.main.path(forResource: fileName, ofType: "json") else {
                 throw NSError(domain: "Invalid path", code: 0, userInfo: nil)
             }
             return try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
         case .remote:
-            //->
             guard let url = URL(string: AppSettings.articlesLocation.remote) else {
                 throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
             }
-
             let data = try Data(contentsOf: url, options: .alwaysMapped)
-            let articlesDate = try decodeArticlesDate(from: data)
-            
-            print(">>> articlesDate from loadData.remote: \(articlesDate)")
-            
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("🧪 JSON opened successfully:")
-            } else {
-                print("❌ Unable to decode remote data as UTF-8 string.")
-            }
-
+            LogEvent.print(module: "Articles.loadData()", message: "📡 Fetched data from remote")
             return data
-            //<-
-            
-//            guard let url = URL(string: AppSettings.articlesLocation.remote) else {
-//                throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
-//            }
-//            return try Data(contentsOf: url, options: .alwaysMapped)
-        case .error:
-            guard let path = Bundle.main.path(forResource: AppSettings.articlesLocation.error, ofType: "json") else {
-                throw NSError(domain: "Invalid path", code: 0, userInfo: nil)
-            }
-            return try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
         }
     }
-    
+
     private static func decodeSections(from data: Data) throws -> Int {
         let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
         let context = ModelContainerProvider.sharedContext
-        
+
         for section in decoded.sections {
             let sectionEntity = HelpSection(id: section.section_name, section: section.section_desc, rank: section.section_rank)
             context.insert(sectionEntity)
         }
-        
-        try context.save()
 
+        try context.save()
         return decoded.sections.count
     }
-    
+
     private static func decodeArticles(from data: Data) throws -> Int {
         let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
         let context = ModelContainerProvider.sharedContext
         let sections = try context.fetch(FetchDescriptor<HelpSection>())
         var articleCount = 0
-        
+
         for section in sections {
             let articles = decoded.articles.filter { $0.section_names.contains(section.id) }
-            
+
             for article in articles {
                 let articleEntity = HelpArticle(
                     id: article.id,
@@ -166,98 +140,88 @@ final class ArticlesV2 {
                 articleCount += 1
             }
         }
-        
+
         try context.save()
         return articleCount
     }
-    
-    private static func isUpdateRequired() async throws -> Bool {
-        let data = try loadData(from: UserSettings().articlesLocation)
-        let articlesDate = try decodeArticlesDate(from: data)
-        let currentArticlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
-        
-        print(">>> isUpdateRequired: \(currentArticlesDate) < \(articlesDate)")
-        
-        return currentArticlesDate < articlesDate
+
+    private static func isUpdateRequired(for location: ArticleLocations) async throws -> Bool {
+        let data = try loadData(from: location)
+        let fileDate = try decodeArticlesDate(from: data)
+        let currentDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+        LogEvent.print(module: "Articles.isUpdateRequired()", message: "🧪 \(currentDate) < \(fileDate)")
+        return currentDate < fileDate
     }
-    
+
     private static func decodeArticlesDate(from data: Data) throws -> Date {
         let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
         return DateInfo.convertToDate(date: decoded.updated_at)
     }
-    
+
+    static func articlesDate(for location: ArticleLocations) throws -> Date {
+        let data = try loadData(from: location)
+        return try decodeArticlesDate(from: data)
+    }
+
     private static func isURLReachable(url: URL) async throws -> Bool {
         var request = URLRequest(url: url)
-        request.httpMethod = "HEAD"
         request.httpMethod = "GET"
-        request.timeoutInterval = 5 // seconds
+        request.timeoutInterval = 5
         request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
 
         let (_, response) = try await URLSession.shared.data(for: request)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            return false
-        }
-        return httpResponse.statusCode == 200
+        return (response as? HTTPURLResponse)?.statusCode == 200
     }
-    
+
     static func deleteArticles() {
         LogEvent.print(module: "Articles.deleteArticles()", message: "▶️ starting...")
         deleteEntity(named: "HelpArticle")
         deleteEntity(named: "HelpSection")
         LogEvent.print(module: "Articles.deleteArticles()", message: "⏹️ ...finished")
     }
-    
+
     private static func deleteEntity(named entityName: String) {
         let context = ModelContainerProvider.sharedContext
-        
+
         do {
-            if entityName == "HelpArticle" {
+            switch entityName {
+            case "HelpArticle":
                 let articles = try context.fetch(FetchDescriptor<HelpArticle>())
                 guard !articles.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No articles data to delete")
+                    LogEvent.print(module: "Articles.deleteEntity()", message: "No articles to delete")
                     return
                 }
                 try context.delete(model: HelpArticle.self)
-                try context.save()
-            } else if entityName == "HelpSection" {
+            case "HelpSection":
                 let sections = try context.fetch(FetchDescriptor<HelpSection>())
                 guard !sections.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No sections data to delete")
+                    LogEvent.print(module: "Articles.deleteEntity()", message: "No sections to delete")
                     return
                 }
                 try context.delete(model: HelpSection.self)
-                try context.save()
+            default:
+                return
             }
-            
+
+            try context.save()
             LogEvent.print(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
         } catch {
-            LogEvent.print(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName) data: \(error)")
+            LogEvent.print(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName): \(error)")
         }
     }
-    
-    static func articlesDate() throws -> Date {
-        let data = try loadData(from: UserSettings().articlesLocation)
-        return try decodeArticlesDate(from: data)
-    }
-    
+
     static func printSectionsAndArticles() {
         do {
             let context = ModelContainerProvider.sharedContext
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
-//            var sortedSections: [HelpSection] {
-//                sections.sorted { $0.rank < $1.rank }
-//            }
             let sortedSections = sections.sorted {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
+
             for section in sortedSections {
-                print("Sorted Section: [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
-                
-                var index = 0
-                while index < section.toArticles?.count ?? 0 {
-                    print("- \(section.toArticles?[index].title ?? "")")
-                    index += 1
+                print("Section [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
+                for article in section.toArticles ?? [] {
+                    print("- \(article.title)")
                 }
             }
         } catch {
@@ -266,16 +230,15 @@ final class ArticlesV2 {
     }
 }
 
-// Actor to manage loading state
 actor LoadingState {
     private var isLoading = false
-    
+
     func begin() -> Bool {
         guard !isLoading else { return false }
         isLoading = true
         return true
     }
-    
+
     func end() {
         isLoading = false
     }
