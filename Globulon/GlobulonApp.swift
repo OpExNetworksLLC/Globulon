@@ -184,9 +184,8 @@ import FirebaseAnalytics
         
         // Debug stuff (remove)
         //
-        versionManager.resetRelease()
-        Articles.deleteArticles()
-        UserSettings.init().articlesDate = DateInfo.zeroDate
+        //versionManager.resetRelease()
+        //UserSettings.init().articlesDate = DateInfo.zeroDate
 
         
         let isNewRelease = versionManager.isNewRelease()

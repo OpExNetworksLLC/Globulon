@@ -10,7 +10,7 @@ final class ArticlesV2 {
 
     static func load() async -> (Bool, String) {
         guard await loadingState.begin() else {
-            return (false, "Articles already loading")
+            return (false, "🔁 Articles already loading")
         }
         defer { Task { await loadingState.end() } }
 
@@ -26,25 +26,35 @@ final class ArticlesV2 {
             case "local", "error":
                 result = try await handleLoading(from: location)
             default:
-                result = (false, "Invalid articles location")
+                result = (false, "❌ Invalid articles location")
             }
         } catch {
-            result = (false, "Failed to load articles: \(error.localizedDescription)")
+            result = (false, "❌ Failed to load articles: \(error.localizedDescription)")
         }
-
         return result
     }
 
     private static func handleLoading(from location: ArticleLocations) async throws -> (Bool, String) {
-        LogEvent.print(module: "Articles.handleLoading()", message: "Source: \(location.description)")
+
+        let emoji: String
+        switch location {
+        case .remote:
+            emoji = "🌍"
+        case .local:
+            emoji = "📂"
+        case .error:
+            emoji = "❗"
+        }
+
+        LogEvent.print(module: "Articles.handleLoading()", message: "\(emoji) Source: \(location.description)")
 
         if location == .remote {
             guard NetworkManager.shared.isConnected else {
-                return (false, "No internet connection. Connect to the internet and try again.")
+                return (false, "📡 No internet connection. Connect to the internet and try again.")
             }
 
             guard let url = URL(string: AppSettings.articlesLocation.remote), try await isURLReachable(url: url) else {
-                return (false, "Remote URL is invalid or unreachable.")
+                return (false, "📡 Remote URL is invalid or unreachable.")
             }
         }
 
@@ -52,7 +62,7 @@ final class ArticlesV2 {
             LogEvent.print(module: "Articles.handleLoading()", message: "🔁 Update is required for \(location.description)")
             
             deleteArticles()
-            LogEvent.print(module: "Articles.handleLoading()", message: "🧼 Old data deleted")
+            LogEvent.print(module: "Articles.handleLoading()", message: "🗑️ Old data deleted")
 
             let fetched = try fetchAndStoreArticles(from: location)
             if fetched {
@@ -61,13 +71,13 @@ final class ArticlesV2 {
                 LogEvent.print(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
 
                 printSectionsAndArticles()
-                return (true, "\(location.description.capitalized) sections and articles loaded")
+                return (true, "⬆️ \(location.description.capitalized) sections and articles loaded")
             } else {
-                return (false, "Failed to load sections and articles from \(location.description)")
+                return (false, "❌ Failed to load sections and articles from \(location.description)")
             }
         } else {
             LogEvent.print(module: "Articles.handleLoading()", message: "🔄 Update not required for \(location.description)")
-            return (true, "\(location.description.capitalized) articles update not required")
+            return (true, "⚪ \(location.description.capitalized) articles update not required")
         }
     }
 
@@ -218,14 +228,18 @@ final class ArticlesV2 {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
 
+            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "🧾 Sections fetched: \(sortedSections.count)")
+
             for section in sortedSections {
-                print("Section [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
+                LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "Section: [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
                 for article in section.toArticles ?? [] {
-                    print("- \(article.title)")
+                    LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "- \(article.title)")
                 }
             }
+
+            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "✅ Finished printing all sections and articles.")
         } catch {
-            LogEvent.print(module: "Articles.printSectionsAndArticles", message: "Error: \(error)")
+            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "❌ Error: \(error)")
         }
     }
 }
