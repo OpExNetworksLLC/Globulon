@@ -1,3 +1,11 @@
+//
+//  ArticlesClassV2.swift
+//  Globulon
+//
+//  Created by David Holeman on 5/2/25.
+//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
+//
+
 import Foundation
 import CoreLocation
 import SwiftData
@@ -71,9 +79,9 @@ final class ArticlesV2 {
                 LogEvent.print(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
 
                 printSectionsAndArticles()
-                return (true, "⬆️ \(location.description.capitalized) sections and articles loaded")
+                return (true, "\(location.description.capitalized) sections and articles loaded")
             } else {
-                return (false, "❌ Failed to load sections and articles from \(location.description)")
+                return (false, "Failed to load sections and articles from \(location.description)")
             }
         } else {
             LogEvent.print(module: "Articles.handleLoading()", message: "🔄 Update not required for \(location.description)")

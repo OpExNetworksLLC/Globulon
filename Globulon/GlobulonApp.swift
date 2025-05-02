@@ -83,6 +83,7 @@ import FirebaseAnalytics
             userSettings.articlesLocation = .remote
             
             /// Automatically purge so I don't have to manually
+            /// 
             _ = purgeGPSData()
             
             break
@@ -187,7 +188,8 @@ import FirebaseAnalytics
         //versionManager.resetRelease()
         //UserSettings.init().articlesDate = DateInfo.zeroDate
 
-        
+        /// ARTICLES
+        ///
         let isNewRelease = versionManager.isNewRelease()
         let isPastOneWeek: Bool = {
             if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
@@ -272,7 +274,7 @@ import FirebaseAnalytics
         /// the more impact on the user experience as they are entering the app.
         ///
         /// `Task(priority: .background)`
-        ///
+
         let processor = AsyncProcessor()
         Task(priority: .low) {
             if !processor.isProcessing {

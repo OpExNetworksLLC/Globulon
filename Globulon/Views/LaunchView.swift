@@ -59,14 +59,7 @@ struct LaunchView: View {
                 .task {
                     LogEvent.print(module: "LaunchView.task", message: "▶️ starting...")
                     
-                    //_ = NetworkManager.isConnected
                     _ = NetworkManager.shared.isConnected
-                    
-                    /// OPTION: this is here for testing if you want to clear out the aritcles data
-                    ///
-                    /// `Articles.deleteArticles()
-                    /// `UserSettings.init().articlesDate = DateInfo.zeroDate
-                    
                     
                     // TODO:  Just wiping the data store clean for testing
                     /*
@@ -80,43 +73,13 @@ struct LaunchView: View {
                         }
                     }
                     */
-
                     
-                    /// Load the help articles if needed
-                    ///
-                    /*
-                    await Articles.load { success, message in
-                        LogEvent.print(module: "LaunchView.task", message: message)
-                    }
-                    */
-                    
-                    
+        
                     /// OPTION: Schedule any apps you want scheduled when the app starts
                     ///
                     ///`BackgroundManager.shared.scheduleAppRefresh()
                     ///`BackgroundManager.shared.scheduleProcessingTask()
-                    
-                    /*
-                    /// Launch an async process that completes based on priority..
-                    /// Status can be checked by checking published variables.
-                    /// OPTION: Set the level of priority you want this task to have.  The higher the level
-                    /// the more impact on the user experience as they are entering the app.
-                    ///
-                    /// `Task(priority: .background)`
-                    ///
-                    let processor = AsyncProcessor()
-                    Task(priority: .low) {
-                        if !processor.isProcessing {
-                            LogEvent.print(module: "LaunchView.task", message: "starting AsyncProcessor()...")
-                            
-                            await processor.performAsyncTask()
-                            
-                            LogEvent.print(module: "LaunchView.task", message: "...finished AsyncProcessor()")
-                        } else {
-                            LogEvent.print(module: "LaunchView.task", message: "AsyncProcessor() is processing")
-                        }
-                    }
-                    */
+
                     
                     sleep(1)
                     
