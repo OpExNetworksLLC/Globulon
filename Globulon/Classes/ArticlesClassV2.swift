@@ -94,10 +94,26 @@ final class ArticlesV2 {
             }
             return try Data(contentsOf: URL(fileURLWithPath: path), options: .alwaysMapped)
         case .remote:
+            //-
             guard let url = URL(string: AppSettings.articlesLocation.remote) else {
                 throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
             }
-            return try Data(contentsOf: url, options: .alwaysMapped)
+
+            let data = try Data(contentsOf: url, options: .alwaysMapped)
+
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("🧪 Remote JSON content:\n\(jsonString)")
+            } else {
+                print("❌ Unable to decode remote data as UTF-8 string.")
+            }
+
+            return data
+            //
+            
+//            guard let url = URL(string: AppSettings.articlesLocation.remote) else {
+//                throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
+//            }
+//            return try Data(contentsOf: url, options: .alwaysMapped)
         case .error:
             guard let path = Bundle.main.path(forResource: AppSettings.articlesLocation.error, ofType: "json") else {
                 throw NSError(domain: "Invalid path", code: 0, userInfo: nil)
@@ -111,11 +127,21 @@ final class ArticlesV2 {
         let context = ModelContainerProvider.sharedContext
         
         for section in decoded.sections {
+
+            print("🧪 INSERTING SECTION - name: \(section.section_name), desc: \(section.section_desc), rank: \(section.section_rank)")
+
             let sectionEntity = HelpSection(id: section.section_name, section: section.section_desc, rank: section.section_rank)
             context.insert(sectionEntity)
         }
         
         try context.save()
+        
+        
+        let testSections = try context.fetch(FetchDescriptor<HelpSection>())
+        for s in testSections {
+            print("✅ SAVED: \(s.section) - Rank: \(s.rank)")
+        }
+        
         return decoded.sections.count
     }
     
@@ -159,11 +185,44 @@ final class ArticlesV2 {
         return DateInfo.convertToDate(date: decoded.updated_at)
     }
     
+//    private static func isURLReachable(url: URL) async throws -> Bool {
+//        let start = Date()
+//        print(">>> Checking URL reachability at \(start)...")
+//        
+//        var request = URLRequest(url: url)
+//        print(">>> \(request)")
+//        
+//        request.httpMethod = "GET"
+//        request.timeoutInterval = 10
+//        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+//        
+//        do {
+//            let (_, response) = try await URLSession.shared.data(for: request)
+//            let duration = Date().timeIntervalSince(start)
+//            print(">>> Response received in \(duration) seconds: \(response)")
+//            
+//            guard let httpResponse = response as? HTTPURLResponse else {
+//                print(">>> No HTTP response")
+//                return false
+//            }
+//            print(">>> HTTP status code: \(httpResponse.statusCode)")
+//            return (200...299).contains(httpResponse.statusCode)
+//        } catch {
+//            let duration = Date().timeIntervalSince(start)
+//            print(">>> Error after \(duration) seconds: \(error)")
+//            throw error
+//        }
+//    }
+    
     private static func isURLReachable(url: URL) async throws -> Bool {
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
-        
-        let (data, response) = try await URLSession.shared.data(for: request)
+        request.httpMethod = "GET"
+        request.timeoutInterval = 5 // seconds
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+
+        let (_, response) = try await URLSession.shared.data(for: request)
+
         guard let httpResponse = response as? HTTPURLResponse else {
             return false
         }
@@ -188,6 +247,7 @@ final class ArticlesV2 {
                     return
                 }
                 try context.delete(model: HelpArticle.self)
+                try context.save()
             } else if entityName == "HelpSection" {
                 let sections = try context.fetch(FetchDescriptor<HelpSection>())
                 guard !sections.isEmpty else {
@@ -195,6 +255,7 @@ final class ArticlesV2 {
                     return
                 }
                 try context.delete(model: HelpSection.self)
+                try context.save()
             }
             
             LogEvent.print(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
@@ -212,11 +273,14 @@ final class ArticlesV2 {
         do {
             let context = ModelContainerProvider.sharedContext
             let sections = try context.fetch(FetchDescriptor<HelpSection>())
+//            var sortedSections: [HelpSection] {
+//                sections.sorted { $0.rank < $1.rank }
+//            }
             let sortedSections = sections.sorted {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
             for section in sortedSections {
-                print("Sorted Section: \(section.section) (\(section.toArticles?.count ?? 0))")
+                print("Sorted Section: *\(section.rank)* \(section.section) (\(section.toArticles?.count ?? 0))")
                 
                 var index = 0
                 while index < section.toArticles?.count ?? 0 {

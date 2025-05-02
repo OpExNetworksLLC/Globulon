@@ -27,6 +27,31 @@ struct ArticlesJSON: Decodable {
     let articles: [ArticleJSON]
 }
 
+//struct SectionsJSON: Decodable {
+//    let section_name: String
+//    let section_desc: String
+//    let section_rank: String
+//
+//    enum CodingKeys: String, CodingKey {
+//        case section_name, section_desc, section_rank
+//    }
+//
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//
+//        section_name = try container.decode(String.self, forKey: .section_name)
+//        section_desc = try container.decode(String.self, forKey: .section_desc)
+//
+//        if let rawRank = try? container.decode(String.self, forKey: .section_rank) {
+//            let trimmedRank = rawRank.trimmingCharacters(in: .whitespacesAndNewlines)
+//            print("✅ Decoded section_rank: '\(trimmedRank)' for section '\(section_name)'")
+//            section_rank = trimmedRank
+//        } else {
+//            print("❌ Failed to decode 'section_rank' for section '\(section_name)'")
+//            section_rank = "?"
+//        }
+//    }
+//}
 struct SectionsJSON: Decodable {
     let section_name: String
     let section_desc: String

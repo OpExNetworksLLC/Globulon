@@ -207,6 +207,7 @@ import FirebaseAnalytics
             }
         }
         
+        /*
         if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()),
            userSettings.lastAuth < oneWeekAgo {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago.  Checking for updates...")
@@ -224,6 +225,7 @@ import FirebaseAnalytics
                 
             }
         }
+        */
         
         /// Check the permissions and availability of various handlers
         ///

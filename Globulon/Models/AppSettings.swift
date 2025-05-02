@@ -19,7 +19,7 @@ struct AppSettings {
     static let pinnedUnicode = "\u{2605}"
 
     struct articlesLocation {
-        //static let remote = "https://opexnetworks.github.io/Apps/GeoGato/Articles.json"
+        //static let remote = "https://opexnetworks.github.io/Apps/Globulon/articles.json"
         static let remote = "https://opexnetworks.com/apps/globulon/articles.json"
 
         static let local = "Articles"

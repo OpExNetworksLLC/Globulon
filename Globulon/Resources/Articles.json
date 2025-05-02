@@ -4,17 +4,17 @@
         {
             "section_name": "PINNED",
             "section_desc": "*|PINNED|* Helpful Articles (local)",
-            "section_rank": "0"
+            "section_rank": "level 0"
         },
         {
             "section_name": "SECURITY",
             "section_desc": "Security",
-            "section_rank": "1"
+            "section_rank": "level 1"
         },
         {
             "section_name": "OTHER",
             "section_desc": "Other",
-            "section_rank": "2"
+            "section_rank": "level 2"
         }
     ],
     "articles": [

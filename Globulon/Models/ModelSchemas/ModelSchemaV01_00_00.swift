@@ -30,8 +30,8 @@ enum ModelSchemaV01_00_00: VersionedSchema {
     class HelpSection {
         
         @Attribute(.unique) var id: String
-        var section: String
-        var rank: String
+        @Attribute var section: String
+        @Attribute var rank: String
         
         var toArticles: [HelpArticle]?
         
