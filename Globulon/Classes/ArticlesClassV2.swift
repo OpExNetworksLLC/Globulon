@@ -70,12 +70,12 @@ final class ArticlesV2 {
             LogEvent.print(module: "Articles.handleLoading()", message: "🔁 Update is required for \(location.description)")
             
             deleteArticles()
-            LogEvent.print(module: "Articles.handleLoading()", message: "🗑️ Old data deleted")
+            //LogEvent.print(module: "Articles.handleLoading()", message: "🗑️ Old data deleted")
 
             let fetched = try fetchAndStoreArticles(from: location)
             if fetched {
                 let newDate = try articlesDate(for: location)
-                UserSettings().articlesDate = newDate
+                UserSettings.init().articlesDate = newDate
                 LogEvent.print(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
 
                 printSectionsAndArticles()
@@ -96,8 +96,8 @@ final class ArticlesV2 {
         _ = try decodeArticlesDate(from: data)
         LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "✅ Validated articles JSON format")
 
-        deleteArticles()
-        LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "🧼 Old data deleted after validation")
+        //deleteArticles()
+        //LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "🧼 Old data deleted after validation")
 
         let sectionsCount = try decodeSections(from: data)
         let articlesCount = try decodeArticles(from: data)
@@ -117,7 +117,7 @@ final class ArticlesV2 {
                 throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
             }
             let data = try Data(contentsOf: url, options: .alwaysMapped)
-            LogEvent.print(module: "Articles.loadData()", message: "📡 Fetched data from remote")
+            //LogEvent.print(module: "Articles.loadData()", message: "📡 Fetched data from remote")
             return data
         }
     }
@@ -166,7 +166,8 @@ final class ArticlesV2 {
     private static func isUpdateRequired(for location: ArticleLocations) async throws -> Bool {
         let data = try loadData(from: location)
         let fileDate = try decodeArticlesDate(from: data)
-        let currentDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+        //let currentDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+        let currentDate = UserSettings.init().articlesDate
         LogEvent.print(module: "Articles.isUpdateRequired()", message: "🧪 \(currentDate) < \(fileDate)")
         return currentDate < fileDate
     }

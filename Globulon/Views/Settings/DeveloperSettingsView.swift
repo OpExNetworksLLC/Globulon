@@ -473,7 +473,7 @@ struct DeveloperSettingsView: View {
         }
         func performDeleteAllArticles() {
             Articles.deleteArticles()
-            //UserSettings.init().articlesDate = DateInfo.zeroDate
+            UserSettings.init().articlesDate = DateInfo.zeroDate
         }
     }
     

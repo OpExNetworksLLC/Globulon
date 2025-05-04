@@ -184,21 +184,16 @@ import FirebaseAnalytics
         if isNewRelease {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
-            // Always delete articles and reset date on new release
             Articles.deleteArticles()
             UserSettings.init().articlesDate = DateInfo.zeroDate
+
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+            let (success, message) = await Articles.load()
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
             
-            Task {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-                let (success, message) = await Articles.load()
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-                
-                if success {
-                    await MainActor.run {
-                        VersionManager.shared.isVersionUpdate = true
-                        isSaveRelease = true
-                    }
-                }
+            if success {
+                VersionManager.shared.isVersionUpdate = true
+                isSaveRelease = true
             }
         } else {
             let isPastOneWeek: Bool = {
