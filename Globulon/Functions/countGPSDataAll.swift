@@ -10,7 +10,6 @@ import SwiftData
 
 @MainActor
 func countGPSDataAll() -> Int {
-    //let context = ModelContext(ModelContainerProvider.shared)
     let context = ModelContainerProvider.sharedContext
     
     var entriesCount = 0

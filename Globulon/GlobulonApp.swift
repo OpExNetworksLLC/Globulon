@@ -127,17 +127,6 @@ import FirebaseAnalytics
                     }
             }
         }
-//        WindowGroup {
-//            MasterView()
-//                .environmentObject(UserSettings())
-//                .environmentObject(UserStatus())
-//                .environmentObject(AppStatus())
-//                .environmentObject(AppEnvironment())
-//                // 👇 Here's where we start the startup sequence task
-//                .task {
-//                    await startupSequence()
-//                }
-//        }
         
         /// Heres is where we make the Shared Model Container available as a singleton across the App for use in views
         ///
@@ -186,39 +175,78 @@ import FirebaseAnalytics
         // Debug stuff (remove)
         //
         //versionManager.resetRelease()
+        //Articles.deleteArticles()
         //UserSettings.init().articlesDate = DateInfo.zeroDate
-
+        
         /// ARTICLES
         ///
         let isNewRelease = versionManager.isNewRelease()
-        let isPastOneWeek: Bool = {
-            if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
-                return userSettings.lastAuth < oneWeekAgo
-            }
-            return false
-        }()
-
-        if isNewRelease || isPastOneWeek {
-            if isNewRelease {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
-            } else {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
-            }
-
+        if isNewRelease {
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            
+            // Always delete articles and reset date on new release
+            Articles.deleteArticles()
+            UserSettings.init().articlesDate = DateInfo.zeroDate
+            
             Task {
                 LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-
                 let (success, message) = await Articles.load()
                 LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
                 
                 if success {
                     await MainActor.run {
                         VersionManager.shared.isVersionUpdate = true
-                        isSaveRelease = isNewRelease
+                        isSaveRelease = true
                     }
                 }
             }
+        } else {
+            let isPastOneWeek: Bool = {
+                if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
+                    return userSettings.lastAuth < oneWeekAgo
+                }
+                return false
+            }()
+
+            if isPastOneWeek {
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
+
+                Task {
+                    LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+                    let (_, message) = await Articles.load()
+                    LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+                }
+            }
         }
+//        let isNewRelease = versionManager.isNewRelease()
+//        let isPastOneWeek: Bool = {
+//            if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
+//                return userSettings.lastAuth < oneWeekAgo
+//            }
+//            return false
+//        }()
+//
+//        if isNewRelease || isPastOneWeek {
+//            if isNewRelease {
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+//            } else {
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
+//            }
+//
+//            Task {
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+//
+//                let (success, message) = await Articles.load()
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+//                
+//                if success {
+//                    await MainActor.run {
+//                        VersionManager.shared.isVersionUpdate = true
+//                        isSaveRelease = isNewRelease
+//                    }
+//                }
+//            }
+//        }
         
         /// Check the permissions and availability of various handlers
         ///
