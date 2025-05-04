@@ -39,9 +39,6 @@ import FirebaseAnalytics
     private let backgroundFetchTaskIdentifier = "com.opexnetworks.Globulon.backgroundFetch"
     private let backgroundProcessingTaskIdentifier = "com.opexnetworks.Globulon.backgroundProcessing"
     
-    private var isVersionManagerSuccess = false
-    
-    
     init() {
         
         /// Save the prior logfile
