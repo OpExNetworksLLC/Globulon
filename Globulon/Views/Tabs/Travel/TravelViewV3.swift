@@ -146,6 +146,7 @@ struct TravelViewV3: View {
         }
         .onAppear {
             // Request location permissions
+            //CLLocationManager().requestWhenInUseAuthorization()
             locationManager.requestWhenInUseAuthorization()
             UIApplication.shared.isIdleTimerDisabled = true
         }

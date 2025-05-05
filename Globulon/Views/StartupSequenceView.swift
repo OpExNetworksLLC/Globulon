@@ -13,7 +13,7 @@
       the transition from this to the LaunchView appears seamless
  - Note:
     - Version: 1.0.0 (2025.04.30)
-        - Added firebase analytics
+        - x
 */
 
 import SwiftUI
@@ -63,7 +63,6 @@ struct StartupSequenceView: View {
                     
                     //.foregroundColor(.white)
                 }
-                
             }
         }
     }
