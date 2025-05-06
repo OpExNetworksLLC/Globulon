@@ -64,6 +64,14 @@ import Combine
             LogEvent.print(module: "LocationManager.updatesLive", message: "\(updatesLive ? "Location updates started ..." : "... stopped location updates")")
         }
     }
+    
+    @Published
+    var updatesStopped: Bool = UserDefaults.standard.bool(forKey: "locationUpdatesStopped") {
+        didSet {
+            UserDefaults.standard.set(updatesStopped, forKey: "locationUpdatesStopped")
+            LogEvent.print(module: "LocationManager.updatesStopped", message: "\(updatesStopped ? "Location updates have been marked as stopped." : "Location updates not stopped.")")
+        }
+    }
 
     @Published
     var backgroundActivity: Bool = UserDefaults.standard.bool(forKey: "BGActivitySessionStarted") {
@@ -127,9 +135,15 @@ import Combine
 //            .store(in: &cancellables)
 
         //loadTourData(for: AppEnvironment.shared.activeTourID) // Initial load
-        
+
+//TODO: LOCFIX
         /// Start location updates immediately to ensure continuous tracking
-        startLocationUpdates()
+        if self.updatesLive == false {
+            LogEvent.print(module: "LocationManager.init()", message: "location updates not live yet")
+            startLocationUpdates()
+        } else {
+            LogEvent.print(module: "LocationManager.init()", message: "location updates already live")
+        }
     }
 
     func startLocationUpdates() {

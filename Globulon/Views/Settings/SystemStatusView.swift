@@ -407,8 +407,13 @@ struct SystemStatusView: View {
                     .disabled(locationManager.updatesLive)
 
                     Button(role: .destructive) {
-                        print("pause")
+                        /// Stop/Pause the updates.
+                        ///
                         locationManager.stopLocationUpdates()
+                        
+                        /// Indicate that this stop was manually stopped
+                        locationManager.updatesStopped = true
+                        
                     } label: {
                         HStack {
                             Image(systemName: "pause")

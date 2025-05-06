@@ -215,6 +215,7 @@ import FirebaseAnalytics
         /// Check the permissions and availability of various handlers
         ///
         /// Location Handler
+//TODO: LOCFIX
         LocationManager.shared.getAuthorizedWhenInUse { result in
             LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
         }
