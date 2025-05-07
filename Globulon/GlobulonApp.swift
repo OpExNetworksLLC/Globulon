@@ -193,13 +193,12 @@ import FirebaseAnalytics
         let lastCheck = userSettings.lastArticlesCheck
         let daysSinceCheck = Calendar.current.dateComponents([.day], from: lastCheck, to: now).day ?? Int.max
 
-        print(">>> daysSinceCheck: \(daysSinceCheck), lastCheck: \(lastCheck), now: \(now)")
-        
         if isNewRelease {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
             Articles.deleteArticles()
             UserSettings.init().articlesDate = DateInfo.zeroDate
+            userSettings.lastArticlesCheck = now
             
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
             let (success, _) = await Articles.load()

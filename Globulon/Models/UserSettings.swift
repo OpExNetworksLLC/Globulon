@@ -84,8 +84,7 @@ class UserSettings: ObservableObject {
         self.phoneCell = UserDefaults.standard.object(forKey: "phoneCell") as? String ?? ""
 
         self.articlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
-        self.lastArticlesCheck = UserDefaults.standard.object(forKey: "lastArticlesCheck") as? Date ?? DateInfo.zeroDate
-        
+        self.lastArticlesCheck = UserDefaults.standard.object(forKey: "lastArticlesCheck") as? Date ?? DateInfo.zeroDate        
         self.articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
         
         self.activeTourID = UserDefaults.standard.object(forKey: "activeTourID") as? String ?? ""
