@@ -62,10 +62,11 @@ struct MasterView: View {
                         /// a user has begun to interact with the app.
 //TODO: LOCFIX
                         if  !locationManager.updatesLive {
-                            print(">>> Starting LocationManager in mainview")
                             locationManager.startLocationUpdates()
                         }
 
+                        /// Do stuff...
+                        
                         /// Launch an async process that completes based on priority..
                         /// Status can be checked by checking published variables.
                         /// OPTION: Set the level of priority you want this task to have.  The higher the level

@@ -139,10 +139,10 @@ import Combine
 //TODO: LOCFIX
         /// Start location updates immediately to ensure continuous tracking
         if self.updatesLive == false {
-            LogEvent.print(module: "LocationManager.init()", message: "location updates not live yet")
+            LogEvent.print(module: "LocationManager.init()", message: "Location updates currently inactive")
             startLocationUpdates()
         } else {
-            LogEvent.print(module: "LocationManager.init()", message: "location updates already live")
+            LogEvent.print(module: "LocationManager.init()", message: "Location updates currently active")
         }
     }
 

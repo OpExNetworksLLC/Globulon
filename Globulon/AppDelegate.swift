@@ -43,10 +43,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         ///
 //TODO: LOCFIX
         let locationManager = LocationManager.shared
-//        if locationManager.updatesLive {
-//            LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
-//            locationManager.startLocationUpdates()
-//        }
+        // TODO: not sure I really need this.  Test it out.
+        if locationManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
+            locationManager.startLocationUpdates()
+        }
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {
             LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")

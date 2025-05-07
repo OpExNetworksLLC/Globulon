@@ -189,7 +189,10 @@ struct LoginViewV2: View {
     private func finalizeAuthentication() {
         userSettings.email = username
         userStatus.isLoggedIn = true
-        userSettings.lastAuth = Date()
+        
+        // do this as we exit the app not here
+        //userSettings.lastAuth = Date()
+        
         NotificationCenter.default.post(name: Notification.Name("isLoggedIn"), object: nil)
         presentationMode.wrappedValue.dismiss()
     }

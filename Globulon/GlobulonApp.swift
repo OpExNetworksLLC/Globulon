@@ -120,7 +120,6 @@ import FirebaseAnalytics
                         //try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds artificial delay
                         await startupSequence()
                         isStartupSequenceComplete = true
-                        print(">>> Startup sequence complete")
                     }
             }
         }
@@ -142,9 +141,10 @@ import FirebaseAnalytics
                 /// OPTION:  Schedule any background task(s)
                 ///`BackgroundManager.shared.scheduleProcessingTask()
                 
+                saveSettings()
             case .inactive:
-                //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
-                break
+                LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
+                saveSettings()
             case .active:
                 //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is active")
                 break
@@ -153,6 +153,12 @@ import FirebaseAnalytics
                 break
             }
         }
+    }
+    
+    // MARK: - Save settings
+    
+    private func saveSettings() {
+        userSettings.lastAuth = Date()
     }
     
     // MARK: - Async Startup Logic
@@ -174,6 +180,12 @@ import FirebaseAnalytics
         //versionManager.resetRelease()
         //Articles.deleteArticles()
         //UserSettings.init().articlesDate = DateInfo.zeroDate
+        //userSettings.lastAuth = DateInfo.zeroDate
+        
+        //TODO:
+        // - should be this `return userSettings.lastAuth < oneWeekAgo
+        // - change to MasterView.task from MainView.task
+        // - do I want to have articles load in sequence?  right now they load later because they are async.
         
         /// ARTICLES
         ///
