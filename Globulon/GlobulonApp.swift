@@ -188,39 +188,70 @@ import FirebaseAnalytics
         
         /// ARTICLES
         ///
+        let now = Date()
         let isNewRelease = versionManager.isNewRelease()
+        let lastCheck = userSettings.lastArticlesCheck
+        let daysSinceCheck = Calendar.current.dateComponents([.day], from: lastCheck, to: now).day ?? Int.max
+
+        print(">>> daysSinceCheck: \(daysSinceCheck), lastCheck: \(lastCheck), now: \(now)")
+        
         if isNewRelease {
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
             Articles.deleteArticles()
             UserSettings.init().articlesDate = DateInfo.zeroDate
-
+            
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-            let (success, message) = await Articles.load()
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+            let (success, _) = await Articles.load()
             
             if success {
                 VersionManager.shared.isVersionUpdate = true
                 isSaveRelease = true
+                userSettings.lastArticlesCheck = now
             }
-        } else {
-            let isPastOneWeek: Bool = {
-                if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
-                    return userSettings.lastAuth < oneWeekAgo
-                }
-                return false
-            }()
 
-            if isPastOneWeek {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
+        } else if daysSinceCheck > 14 || (daysSinceCheck > 7 && userSettings.lastAuth < lastCheck) {
+            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Time-based article check triggered (days since last check: \(daysSinceCheck)).")
 
-                Task {
-                    LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-                    let (_, message) = await Articles.load()
-                    LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-                }
+            let (success, _) = await Articles.load()
+            print(">>> success: \(success)")
+            if success {
+                userSettings.lastArticlesCheck = now
             }
         }
+        
+//        let isNewRelease = versionManager.isNewRelease()
+//        if isNewRelease {
+//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+//            
+//            Articles.deleteArticles()
+//            UserSettings.init().articlesDate = DateInfo.zeroDate
+//
+//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+//            let (success, _) = await Articles.load()
+//            //LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+//            
+//            if success {
+//                VersionManager.shared.isVersionUpdate = true
+//                isSaveRelease = true
+//            }
+//        } else {
+//            let isPastOneWeek: Bool = {
+//                if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
+//                    return userSettings.lastAuth < oneWeekAgo
+//                }
+//                return false
+//            }()
+//
+//            if isPastOneWeek {
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
+//
+//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+//                let (_, _) = await Articles.load()
+//                //LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
+//
+//            }
+//        }
 
         
         /// Check the permissions and availability of various handlers

@@ -84,6 +84,7 @@ class UserSettings: ObservableObject {
         self.phoneCell = UserDefaults.standard.object(forKey: "phoneCell") as? String ?? ""
 
         self.articlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
+        self.lastArticlesCheck = UserDefaults.standard.object(forKey: "lastArticlesCheck") as? Date ?? DateInfo.zeroDate
         
         self.articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
         
@@ -342,6 +343,12 @@ class UserSettings: ObservableObject {
         didSet {
             UserDefaults.standard.set(articlesDate, forKey: "articlesDate")
             logChange(forKey: "articlesDate", value: articlesDate)
+        }
+    }
+    @Published var lastArticlesCheck: Date {
+        didSet {
+            UserDefaults.standard.set(lastArticlesCheck, forKey: "lastArticlesCheck")
+            logChange(forKey: "lastArticlesCheck", value: lastArticlesCheck)
         }
     }
 
