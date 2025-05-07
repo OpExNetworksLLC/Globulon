@@ -192,7 +192,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// Start location monitoring...
         ///
         let locationManager = LocationManager.shared
-        print("locationManager.updatesLive:\(locationManager.updatesLive)")
         if !locationManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart locationManager Session")
             locationManager.startLocationUpdates()

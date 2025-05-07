@@ -117,7 +117,6 @@ import FirebaseAnalytics
             } else {
                 StartupSequenceView() // Optional: or use ProgressView/spinner
                     .task {
-                        //try? await Task.sleep(nanoseconds: 5_000_000_000) // 5 seconds artificial delay
                         await startupSequence()
                         isStartupSequenceComplete = true
                     }

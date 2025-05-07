@@ -66,26 +66,7 @@ struct MasterView: View {
                         }
 
                         /// Do stuff...
-                        
-                        /// Launch an async process that completes based on priority..
-                        /// Status can be checked by checking published variables.
-                        /// OPTION: Set the level of priority you want this task to have.  The higher the level
-                        /// the more impact on the user experience as they are entering the app.
-                        ///
-                        /// `Task(priority: .utilitiy)`
-                        ///
-                        let processor = AsyncProcessor()
-                        Task(priority: .background) {
-                            if !processor.isProcessing {
-                                LogEvent.print(module: "MainView.task", message: "starting AsyncProcessor()...")
-                                
-                                await processor.performAsyncTask()
-                                
-                                LogEvent.print(module: "MainView.task", message: "⏹️ ...finished AsyncProcessor()")
-                            } else {
-                                LogEvent.print(module: "MainView.task", message: "AsyncProcessor() is processing")
-                            }
-                        }                        
+                    
                         LogEvent.print(module: "MainView.task", message: "⏹️ ...finished")
                     }
             }
