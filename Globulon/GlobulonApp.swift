@@ -157,7 +157,14 @@ import FirebaseAnalytics
     // MARK: - Save settings
     
     private func saveSettings() {
-        userSettings.lastAuth = Date()
+        
+        /// Saving lastAuth - only when not the same as today
+        ///
+        let calendar = Calendar.current
+        let now = Date()
+        if !calendar.isDate(userSettings.lastAuth, inSameDayAs: now) {
+            userSettings.lastAuth = now
+        }
     }
     
     // MARK: - Async Startup Logic
@@ -218,40 +225,6 @@ import FirebaseAnalytics
                 userSettings.lastArticlesCheck = now
             }
         }
-        
-//        let isNewRelease = versionManager.isNewRelease()
-//        if isNewRelease {
-//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
-//            
-//            Articles.deleteArticles()
-//            UserSettings.init().articlesDate = DateInfo.zeroDate
-//
-//            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-//            let (success, _) = await Articles.load()
-//            //LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-//            
-//            if success {
-//                VersionManager.shared.isVersionUpdate = true
-//                isSaveRelease = true
-//            }
-//        } else {
-//            let isPastOneWeek: Bool = {
-//                if let oneWeekAgo = Calendar.current.date(byAdding: .day, value: -7, to: Date()) {
-//                    return userSettings.lastAuth < oneWeekAgo
-//                }
-//                return false
-//            }()
-//
-//            if isPastOneWeek {
-//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Last article check was more than 7 days ago. Checking for updates...")
-//
-//                LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
-//                let (_, _) = await Articles.load()
-//                //LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: message)
-//
-//            }
-//        }
-
         
         /// Check the permissions and availability of various handlers
         ///
