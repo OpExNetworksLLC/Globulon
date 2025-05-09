@@ -121,23 +121,9 @@ import Combine
         self.manager.startMonitoringSignificantLocationChanges()
         
         LogEvent.print(module: "LocationManager.init()", message: "Initialized location handler with background capabilities")
-        
-        // Load tour data
-        //loadTourData(for: "")
-        //loadTourData(for: AppEnvironment.init().getValue(key: "activeTourID", as: String.self))
-        
-        // Observe changes to AppEnvironment.shared.activeTourID
-//        AppEnvironment.shared.$activeTourID
-//            .sink { [weak self] newTourID in
-//                guard let self = self else { return }
-//                self.loadTourData(for: newTourID)
-//            }
-//            .store(in: &cancellables)
 
-        //loadTourData(for: AppEnvironment.shared.activeTourID) // Initial load
-
-//TODO: LOCFIX
         /// Start location updates immediately to ensure continuous tracking
+        /// 
         if self.updatesLive == false {
             LogEvent.print(module: "LocationManager.init()", message: "Location updates currently inactive")
             startLocationUpdates()

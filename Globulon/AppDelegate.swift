@@ -41,13 +41,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// Start location monitoring...
         ///
-//TODO: LOCFIX
         let locationManager = LocationManager.shared
         // TODO: not sure I really need this.  Test it out.
+        /*
         if locationManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
             locationManager.startLocationUpdates()
         }
+        */
+        
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {
             LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
@@ -64,8 +66,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         /// Start network monitoring...
         ///
-        let NetworkManager = NetworkManager.shared
-        NetworkManager.startNetworkUpdates()
+        //TODO: Build 84
+        let networkManager = NetworkManager.shared
+        networkManager.startNetworkUpdates()
         
         /// Start Bluetooth monitoring...
         /// - Must have permission

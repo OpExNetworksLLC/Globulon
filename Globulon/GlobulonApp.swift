@@ -49,6 +49,7 @@ import FirebaseAnalytics
         
         /// OPTION: Force set any settings here to start other than the app default settings
         ///
+        //TODO: Build 84
         userSettings.userMode = .development
         
         /// OPTION: Set to true when using the simulator to autologin and save time in testing.
@@ -56,6 +57,7 @@ import FirebaseAnalytics
         ///
         ///`UserSettings.init().isAutoLogin = true
         ///
+        //TODO: Build 84
         userSettings.isAutoLogin = false
         
         /// DEBUG:  Enable if you need to wipe out the entire swift data store
@@ -100,7 +102,8 @@ import FirebaseAnalytics
         /// Print out the settings in the log
         LogEvent.print(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
         
-        //LogEvent.getLogFileURL()
+        /// DEBUG:  get the file location
+        ///`LogEvent.getLogFileURL()
         
         LogEvent.print(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
     }
@@ -118,10 +121,19 @@ import FirebaseAnalytics
                     .environmentObject(AppEnvironment.shared)
             } else {
                 StartupSequenceView() // Optional: or use ProgressView/spinner
-                    .task {
-                        await startupSequence()
-                        isStartupSequenceComplete = true
+                //TODO: Build 84
+                    .onAppear {
+                        guard !isStartupSequenceComplete else { return }
+
+                        Task(priority: .userInitiated) {
+                            await startupSequence()
+                            isStartupSequenceComplete = true
+                        }
                     }
+//                    .task {
+//                        await startupSequence()
+//                        isStartupSequenceComplete = true
+//                    }
             }
         }
         
@@ -217,8 +229,8 @@ import FirebaseAnalytics
         
         /// Check the permissions and availability of various handlers
         ///
-        /// Location Handler
-//TODO: LOCFIX
+        /// Location Manager
+        /// 
         LocationManager.shared.getAuthorizedWhenInUse { result in
             LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
         }

@@ -20,7 +20,7 @@ struct MasterView: View {
     @EnvironmentObject var userSettings: UserSettings
     @EnvironmentObject var userStatus: UserStatus
     @EnvironmentObject var appStatus: AppStatus
-//TODO: LOCFIX
+
     @StateObject private var locationManager = LocationManager.shared
     @StateObject private var carPlayManager = CarPlayManager()
     
@@ -60,7 +60,7 @@ struct MasterView: View {
                         /// On a first or fresh reinstallation of the app the earlier intake steps don't automatically start the LocationManager.
                         /// We wait until here as this is a logical start point to kicking of various processes either for the first time or when
                         /// a user has begun to interact with the app.
-//TODO: LOCFIX
+
                         if  !locationManager.updatesLive {
                             locationManager.startLocationUpdates()
                         }
