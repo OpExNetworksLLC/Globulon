@@ -28,7 +28,8 @@ import FirebaseAnalytics
     
     /// Set the state object so it can be accessed in any view
     /// eg: `@EnvironmentObject var appStatus: appStatus
-    /// `
+    /// ...
+     
     @StateObject private var appStatus = AppStatus()
     @StateObject private var userStatus = UserStatus()
     @StateObject private var appEnvironment = AppEnvironment()
