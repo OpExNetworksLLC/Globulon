@@ -273,13 +273,13 @@ import FirebaseAnalytics
         let processor = AsyncProcessor()
         Task(priority: .low) {
             if !processor.isProcessing {
-                LogEvent.print(module: "LaunchView.task", message: "▶️ starting AsyncProcessor()...")
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "▶️ starting AsyncProcessor()...")
                 
                 await processor.performAsyncTask()
                 
-                LogEvent.print(module: "LaunchView.task", message: "⏹️ ...finished AsyncProcessor()")
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished AsyncProcessor()")
             } else {
-                LogEvent.print(module: "LaunchView.task", message: "AsyncProcessor() is processing")
+                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "AsyncProcessor() is processing")
             }
         }
         
