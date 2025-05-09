@@ -49,14 +49,14 @@ import FirebaseAnalytics
         
         /// OPTION: Force set any settings here to start other than the app default settings
         ///
-        UserSettings.init().userMode = .development
+        userSettings.userMode = .development
         
         /// OPTION: Set to true when using the simulator to autologin and save time in testing.
         /// This bypasses login and keychain/firebase authentication and assumes the user is authorized
         ///
         ///`UserSettings.init().isAutoLogin = true
         ///
-        UserSettings.init().isAutoLogin = false
+        userSettings.isAutoLogin = false
         
         /// DEBUG:  Enable if you need to wipe out the entire swift data store
         ///`deleteDefaultStore()
