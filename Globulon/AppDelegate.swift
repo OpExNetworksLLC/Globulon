@@ -39,73 +39,24 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        /// Start location monitoring...
-        ///
-        let locationManager = LocationManager.shared
-        // TODO: not sure I really need this.  Test it out.
-        /*
-        if locationManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
-            locationManager.startLocationUpdates()
-        }
-        */
-        
-        /// If a background activity session was previously active, reinstantiate it after the background launch.
-        if locationManager.backgroundActivity {
-            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
-            locationManager.backgroundActivity = true
-        }
-        
-        /// Start activity monitoring...
-        ///
-        let activityManager = ActivityManager.shared
-        if activityManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
-            activityManager.startActivityUpdates()
-        }
+        setupLocationServices()
+        setupActivityMonitoring()
 
-        /// Start network monitoring...
-        ///
-        //TODO: Build 84
-        let networkManager = NetworkManager.shared
-        networkManager.startNetworkUpdates()
+        setupNetworkMonitoring()
         
-        /// Start Bluetooth monitoring...
-        /// - Must have permission
-        /// - Start the updates if not already started
-        ///
-        let bluetoothHandler = BluetoothHandler.shared
-        bluetoothHandler.getBluetoothPermission { result in
-            if result {
-                if bluetoothHandler.updatesLive == true {
-                    Task {
-                        await bluetoothHandler.awaitBluetoothPoweredOn()
-                        await bluetoothHandler.startBluetoothUpdates()
-                    }
-                } else {
-                    LogEvent.print(module: "AppDelegate", message: "Bluetooth updates are not started")
-                }
-            }
-        }
-        
-        
-        /// Assign UNUserNotificationCenter's delegate
-        ///
-        UNUserNotificationCenter.current().delegate = self
-        
-        /// Registering for notifications is called outside the AppDelegate because we don't want to prompt the user to
-        /// to accept notfications immediately as soon as the app starts for the first time.  We ask for permissions during onboarding
-        /// in a controlled way in this app.
-        ///
-        /// Uncomment here if we want to run immediate on startup for testing purposes
-        /// ```
-        /// registerForNotifications()
-        /// ```
+        setupBluetoothHandler()
+        setupUserNotifications()
         
         /// Register background activities
         ///
         BackgroundManager.shared.registerBackgroundTask()
         
+        setupFirebaseIfNeeded()
+        
+        return true
+    }
+    
+    private func setupFirebaseIfNeeded() {
         /// Start Firebase...
         ///
         FirebaseApp.configure()
@@ -126,9 +77,75 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             LogEvent.print(module: "AppDelegate", message: "Installation ID: \(maskString(firebaseInstallationID))")
             LogEvent.debug(module: "AppDelegate", message: "Installation ID: \(firebaseInstallationID)")
             UserSettings.init().firebaseInstallationID = firebaseInstallationID
-
         }
-        return true
+    }
+    private func setupLocationServices() {
+        /// Start location monitoring...
+        ///
+        let locationManager = LocationManager.shared
+        // TODO: not sure I really need this.  Test it out.
+        /*
+        if locationManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
+            locationManager.startLocationUpdates()
+        }
+        */
+
+        /// If a background activity session was previously active, reinstantiate it after the background launch.
+        if locationManager.backgroundActivity {
+            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
+            locationManager.backgroundActivity = true
+        }
+    }
+    private func setupActivityMonitoring() {
+        /// Start activity monitoring...
+        ///
+        let activityManager = ActivityManager.shared
+        if activityManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
+            activityManager.startActivityUpdates()
+        }
+    }
+    private func setupNetworkMonitoring() {
+        /// Start network monitoring...
+        ///
+        //TODO: Build 84
+        let networkManager = NetworkManager.shared
+        networkManager.startNetworkUpdates()
+    }
+    private func setupUserNotifications() {
+        /// Assign UNUserNotificationCenter's delegate
+        ///
+        UNUserNotificationCenter.current().delegate = self
+        
+        /// Registering for notifications is called outside the AppDelegate because we don't want to prompt the user to
+        /// to accept notfications immediately as soon as the app starts for the first time.  We ask for permissions during onboarding
+        /// in a controlled way in this app.
+        ///
+        /// Uncomment here if we want to run immediate on startup for testing purposes
+        ///
+        /// `registerForNotifications()
+        
+    }
+    
+    private func setupBluetoothHandler() {
+        /// Start Bluetooth monitoring...
+        /// - Must have permission
+        /// - Start the updates if not already started
+        ///
+        let bluetoothHandler = BluetoothHandler.shared
+        bluetoothHandler.getBluetoothPermission { result in
+            if result {
+                if bluetoothHandler.updatesLive == true {
+                    Task {
+                        await bluetoothHandler.awaitBluetoothPoweredOn()
+                        await bluetoothHandler.startBluetoothUpdates()
+                    }
+                } else {
+                    LogEvent.print(module: "AppDelegate", message: "Bluetooth updates are not started")
+                }
+            }
+        }
     }
     
     /// This is called when the app is in the foreground and receives a notification
