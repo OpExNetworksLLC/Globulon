@@ -40,25 +40,30 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        setupLocationServices()
-        setupActivityMonitoring()
-        setupNetworkMonitoring()
-        setupBluetoothHandler()
-        setupUserNotifications()
+        LogEvent.print(module: "AppDelegate", message: "▶️ starting...")
         
         /// Register background activities
         ///
         BackgroundManager.shared.registerBackgroundTask()
         
-        #if FIREBASE_ENABLED
-        setupFirebaseIfNeeded()
-        #endif
+        /// setup
+        setupLocationServices()
+        setupActivityMonitoring()
+        setupNetworkMonitoring()
+        setupBluetoothMonitoring()
+        setupUserNotifications()
         
+        #if FIREBASE_ENABLED
+        setupFirebase()
+        #endif
+
+        LogEvent.print(module: "AppDelegate", message: "⏹️ ...finished")
+
         return true
     }
     
     #if FIREBASE_ENABLED
-    private func setupFirebaseIfNeeded() {
+    private func setupFirebase() {
         /// Start Firebase...
         ///
         FirebaseApp.configure()
@@ -69,15 +74,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         Installations.installations().installationID { (firebaseInstallationID, error) in
             if let error = error {
-                LogEvent.print(module: "AppDelegate", message: "Error fetching installation ID: \(error)")
+                LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Error fetching installation ID: \(error)")
                 return
             }
             guard let firebaseInstallationID = firebaseInstallationID else {
-                LogEvent.print(module: "AppDelegate", message: "Installation ID is not available")
+                LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Installation ID is not available")
                 return
             }
-            LogEvent.print(module: "AppDelegate", message: "Installation ID: \(maskString(firebaseInstallationID))")
-            LogEvent.debug(module: "AppDelegate", message: "Installation ID: \(firebaseInstallationID)")
+            LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Installation ID: \(maskString(firebaseInstallationID))")
+            LogEvent.debug(module: "AppDelegate.setupFirebase()", message: "Installation ID: \(firebaseInstallationID)")
             UserSettings.init().firebaseInstallationID = firebaseInstallationID
         }
     }
@@ -88,24 +93,17 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         ///
         let locationManager = LocationManager.shared
         
-        #if FIREBASE_ENABLED
         // TODO: not sure I really need this.  Test it out.
         /*
         if locationManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart liveUpdates Session")
+            LogEvent.print(module: "AppDelegate.setupLocationServices()", message: "Restart liveUpdates Session")
             locationManager.startLocationUpdates()
         }
         */
-        #else
-        if !locationManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart locationManager Session")
-            locationManager.startLocationUpdates()
-        }
-        #endif
 
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {
-            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
+            LogEvent.print(module: "AppDelegate.setupLocationServices()", message: "Reinstantiate background activity Session")
             locationManager.backgroundActivity = true
         }
     }
@@ -115,24 +113,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         ///
         let activityManager = ActivityManager.shared
         
-        #if FIREBASE_ENABLED
         if activityManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
+            LogEvent.print(module: "AppDelegate.setupActivityMonitoring()", message: "Restart activitiyUpdateHandler Session")
             activityManager.startActivityUpdates()
         }
-        #else
-        print("activityManager.updatesLive:\(activityManager.updatesLive)")
-        if !activityManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart activitiyHandler Session")
-            activityManager.startActivityUpdates()
-        }
-        #endif
     }
     
     private func setupNetworkMonitoring() {
         /// Start network monitoring...
         ///
-        //TODO: Build 84
         let networkManager = NetworkManager.shared
         networkManager.startNetworkUpdates()
     }
@@ -146,37 +135,30 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// to accept notfications immediately as soon as the app starts for the first time.  We ask for permissions during onboarding
         /// in a controlled way in this app.
         ///
-        /// Uncomment here if we want to run immediate on startup for testing purposes
-        ///
-        /// `registerForNotifications()
+        /// DEBUG:  Uncomment here if we want to run immediate on startup for testing purposes
+        /// 
+        ///`registerForNotifications()
         
     }
     
-    private func setupBluetoothHandler() {
+    private func setupBluetoothMonitoring() {
         /// Start Bluetooth monitoring...
         /// - Must have permission
         /// - Start the updates if not already started
         ///
-        let bluetoothHandler = BluetoothHandler.shared
-        
-        #if FIREBASE_ENABLED
-        bluetoothHandler.getBluetoothPermission { result in
+        let bluetoothManager = BluetoothManager.shared
+        bluetoothManager.getBluetoothPermission { result in
             if result {
-                if bluetoothHandler.updatesLive == true {
+                if bluetoothManager.updatesLive == true {
                     Task {
-                        await bluetoothHandler.awaitBluetoothPoweredOn()
-                        await bluetoothHandler.startBluetoothUpdates()
+                        await bluetoothManager.awaitBluetoothPoweredOn()
+                        await bluetoothManager.startBluetoothUpdates()
                     }
                 } else {
-                    LogEvent.print(module: "AppDelegate", message: "Bluetooth updates are not started")
+                    LogEvent.print(module: "AppDelegate.setupBluetoothMonitoring()", message: "Bluetooth updates are not started")
                 }
             }
         }
-        #else
-        if bluetoothHandler.updatesLive == true {
-            bluetoothHandler.startBluetoothUpdates()
-        }
-        #endif
     }
     
     /// This is called when the app is in the foreground and receives a notification

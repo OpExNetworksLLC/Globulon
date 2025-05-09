@@ -55,7 +55,7 @@ import FirebaseAnalytics
         /// OPTION: Set to true when using the simulator to autologin and save time in testing.
         /// This bypasses login and keychain/firebase authentication and assumes the user is authorized
         ///
-        ///`UserSettings.init().isAutoLogin = true
+        ///`userSettings.isAutoLogin = true
         ///
         //TODO: Build 84
         userSettings.isAutoLogin = false
@@ -65,7 +65,7 @@ import FirebaseAnalytics
         
         /// Based on`.userMode`chance some settings and values
         ///
-        switch UserSettings.init().userMode {
+        switch userSettings.userMode {
         case .production:
             break
         case .test:
@@ -91,18 +91,18 @@ import FirebaseAnalytics
         }
         
         #if FIREBASE_ENABLED
-            UserSettings.init().authMode = .firebase
-            Analytics.setAnalyticsCollectionEnabled(UserSettings.init().isGDPRConsentGranted)
-            LogEvent.print(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(UserSettings.init().isGDPRConsentGranted)")
+            userSettings.authMode = .firebase
+            Analytics.setAnalyticsCollectionEnabled(userSettings.isGDPRConsentGranted)
+            LogEvent.print(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(userSettings.isGDPRConsentGranted)")
         #endif
         #if KEYCHAIN_ENABLED
-            UserSettings.init().authMode = .keychain
+            userSettings.authMode = .keychain
         #endif
         
         /// Print out the settings in the log
         LogEvent.print(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
         
-        /// DEBUG:  get the file location
+        /// DEBUG:  Show the log file url
         ///`LogEvent.getLogFileURL()
         
         LogEvent.print(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
@@ -121,7 +121,6 @@ import FirebaseAnalytics
                     .environmentObject(AppEnvironment.shared)
             } else {
                 StartupSequenceView() // Optional: or use ProgressView/spinner
-                //TODO: Build 84
                     .onAppear {
                         guard !isStartupSequenceComplete else { return }
 
@@ -130,10 +129,6 @@ import FirebaseAnalytics
                             isStartupSequenceComplete = true
                         }
                     }
-//                    .task {
-//                        await startupSequence()
-//                        isStartupSequenceComplete = true
-//                    }
             }
         }
         
@@ -186,7 +181,7 @@ import FirebaseAnalytics
         //
         //versionManager.resetRelease()
         //Articles.deleteArticles()
-        //UserSettings.init().articlesDate = DateInfo.zeroDate
+        //userSettings.articlesDate = DateInfo.zeroDate
         //userSettings.lastAuth = DateInfo.zeroDate
         
         //TODO:
@@ -205,7 +200,7 @@ import FirebaseAnalytics
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
             Articles.deleteArticles()
-            UserSettings.init().articlesDate = DateInfo.zeroDate
+            userSettings.articlesDate = DateInfo.zeroDate
             userSettings.lastArticlesCheck = now
             
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
@@ -221,7 +216,6 @@ import FirebaseAnalytics
             LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Time-based article check triggered (days since last check: \(daysSinceCheck)).")
 
             let (success, _) = await Articles.load()
-            print(">>> success: \(success)")
             if success {
                 userSettings.lastArticlesCheck = now
             }

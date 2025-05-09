@@ -55,7 +55,7 @@ struct PermissionsView: View {
     @State var isUserNotificationAllowed = false
     
     /// Bluetooth
-    let bluetoothHandler = BluetoothHandler.shared
+    let bluetoothManager = BluetoothManager.shared
     @State var isBluetoothAllowed = false
     
     var body: some View {
@@ -348,7 +348,7 @@ struct PermissionsView: View {
                                 Button(action: {
                                     if !self.isBluetoothAllowed {
                                         Task {
-                                            await bluetoothHandler.requestBluetoothPermission()
+                                            await bluetoothManager.requestBluetoothPermission()
                                             self.isBluetoothAllowed = true
                                             isPermissionAllowed = true
                                         }
@@ -379,7 +379,7 @@ struct PermissionsView: View {
                             }
                             .fixedSize(horizontal: false, vertical: true)
                             .onAppear {
-                                bluetoothHandler.getBluetoothPermission { result in
+                                bluetoothManager.getBluetoothPermission { result in
                                     self.isBluetoothAllowed = result
                                     isPermissionAllowed = true
                                 }

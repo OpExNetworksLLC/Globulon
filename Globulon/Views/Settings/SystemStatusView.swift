@@ -24,7 +24,7 @@ struct SystemStatusView: View {
     @StateObject var notificationManager   = NotificationManager.shared
     @StateObject var activityManager        = ActivityManager.shared
     @StateObject var locationManager        = LocationManager.shared
-    @StateObject var bluetoothHandler       = BluetoothHandler.shared
+    @StateObject var bluetoothManager       = BluetoothManager.shared
     @StateObject var carPlayManager         = CarPlayManager.shared
     
     @State private var isShowHelp = false
@@ -47,19 +47,19 @@ struct SystemStatusView: View {
                         carPlayManager: carPlayManager
                     )
                     BluetoothSectionView(
-                        bluetoothHandler: bluetoothHandler,
+                        bluetoothManager: bluetoothManager,
                         isAuthorized: isBluetoothPermission,
                         isAvailable: isBluetoothAvailable,
-                        //isAuthorized: bluetoothHandler.isAuthorized,
-                        //isAvailable: bluetoothHandler.isAvailable,
-                        isConnected: bluetoothHandler.isConnected
+                        //isAuthorized: bluetoothManager.isAuthorized,
+                        //isAvailable: bluetoothManager.isAvailable,
+                        isConnected: bluetoothManager.isConnected
                     )
                     PermissionsSectionView(
                         authorizedDescription: locationManager.authorizedDescription,
                         isLocationAuthorized: locationManager.isAuthorized,
                         isMotionAuthorized: activityManager.isAuthorized,
                         isNotificationEnabled: notificationManager.isNotificationsEnabled,
-                        isBluetoothPermission: bluetoothHandler.isPermission
+                        isBluetoothPermission: bluetoothManager.isPermission
                     )
                     DeviceSectionView(
                         isMotionActivityAvailable: activityManager.isAvailable
@@ -81,15 +81,15 @@ struct SystemStatusView: View {
                     _ = loadLastAppRefreshDate
                     
                     /// get the bluetooth permission status
-                    bluetoothHandler.getBluetoothPermission { result in
+                    bluetoothManager.getBluetoothPermission { result in
                         self.isBluetoothPermission = result
                     }
-                    bluetoothHandler.getBluetoothAvailability { result in
+                    bluetoothManager.getBluetoothAvailability { result in
                         self.isBluetoothAvailable = result
                     }
                 }
                 /// Update anytime a new value is received
-                .onReceive(bluetoothHandler.$isAvailable) { newValue in
+                .onReceive(bluetoothManager.$isAvailable) { newValue in
                     self.isBluetoothAvailable = newValue
                 }
             }
@@ -212,7 +212,7 @@ struct SystemStatusView: View {
     
     struct BluetoothSectionView: View {
 
-        @ObservedObject var bluetoothHandler: BluetoothHandler
+        @ObservedObject var bluetoothManager: BluetoothManager
         
         let isAuthorized: Bool
         let isAvailable: Bool
@@ -245,8 +245,8 @@ struct SystemStatusView: View {
                 HStack {
                         Button(role: .destructive) {
                             Task {
-                                await bluetoothHandler.requestBluetoothPermissionAgain()
-                                await bluetoothHandler.startBluetoothUpdates()
+                                await bluetoothManager.requestBluetoothPermissionAgain()
+                                await bluetoothManager.startBluetoothUpdates()
                             }
                         } label: {
                             HStack {
@@ -269,10 +269,10 @@ struct SystemStatusView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 8)
-                        .disabled(bluetoothHandler.updatesLive)
+                        .disabled(bluetoothManager.updatesLive)
                         
                         Button(role: .destructive) {
-                            bluetoothHandler.stopBluetoothUpdates()
+                            bluetoothManager.stopBluetoothUpdates()
                         } label: {
                             HStack {
                                 Image(systemName: "pause")
@@ -294,7 +294,7 @@ struct SystemStatusView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .padding(.trailing, 8)
-                        .disabled(!bluetoothHandler.updatesLive)
+                        .disabled(!bluetoothManager.updatesLive)
                     }
                 
             }

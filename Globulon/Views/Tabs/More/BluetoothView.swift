@@ -17,7 +17,7 @@ import SwiftUI
 struct BluetoothView: View {
         
     @StateObject var networkManager = NetworkManager.shared
-    @StateObject private var bluetoothHandler = BluetoothHandler.shared
+    @StateObject private var bluetoothManager = BluetoothManager.shared
     
     @State private var isShowHelp = false
     
@@ -25,18 +25,18 @@ struct BluetoothView: View {
         NavigationStack {
             
             VStack {
-                if bluetoothHandler.bluetoothState != .poweredOn {
+                if bluetoothManager.bluetoothState != .poweredOn {
                     Text("Bluetooth is not available.\nPlease enable Bluetooth.")
                 } else {
                     List {
                         Section(header: Text("Connected Devices")) {
-                            ForEach(bluetoothHandler.connectedDevices, id: \.identifier) { device in
+                            ForEach(bluetoothManager.connectedDevices, id: \.identifier) { device in
                                 Text(device.name ?? "Unknown Device")
                             }
                         }
                         
                         Section(header: Text("Discovered Devices")) {
-                            ForEach(bluetoothHandler.discoveredDevices, id: \.identifier) { device in
+                            ForEach(bluetoothManager.discoveredDevices, id: \.identifier) { device in
                                 Text(device.name ?? "Unknown Device")
                             }
                         }
@@ -44,12 +44,12 @@ struct BluetoothView: View {
                 }
             }
             .onAppear {
-                bluetoothHandler.startScanning()
-                //bluetoothHandler.startBluetoothUpdates()
+                bluetoothManager.startScanning()
+                //bluetoothManager.startBluetoothUpdates()
             }
             .onDisappear {
-                bluetoothHandler.stopScanning()
-                //bluetoothHandler.stopBluetoothUpdates()
+                bluetoothManager.stopScanning()
+                //bluetoothManager.stopBluetoothUpdates()
             }
         }
         .navigationTitle("Bluetooth")
