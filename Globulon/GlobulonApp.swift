@@ -142,8 +142,8 @@ import FirebaseAnalytics
                 
                 saveSettings()
             case .inactive:
-                LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
-                saveSettings()
+                //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
+                break
             case .active:
                 //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is active")
                 break
@@ -154,18 +154,7 @@ import FirebaseAnalytics
         }
     }
     
-    // MARK: - Save settings
-    
-    private func saveSettings() {
-        
-        /// Saving lastAuth - only when not the same as today
-        ///
-        let calendar = Calendar.current
-        let now = Date()
-        if !calendar.isDate(userSettings.lastAuth, inSameDayAs: now) {
-            userSettings.lastAuth = now
-        }
-    }
+
     
     // MARK: - Async Startup Logic
     
@@ -296,5 +285,19 @@ import FirebaseAnalytics
         }
         
         LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
+    }
+    
+    
+    // MARK: - Save settings
+    
+    private func saveSettings() {
+        
+        /// Saving lastAuth - only when not the same as today
+        ///
+        let calendar = Calendar.current
+        let now = Date()
+        if !calendar.isDate(userSettings.lastAuth, inSameDayAs: now) {
+            userSettings.lastAuth = now
+        }
     }
 }
