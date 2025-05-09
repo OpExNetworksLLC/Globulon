@@ -17,10 +17,12 @@ import FirebaseMessaging
 #endif
 
 /**
- - Version: 1.0.0 (2025-02-25)
+ - Version: 1.1.0 (2025-05-09)
  - Note:
     - Version: 1.0.0 (2025-02-25)
         - (created)
+    - Version: 1.1.0 (2025-05-09)
+        - Massive rewrite to streamline compiler flags and consolidate code.
  */
 
 /// OPTION:  Turn off the log messages:
@@ -31,8 +33,7 @@ import FirebaseMessaging
 /// xcrun simctl spawn booted log config --mode "level:off" --subsystem com.apple.CoreTelephony
 ///
 
-#if FIREBASE_ENABLED
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     
     var fcmToken: String = ""
     
@@ -41,9 +42,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         setupLocationServices()
         setupActivityMonitoring()
-
         setupNetworkMonitoring()
-        
         setupBluetoothHandler()
         setupUserNotifications()
         
@@ -51,11 +50,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         ///
         BackgroundManager.shared.registerBackgroundTask()
         
+        #if FIREBASE_ENABLED
         setupFirebaseIfNeeded()
+        #endif
         
         return true
     }
     
+    #if FIREBASE_ENABLED
     private func setupFirebaseIfNeeded() {
         /// Start Firebase...
         ///
@@ -79,10 +81,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             UserSettings.init().firebaseInstallationID = firebaseInstallationID
         }
     }
+    #endif
+    
     private func setupLocationServices() {
         /// Start location monitoring...
         ///
         let locationManager = LocationManager.shared
+        
+        #if FIREBASE_ENABLED
         // TODO: not sure I really need this.  Test it out.
         /*
         if locationManager.updatesLive {
@@ -90,6 +96,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             locationManager.startLocationUpdates()
         }
         */
+        #else
+        if !locationManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart locationManager Session")
+            locationManager.startLocationUpdates()
+        }
+        #endif
 
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {
@@ -97,15 +109,26 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             locationManager.backgroundActivity = true
         }
     }
+    
     private func setupActivityMonitoring() {
         /// Start activity monitoring...
         ///
         let activityManager = ActivityManager.shared
+        
+        #if FIREBASE_ENABLED
         if activityManager.updatesLive {
             LogEvent.print(module: "AppDelegate", message: "Restart activitiyUpdateHandler Session")
             activityManager.startActivityUpdates()
         }
+        #else
+        print("activityManager.updatesLive:\(activityManager.updatesLive)")
+        if !activityManager.updatesLive {
+            LogEvent.print(module: "AppDelegate", message: "Restart activitiyHandler Session")
+            activityManager.startActivityUpdates()
+        }
+        #endif
     }
+    
     private func setupNetworkMonitoring() {
         /// Start network monitoring...
         ///
@@ -113,6 +136,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let networkManager = NetworkManager.shared
         networkManager.startNetworkUpdates()
     }
+    
     private func setupUserNotifications() {
         /// Assign UNUserNotificationCenter's delegate
         ///
@@ -134,6 +158,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// - Start the updates if not already started
         ///
         let bluetoothHandler = BluetoothHandler.shared
+        
+        #if FIREBASE_ENABLED
         bluetoothHandler.getBluetoothPermission { result in
             if result {
                 if bluetoothHandler.updatesLive == true {
@@ -146,6 +172,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                 }
             }
         }
+        #else
+        if bluetoothHandler.updatesLive == true {
+            bluetoothHandler.startBluetoothUpdates()
+        }
+        #endif
     }
     
     /// This is called when the app is in the foreground and receives a notification
@@ -178,6 +209,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
     }
     
+    #if FIREBASE_ENABLED
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         // Handle remote notification registration
         
@@ -202,84 +234,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             LogEvent.debug(module: "AppDelegate", message: "FCM Token: \(fcmToken)")
         }
     }
+    #endif
 }
-#else
-@MainActor class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
-    
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        
-        /// Start location monitoring...
-        ///
-        let locationManager = LocationManager.shared
-        if !locationManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart locationManager Session")
-            locationManager.startLocationUpdates()
-        }
-        /// If a background activity session was previously active, reinstantiate it after the background launch.
-        ///
-        if locationManager.backgroundActivity {
-            LogEvent.print(module: "AppDelegate", message: "Reinstantiate background activity Session")
-            locationManager.backgroundActivity = true
-        }
-        
-        /// Start activity monitoring...
-        ///
-        let activityManager = ActivityManager.shared
-        print("activityManager.updatesLive:\(activityManager.updatesLive)")
-        if !activityManager.updatesLive {
-            LogEvent.print(module: "AppDelegate", message: "Restart activitiyHandler Session")
-            activityManager.startActivityUpdates()
-        }
-        //activityManager.startActivityUpdates()
 
-        /// Start network monitoring...
-        ///
-        let NetworkManager = NetworkManager.shared
-        NetworkManager.startNetworkUpdates()
-        
-        /// Start Bluetooth monitoring..
-        ///
-        let bluetoothHandler = BluetoothHandler.shared
-        if bluetoothHandler.updatesLive == true {
-            bluetoothHandler.startBluetoothUpdates()
-        }
-        
-        /// Assign UNUserNotificationCenter's delegate
-        ///
-        UNUserNotificationCenter.current().delegate = self
-        
-        /// Registering for notifications is called outside the AppDelegate because we don't want to prompt the user to
-        /// to accept notfications immediately as soon as the app starts for the first time.  We ask for permissions during onboarding
-        /// in a controlled way in this app.
-        ///
-        /// Uncomment here if we want to run immediate on startup for testing purposes
-        /// ```
-        /// registerForNotifications()
-        /// ```
-        
-        /// Register background activities
-        ///
-        BackgroundManager.shared.registerBackgroundTask()
-        return true
-    }
-    
-    /// This method is called to request message authorization.  Not used for now since we request access directly as part of onboarding.
-    ///
-    func registerForNotifications() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
-            guard success else {
-                if let error = error {
-                    LogEvent.print(module: "AppDelegate", message: "Request Authorization Failed (\(error), \(error.localizedDescription))")
-                }
-                return
-            }
-            LogEvent.print(module: "AppDelegate", message: "Success in APNS registry")
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
-            }
-        }
-    }
-    
-}
+#if FIREBASE_ENABLED
+extension AppDelegate: MessagingDelegate {}
 #endif
