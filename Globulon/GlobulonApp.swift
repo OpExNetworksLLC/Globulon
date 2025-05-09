@@ -57,7 +57,8 @@ import FirebaseAnalytics
         ///
         UserSettings.init().isAutoLogin = false
         
-        //deleteDefaultStore()
+        /// DEBUG:  Enable if you need to wipe out the entire swift data store
+        ///`deleteDefaultStore()
         
         /// Based on`.userMode`chance some settings and values
         ///
@@ -125,8 +126,6 @@ import FirebaseAnalytics
         
         /// Heres is where we make the Shared Model Container available as a singleton across the App for use in views
         ///
-        ///.modelContainer(AppEnvironment.sharedModelContainer)
-        ///.modelContext(SharedModelContainer.shared.context)
         .modelContainer(ModelContainerProvider.shared)
         
         .onChange(of: scenePhase) { scenePhase, newScenePhase in
