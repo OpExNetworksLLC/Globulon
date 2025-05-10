@@ -27,11 +27,6 @@ class VersionManager: ObservableObject {
     static var releaseDesc: String {
         return "\(version) (\(build))"
     }
-
-    func print() {
-        Swift.print(">>> App Version: \(Self.version), Build: \(Self.build), Release: \(Self.release)")
-        Swift.print(">>> App Version String: \(Self.releaseDesc)")
-    }
     
     func saveRelease() {
         UserDefaults.standard.set(Self.release, forKey: "app_release")

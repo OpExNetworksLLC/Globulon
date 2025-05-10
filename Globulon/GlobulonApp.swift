@@ -49,7 +49,6 @@ import FirebaseAnalytics
         
         /// OPTION: Force set any settings here to start other than the app default settings
         ///
-        //TODO: Build 84
         userSettings.userMode = .development
         
         /// OPTION: Set to true when using the simulator to autologin and save time in testing.
@@ -57,7 +56,6 @@ import FirebaseAnalytics
         ///
         ///`userSettings.isAutoLogin = true
         ///
-        //TODO: Build 84
         userSettings.isAutoLogin = false
         
         /// DEBUG:  Enable if you need to wipe out the entire swift data store
