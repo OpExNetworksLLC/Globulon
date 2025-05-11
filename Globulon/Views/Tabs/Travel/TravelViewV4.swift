@@ -29,6 +29,9 @@ struct TravelViewV4: View {
     private let cameraPitch2D: Double = 0
     private let cameraPitch3D: Double = 60
 
+    //TODO: Build_84
+    @State private var lastYaw: Double = 0.0
+    
     var body: some View {
         VStack {
             // Location Information Display
@@ -82,7 +85,11 @@ struct TravelViewV4: View {
                     updateCameraPosition()
                 }
                 .onChange(of: motionManager.attitudeData) {
-                    updateCameraPosition()
+                    let currentYaw = motionManager.yawDegrees
+                    if abs(currentYaw - lastYaw) > 2 {
+                        lastYaw = currentYaw
+                        updateCameraPosition()
+                    }
                 }
                 .onAppear {
                     updateCameraPosition()
@@ -96,7 +103,9 @@ struct TravelViewV4: View {
                             Spacer()
                             Button(action: {
                                 cameraPitch = (cameraPitch == cameraPitch2D) ? cameraPitch3D : cameraPitch2D
-                                updateCameraPosition()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+                                    updateCameraPosition()
+                                }
                             }) {
                                 Image(systemName: cameraPitch == cameraPitch2D ? "view.2d" : "view.3d")
                                     .font(.title2)
@@ -168,7 +177,9 @@ struct TravelViewV4: View {
                 MapCamera(
                     centerCoordinate: location.coordinate,
                     distance: cameraSpan,
-                    heading: motionManager.yawDegrees, // Use smoothed yaw from CoreMotion
+                    //heading: motionManager.yawDegrees, // Use smoothed yaw from CoreMotion
+                    //TODO: Build_84
+                    heading: locationManager.compassHeading,
                     pitch: cameraPitch
                 )
             )

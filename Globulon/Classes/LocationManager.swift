@@ -82,6 +82,10 @@ import Combine
         }
     }
 
+    //TODO: Build_84
+    /// Compass-based heading in degrees (0–360)
+    @Published var compassHeading: CLLocationDirection = 0.0
+    
     var isTripInitiated = false
     // TODO: not being used - remove?
     // var isNotified = false
@@ -240,10 +244,18 @@ import Combine
     }
     
     
+//    func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
+//        lastHeading = newHeading.trueHeading > 0 ? newHeading.trueHeading : newHeading.magneticHeading
+//        userHeading = newHeading.trueHeading
+//    }
+    //TODO: Build_84
     func locationManager(_ manager: CLLocationManager, didUpdateHeading newHeading: CLHeading) {
-        lastHeading = newHeading.trueHeading > 0 ? newHeading.trueHeading : newHeading.magneticHeading
-        userHeading = newHeading.trueHeading
+        let heading = newHeading.trueHeading > 0 ? newHeading.trueHeading : newHeading.magneticHeading
+        lastHeading = heading
+        userHeading = heading
+        compassHeading = heading
     }
+    
     
     func locationManagerShouldDisplayHeadingCalibration(_ manager: CLLocationManager) -> Bool {
         // Return true if you want to show the heading calibration dialog

@@ -193,7 +193,6 @@ struct Gyroscope3DView: UIViewRepresentable {
 
 
 import SceneKit
-
 extension SCNGeometry {
     @MainActor static func cubeWithColoredSides(sideLength: CGFloat) -> SCNGeometry {
         let box = SCNBox(width: sideLength, height: sideLength, length: sideLength, chamferRadius: 0.0)
