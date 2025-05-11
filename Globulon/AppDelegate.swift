@@ -92,14 +92,12 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// Start location monitoring...
         ///
         let locationManager = LocationManager.shared
-        
-        // TODO: not sure I really need this.  Test it out.
-        /*
+
+        /// This is absolutely required to line the location manager back up with load of the app for interactive use.
         if locationManager.updatesLive {
             LogEvent.print(module: "AppDelegate.setupLocationServices()", message: "Restart liveUpdates Session")
             locationManager.startLocationUpdates()
         }
-        */
 
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {

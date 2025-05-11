@@ -66,7 +66,8 @@ struct AccelerationData: Identifiable {
         var z: Double
     }
 
-    struct AttitudeData {
+    //TODO: Build_84
+    struct AttitudeData: Equatable {
         var pitch: Double
         var yaw: Double
         var roll: Double
@@ -91,7 +92,12 @@ struct AccelerationData: Identifiable {
     @Published var accelerometerData: AccelerometerData
     @Published var gyroscopeData: GyroscopeData
     @Published var attitudeData: AttitudeData
-
+    //TODO: build_84
+    var yawDegrees: Double {
+        let degrees = attitudeData.yaw * 180 / .pi
+        return degrees < 0 ? degrees + 360 : degrees
+    }
+    
     private var motionDataBufferLimit = 25
     @Published var motionDataBuffer: [MotionDataBuffer] = []
     

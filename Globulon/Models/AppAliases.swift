@@ -10,7 +10,7 @@ import Foundation
 
 // MARK: - Type aliases for views
 
-typealias TravelView = TravelViewV3
+typealias TravelView = TravelViewV4
 typealias LoginView = LoginViewV2
 
 typealias BackgroundManager = BackgroundManagerV2
