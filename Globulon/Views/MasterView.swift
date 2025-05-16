@@ -55,7 +55,7 @@ struct MasterView: View {
             } else {
                 MainView()
                     .task {
-                        LogEvent.print(module: "MainView.task", message: "▶️ starting...")
+                        LogManager.event(module: "MainView.task", message: "▶️ starting...")
 
                         /// On a first or fresh reinstallation of the app the earlier intake steps don't automatically start the LocationManager.
                         /// We wait until here as this is a logical start point to kicking of various processes either for the first time or when
@@ -67,7 +67,7 @@ struct MasterView: View {
 
                         /// Do stuff...
                     
-                        LogEvent.print(module: "MainView.task", message: "⏹️ ...finished")
+                        LogManager.event(module: "MainView.task", message: "⏹️ ...finished")
                     }
             }
         }
@@ -93,7 +93,7 @@ struct MasterView: View {
             userSettings.isOnboarded = true
             userStatus.isLoggedIn = true
             isLoggedIn = true
-            LogEvent.print(module: "MasterView.onReceive isOnboarded", message: "User successfully onboarded and logged in.")
+            LogManager.event(module: "MasterView.onReceive isOnboarded", message: "User successfully onboarded and logged in.")
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isWelcomed")), perform: { _ in
             userSettings.isWelcomed = true
@@ -101,12 +101,12 @@ struct MasterView: View {
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isLoggedIn")), perform: { _ in
             userStatus.isLoggedIn = true
             isLoggedIn = true
-            LogEvent.print(module: "MasterView.onReceive isLoggedIn", message: "User successfull logged in, userStatus.isLoggedIn = \(userStatus.isLoggedIn)")
+            LogManager.event(module: "MasterView.onReceive isLoggedIn", message: "User successfull logged in, userStatus.isLoggedIn = \(userStatus.isLoggedIn)")
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isLoggedOut")), perform: { _ in
             userStatus.isLoggedIn = false
             isLoggedIn = false
-            LogEvent.print(module: "MasterView.onReceive", message: "User successfully LOGGED OUT, appVariables.isLoggedIn = \(userStatus.isLoggedIn)")
+            LogManager.event(module: "MasterView.onReceive", message: "User successfully LOGGED OUT, appVariables.isLoggedIn = \(userStatus.isLoggedIn)")
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isReset")), perform: { _ in
             userSettings.isIntroduced = false
@@ -118,7 +118,7 @@ struct MasterView: View {
             userSettings.isGDPRConsent = false
             isLoggedIn = false
             appStatus.currentIntroPageView = .introStartView
-            LogEvent.print(module: "MasterView.onReceive isReset", message: "User declined terms, appStatus.isLoggedIn = \(isLoggedIn)")
+            LogManager.event(module: "MasterView.onReceive isReset", message: "User declined terms, appStatus.isLoggedIn = \(isLoggedIn)")
         })
         
 //        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isInternetAvailable")), perform: { _ in

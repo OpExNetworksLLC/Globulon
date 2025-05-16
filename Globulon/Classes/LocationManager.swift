@@ -61,7 +61,7 @@ import Combine
     var updatesLive: Bool = UserDefaults.standard.bool(forKey: "locationUpdatesLive") {
         didSet {
             UserDefaults.standard.set(updatesLive, forKey: "locationUpdatesLive")
-            LogEvent.print(module: "LocationManager.updatesLive", message: "\(updatesLive ? "Location updates started ..." : "... stopped location updates")")
+            LogManager.event(module: "LocationManager.updatesLive", message: "\(updatesLive ? "Location updates started ..." : "... stopped location updates")")
         }
     }
     
@@ -69,7 +69,7 @@ import Combine
     var updatesStopped: Bool = UserDefaults.standard.bool(forKey: "locationUpdatesStopped") {
         didSet {
             UserDefaults.standard.set(updatesStopped, forKey: "locationUpdatesStopped")
-            LogEvent.print(module: "LocationManager.updatesStopped", message: "\(updatesStopped ? "Location updates have been marked as stopped." : "Location updates not stopped.")")
+            LogManager.event(module: "LocationManager.updatesStopped", message: "\(updatesStopped ? "Location updates have been marked as stopped." : "Location updates not stopped.")")
         }
     }
 
@@ -78,7 +78,7 @@ import Combine
         didSet {
             backgroundActivity ? self.background = CLBackgroundActivitySession() : self.background?.invalidate()
             UserDefaults.standard.set(backgroundActivity, forKey: "BGActivitySessionStarted")
-            LogEvent.print(module: "LocationManager.backgroundActivity", message: "Background activity changed to: \(backgroundActivity)")
+            LogManager.event(module: "LocationManager.backgroundActivity", message: "Background activity changed to: \(backgroundActivity)")
         }
     }
 
@@ -124,32 +124,32 @@ import Combine
         self.manager.showsBackgroundLocationIndicator = true
         self.manager.startMonitoringSignificantLocationChanges()
         
-        LogEvent.print(module: "LocationManager.init()", message: "Initialized location handler with background capabilities")
+        LogManager.event(module: "LocationManager.init()", message: "Initialized location handler with background capabilities")
 
         /// Start location updates immediately to ensure continuous tracking
         /// 
         if self.updatesLive == false {
-            LogEvent.print(module: "LocationManager.init()", message: "Location updates currently inactive")
+            LogManager.event(module: "LocationManager.init()", message: "Location updates currently inactive")
             startLocationUpdates()
         } else {
-            LogEvent.print(module: "LocationManager.init()", message: "Location updates currently active")
+            LogManager.event(module: "LocationManager.init()", message: "Location updates currently active")
         }
     }
 
     func startLocationUpdates() {
         guard self.manager.authorizationStatus == .authorizedAlways || self.manager.authorizationStatus == .authorizedWhenInUse else {
-            LogEvent.print(module: "LocationManager.startLocationUpdates()", message: "Location updates cannot start without proper authorization")
+            LogManager.event(module: "LocationManager.startLocationUpdates()", message: "Location updates cannot start without proper authorization")
             return
         }
 
-        LogEvent.print(module: "LocationManager.startLocationUpdates()", message: "Starting location updates ...")
+        LogManager.event(module: "LocationManager.startLocationUpdates()", message: "Starting location updates ...")
         
         if CLLocationManager.headingAvailable() {
             manager.startUpdatingHeading()
-            LogEvent.print(module: "LocationManager.startLocationUpdates()", message: "Starting heading updates ...")
+            LogManager.event(module: "LocationManager.startLocationUpdates()", message: "Starting heading updates ...")
 
         } else {
-            LogEvent.print(module: "LocationManager.startLocationUpdates()", message: "Heading updates are not available on this device.")
+            LogManager.event(module: "LocationManager.startLocationUpdates()", message: "Heading updates are not available on this device.")
         }
 
         self.manager.startUpdatingLocation()  // Start continuous real-time location updates
@@ -157,7 +157,7 @@ import Combine
     }
     
     func stopLocationUpdates() {
-        LogEvent.print(module: "LocationManager.stopLocationUpdates()", message: "... Stopping location updates")
+        LogManager.event(module: "LocationManager.stopLocationUpdates()", message: "... Stopping location updates")
         self.manager.stopUpdatingLocation()
         self.updatesLive = false
     }
@@ -200,7 +200,7 @@ import Combine
         // Background processing: Save location if the user has moved significantly
         if UIApplication.shared.applicationState == .background {
             if priorLocation.coordinate.latitude != 0.0 && loc.distance(from: priorLocation) > regionRadius {
-                LogEvent.print(module: "LocationManager.locationManager()", message: "User moved more than \(regionRadius) meters, saving new location.")
+                LogManager.event(module: "LocationManager.locationManager()", message: "User moved more than \(regionRadius) meters, saving new location.")
                 saveLocation(location: loc)
                 startRegionMonitoring(location: loc)
             }
@@ -220,7 +220,7 @@ import Combine
 
         // Handle trip initiation
         if isTripInitiated && isTripActive {
-            LogEvent.print(module: "LocationManager.startLocationUpdates()", message: "Transferring data from buffer")
+            LogManager.event(module: "LocationManager.startLocationUpdates()", message: "Transferring data from buffer")
             saveLocationDataBuffer()
             self.isTripInitiated = false
         }
@@ -267,7 +267,7 @@ import Combine
         if nsError.domain == kCLErrorDomain && nsError.code == 0 {
             return
         }
-        LogEvent.print(module: "LocationManager.locationManager()", message: "Failed to update location: \(error.localizedDescription)")
+        LogManager.event(module: "LocationManager.locationManager()", message: "Failed to update location: \(error.localizedDescription)")
     }
 
     // MARK: - Location capture
@@ -296,7 +296,7 @@ import Combine
             note: "buffer: \(isMoving ? "Moving" : "") \(activityState.rawValue.description) \(state)"
         )
         locationDataBuffer.insert(entry, at: 0)
-        //LogEvent.print(module: "updateLocationDataBuffer", message: "Location \(location)" )
+        //LogManager.event(module: "updateLocationDataBuffer", message: "Location \(location)" )
     }
     
     func saveLocationDataBuffer() {
@@ -308,7 +308,7 @@ import Combine
                 //let context = ModelContext(ModelContainerProvider.shared)
                 let context = ModelContainerProvider.sharedContext
                 
-                LogEvent.print(module: "LocationManager.saveLocationDataBuffer()", message: "\(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
+                LogManager.event(module: "LocationManager.saveLocationDataBuffer()", message: "\(locationDataBuffer[index].timestamp), \(locationDataBuffer[index].speed), \(locationDataBuffer[index].latitude) : \(locationDataBuffer[index].longitude)")
                 
                 let entry = GPSData(
                     timestamp: locationDataBuffer[index].timestamp,
@@ -325,11 +325,11 @@ import Combine
                 do {
                     try context.save()
                 } catch {
-                    LogEvent.print(module: "LocationManager.saveLocationDataBuffer", message: "Failed to save location data: \(error.localizedDescription)")
+                    LogManager.event(module: "LocationManager.saveLocationDataBuffer", message: "Failed to save location data: \(error.localizedDescription)")
                 }
                 
                 for saveIndex in 0..<index {
-                    LogEvent.print(module: "LocationManager.saveLocationDataBuffer()", message: "\(locationDataBuffer[saveIndex].timestamp), \(locationDataBuffer[saveIndex].speed), \(locationDataBuffer[saveIndex].latitude) : \(locationDataBuffer[saveIndex].longitude)")
+                    LogManager.event(module: "LocationManager.saveLocationDataBuffer()", message: "\(locationDataBuffer[saveIndex].timestamp), \(locationDataBuffer[saveIndex].speed), \(locationDataBuffer[saveIndex].latitude) : \(locationDataBuffer[saveIndex].longitude)")
                     
                     let entry = GPSData(
                         timestamp: locationDataBuffer[saveIndex].timestamp,
@@ -346,7 +346,7 @@ import Combine
                     do {
                         try context.save()
                     } catch {
-                        LogEvent.print(module: "LocationManager.saveLocationDataBuffer", message: "Failed to save location data: \(error.localizedDescription)")
+                        LogManager.event(module: "LocationManager.saveLocationDataBuffer", message: "Failed to save location data: \(error.localizedDescription)")
                     }
                 }
                 
@@ -382,9 +382,9 @@ import Combine
         context.insert(entry)
         do {
             try context.save()
-            LogEvent.print(module: "LocationManager.saveLocation()", message: "saved: \(entry.timestamp) \(formatMPH(convertMPStoMPH(entry.speed))) mph  \(entry.latitude),\(entry.longitude)")
+            LogManager.event(module: "LocationManager.saveLocation()", message: "saved: \(entry.timestamp) \(formatMPH(convertMPStoMPH(entry.speed))) mph  \(entry.latitude),\(entry.longitude)")
         } catch {
-            LogEvent.print(module: "LocationManager.saveLocation()", message: "Failed to save location data: \(error.localizedDescription)")
+            LogManager.event(module: "LocationManager.saveLocation()", message: "Failed to save location data: \(error.localizedDescription)")
         }
     }
     
@@ -399,26 +399,26 @@ import Combine
         self.monitoredRegion = newRegion
         self.manager.startMonitoring(for: newRegion)
         
-        LogEvent.print(module: "LocationManager.startRegionMonitoring()", message: "Started region monitoring \(regionRadius) radius around \(location.coordinate.latitude), \(location.coordinate.longitude)")
+        LogManager.event(module: "LocationManager.startRegionMonitoring()", message: "Started region monitoring \(regionRadius) radius around \(location.coordinate.latitude), \(location.coordinate.longitude)")
     }
 
     /// Stop monitoring the current region
     func stopRegionMonitoring() {
         if let region = monitoredRegion {
             manager.stopMonitoring(for: region)
-            //LogEvent.print(module: "LocationManager.stopRegionMonitoring", message: "Stopped region monitoring")
+            //LogManager.event(module: "LocationManager.stopRegionMonitoring", message: "Stopped region monitoring")
             monitoredRegion = nil
         }
     }
     
     // MARK: - Permissions
     func requestWhenInUseAuthorization() {
-        LogEvent.print(module: "LocationManager.requestWhenInUseAuthorization()", message: "Requesting when in use authorization...")
+        LogManager.event(module: "LocationManager.requestWhenInUseAuthorization()", message: "Requesting when in use authorization...")
         self.manager.requestWhenInUseAuthorization()
     }
 
     func requestAuthorizedAlways() {
-        LogEvent.print(module: "LocationManager.requestAlwaysAuthorization()", message: "Requesting always authorization...")
+        LogManager.event(module: "LocationManager.requestAlwaysAuthorization()", message: "Requesting always authorization...")
         self.manager.requestAlwaysAuthorization()
     }
     

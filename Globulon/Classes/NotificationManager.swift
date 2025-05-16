@@ -47,16 +47,16 @@ import SwiftUI
             do {
                 let granted = try await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound])
                 if granted {
-                    LogEvent.print(module: "Notifications.requestUserNotificationPermission", message: "Permission granted")
+                    LogManager.event(module: "Notifications.requestUserNotificationPermission", message: "Permission granted")
                     UIApplication.shared.registerForRemoteNotifications()
                     self.isNotificationsEnabled = true
                 } else {
-                    LogEvent.print(module: "Notifications.requestUserNotificationPermission", message: "Permission denied")
+                    LogManager.event(module: "Notifications.requestUserNotificationPermission", message: "Permission denied")
                     self.isNotificationsEnabled = false
                 }
                 return granted
             } catch {
-                LogEvent.print(module: "Notifications.requestUserNotificationPermission", message: "Error requesting permission: \(error.localizedDescription)")
+                LogManager.event(module: "Notifications.requestUserNotificationPermission", message: "Error requesting permission: \(error.localizedDescription)")
                 self.isNotificationsEnabled = false
                 return false
             }
@@ -64,7 +64,7 @@ import SwiftUI
             // The permission was already determined (either granted or denied)
             let isEnabled = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional || settings.authorizationStatus == .ephemeral
             let message = isEnabled ? "Notifications have already been enabled." : "Notifications are disabled. Please enable them in Settings."
-            LogEvent.print(module: "Notifications.requestUserNotificationPermission", message: message)
+            LogManager.event(module: "Notifications.requestUserNotificationPermission", message: message)
             self.isNotificationsEnabled = isEnabled
             return isEnabled
         }
@@ -84,7 +84,7 @@ import SwiftUI
             do {
                 try await UNUserNotificationCenter.current().add(request)
             } catch {
-                LogEvent.print(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
+                LogManager.event(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
             }
         }
     }
@@ -101,7 +101,7 @@ import SwiftUI
             do {
                 try await UNUserNotificationCenter.current().add(request)
             } catch {
-                LogEvent.print(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
+                LogManager.event(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
             }
         }
     }
@@ -117,7 +117,7 @@ import SwiftUI
 //        
 //        UNUserNotificationCenter.current().add(request) { error in
 //            if let error = error {
-//                LogEvent.print(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
+//                LogManager.event(module: "NotificationManager.sendNotification()", message: "Error scheduling notification: \(error)")
 //            }
 //        }
 //    }
@@ -132,7 +132,7 @@ import SwiftUI
 //        
 //        UNUserNotificationCenter.current().add(request) { error in
 //            if let error = error {
-//                LogEvent.print(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
+//                LogManager.event(module: "PostNotification.connectivityChangeNotification()", message: "Error scheduling notification: \(error)")
 //            }
 //        }
 //    }

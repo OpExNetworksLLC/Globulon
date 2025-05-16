@@ -40,7 +40,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         
-        LogEvent.print(module: "AppDelegate", message: "▶️ starting...")
+        LogManager.event(module: "AppDelegate", message: "▶️ starting...")
         
         /// Register background activities
         ///
@@ -57,7 +57,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         setupFirebase()
         #endif
 
-        LogEvent.print(module: "AppDelegate", message: "⏹️ ...finished")
+        LogManager.event(module: "AppDelegate", message: "⏹️ ...finished")
 
         return true
     }
@@ -74,15 +74,15 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         Installations.installations().installationID { (firebaseInstallationID, error) in
             if let error = error {
-                LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Error fetching installation ID: \(error)")
+                LogManager.event(module: "AppDelegate.setupFirebase()", message: "Error fetching installation ID: \(error)")
                 return
             }
             guard let firebaseInstallationID = firebaseInstallationID else {
-                LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Installation ID is not available")
+                LogManager.event(module: "AppDelegate.setupFirebase()", message: "Installation ID is not available")
                 return
             }
-            LogEvent.print(module: "AppDelegate.setupFirebase()", message: "Installation ID: \(maskString(firebaseInstallationID))")
-            LogEvent.debug(module: "AppDelegate.setupFirebase()", message: "Installation ID: \(firebaseInstallationID)")
+            LogManager.event(module: "AppDelegate.setupFirebase()", message: "Installation ID: \(maskString(firebaseInstallationID))")
+            LogManager.event(output: .debugOnly, module: "AppDelegate.setupFirebase()", message: "Installation ID: \(firebaseInstallationID)")
             UserSettings.init().firebaseInstallationID = firebaseInstallationID
         }
     }
@@ -95,13 +95,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
 
         /// This is absolutely required to line the location manager back up with load of the app for interactive use.
         if locationManager.updatesLive {
-            LogEvent.print(module: "AppDelegate.setupLocationServices()", message: "Restart liveUpdates Session")
+            LogManager.event(module: "AppDelegate.setupLocationServices()", message: "Restart liveUpdates Session")
             locationManager.startLocationUpdates()
         }
 
         /// If a background activity session was previously active, reinstantiate it after the background launch.
         if locationManager.backgroundActivity {
-            LogEvent.print(module: "AppDelegate.setupLocationServices()", message: "Reinstantiate background activity Session")
+            LogManager.event(module: "AppDelegate.setupLocationServices()", message: "Reinstantiate background activity Session")
             locationManager.backgroundActivity = true
         }
     }
@@ -112,7 +112,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         let activityManager = ActivityManager.shared
         
         if activityManager.updatesLive {
-            LogEvent.print(module: "AppDelegate.setupActivityMonitoring()", message: "Restart activitiyUpdateHandler Session")
+            LogManager.event(module: "AppDelegate.setupActivityMonitoring()", message: "Restart activitiyUpdateHandler Session")
             activityManager.startActivityUpdates()
         }
     }
@@ -153,7 +153,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                         await bluetoothManager.startBluetoothUpdates()
                     }
                 } else {
-                    LogEvent.print(module: "AppDelegate.setupBluetoothMonitoring()", message: "Bluetooth updates are not started")
+                    LogManager.event(module: "AppDelegate.setupBluetoothMonitoring()", message: "Bluetooth updates are not started")
                 }
             }
         }
@@ -178,11 +178,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { success, error in
             guard success else {
                 if let error = error {
-                    LogEvent.print(module: "AppDelegate", message: "Request Authorization Failed (\(error), \(error.localizedDescription))")
+                    LogManager.event(module: "AppDelegate", message: "Request Authorization Failed (\(error), \(error.localizedDescription))")
                 }
                 return
             }
-            LogEvent.print(module: "AppDelegate", message: "Success in APNS registry")
+            LogManager.event(module: "AppDelegate", message: "Success in APNS registry")
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
             }
@@ -198,9 +198,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         /// convert to string for masking
         let deviceTokenString = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-        LogEvent.print(module: "AppDelegate", message: "Success in AppDelegate.didRegisterForRemoteNotificationsWithDeviceToken: \(maskString(deviceTokenString))")
+        LogManager.event(module: "AppDelegate", message: "Success in AppDelegate.didRegisterForRemoteNotificationsWithDeviceToken: \(maskString(deviceTokenString))")
         
-        LogEvent.debug(module: "AppDelegate", message: "Success in AppDelegate.didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken)")
+        LogManager.event(output: .debugOnly, module: "AppDelegate", message: "Success in AppDelegate.didRegisterForRemoteNotificationsWithDeviceToken: \(deviceToken)")
     }
     
     //TODO:  or add preconcurrency to the import
@@ -210,8 +210,8 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         // Update the Firebase token in your app
         DispatchQueue.main.async {
             self.fcmToken = fcmToken
-            LogEvent.print(module: "AppDelegate", message: "FCM Token: \(maskString(fcmToken))")
-            LogEvent.debug(module: "AppDelegate", message: "FCM Token: \(fcmToken)")
+            LogManager.event(module: "AppDelegate", message: "FCM Token: \(maskString(fcmToken))")
+            LogManager.event(output: .debugOnly, module: "AppDelegate", message: "FCM Token: \(fcmToken)")
         }
     }
     #endif

@@ -176,7 +176,7 @@ struct GDPRConsentView: View {
             #endif
             UserSettings.init().isGDPRConsentGranted = false
         }
-        LogEvent.print(module: "GDPR ConsentView.saveConsentPreferences()", message: "firebase analytics enabled: \(UserSettings.init().isGDPRConsentGranted)")
+        LogManager.event(module: "GDPR ConsentView.saveConsentPreferences()", message: "firebase analytics enabled: \(UserSettings.init().isGDPRConsentGranted)")
     }
     
     struct GDPRPolicyView: View {

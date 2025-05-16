@@ -138,17 +138,17 @@ struct UserSupportView: View {
                         case .success(let result):
                             switch result {
                             case .cancelled:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email send cancelled")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email send cancelled")
                             case .failed:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email send failed")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email send failed")
                             case .saved:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email saved")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email saved")
                             default:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email sent")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email sent")
                                 
                             }
                         case .failure(let error):
-                            LogEvent.print(module: "UserSupportView.MailView", message: "Unexpected failure error: \(error.localizedDescription)")
+                            LogManager.event(module: "UserSupportView.MailView", message: "Unexpected failure error: \(error.localizedDescription)")
                         }
                     },
                              subject: "Support Request",
@@ -180,17 +180,17 @@ struct UserSupportView: View {
                         case .success(let result):
                             switch result {
                             case .cancelled:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email send cancelled")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email send cancelled")
                             case .failed:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email send failed")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email send failed")
                             case .saved:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email saved")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email saved")
                             default:
-                                LogEvent.print(module: "UserSupportView.MailView", message: "Email sent")
+                                LogManager.event(module: "UserSupportView.MailView", message: "Email sent")
                                 
                             }
                         case .failure(let error):
-                            LogEvent.print(module: "UserSupportView.MailView", message: "Unexpected failure error: \(error.localizedDescription)")
+                            LogManager.event(module: "UserSupportView.MailView", message: "Unexpected failure error: \(error.localizedDescription)")
                         }
                     },
                              subject: "Support Request",

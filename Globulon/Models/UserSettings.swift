@@ -404,7 +404,7 @@ class UserSettings: ObservableObject {
     
     //MARK: Local functions
     private func logChange(forKey: String, value: Any) {
-        LogEvent.print(module: "UserSettings", message: "Saving: \(forKey) = \(value)")
+        LogManager.event(module: "UserSettings", message: "Saving: \(forKey) = \(value)")
     }
    
     //TODO:  Can I get rid of this

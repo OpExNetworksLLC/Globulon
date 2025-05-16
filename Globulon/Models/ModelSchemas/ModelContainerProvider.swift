@@ -55,17 +55,17 @@ final class ModelContainerProvider {
             let savedVersion = SchemaVersionStore.load() ?? Schema.Version(0, 0, 0)
             let currentVersion = CurrentModelSchema.versionIdentifier
             
-            LogEvent.print(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
+            LogManager.event(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
             
             if savedVersion == Schema.Version(0, 0, 0) {
                 SchemaVersionStore.save(currentVersion)
-                LogEvent.print(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
+                LogManager.event(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
             } else if savedVersion == currentVersion {
-                LogEvent.print(module: "ModelContainerProvider", message: "✅ Database is up-to-date at schema version \(currentVersion)")
+                LogManager.event(module: "ModelContainerProvider", message: "✅ Database is up-to-date at schema version \(currentVersion)")
             } else if savedVersion < currentVersion {
-                LogEvent.print(module: "ModelContainerProvider", message: "🔄 Database migration needed: from schema version \(savedVersion) ➡️ \(currentVersion)")
+                LogManager.event(module: "ModelContainerProvider", message: "🔄 Database migration needed: from schema version \(savedVersion) ➡️ \(currentVersion)")
             } else {
-                LogEvent.print(module: "ModelContainerProvider", message: "⚠️ Warning: Saved schema version \(savedVersion) is NEWER than current \(currentVersion). Possible rollback or version mismatch.")
+                LogManager.event(module: "ModelContainerProvider", message: "⚠️ Warning: Saved schema version \(savedVersion) is NEWER than current \(currentVersion). Possible rollback or version mismatch.")
             }
             
             let container = try ModelContainer(
@@ -113,11 +113,11 @@ enum DataMigrationPlan: SchemaMigrationPlan {
             fromVersion: ModelSchemaV01_00_00.self,
             toVersion: ModelSchemaV01_00_01.self,
             willMigrate: { context in
-                LogEvent.print(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
+                LogManager.event(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
             },
             didMigrate: { context in
                 SchemaVersionStore.save(Schema.Version(1, 0, 1))
-                LogEvent.print(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
+                LogManager.event(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
             }
         )
     }
@@ -164,7 +164,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
     let fileManager = FileManager.default
     let storeURL = getPersistentStoreURL(container: container)
     
-    LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Resetting persistent store files located at: \(storeURL.deletingLastPathComponent().path)")
+    LogManager.event(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Resetting persistent store files located at: \(storeURL.deletingLastPathComponent().path)")
     
     let relatedFiles = [
         storeURL,
@@ -176,7 +176,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
         if fileManager.fileExists(atPath: file.path) {
             do {
                 try fileManager.removeItem(at: file)
-                LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Removed persistent store file: \(file.lastPathComponent)")
+                LogManager.event(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Removed persistent store file: \(file.lastPathComponent)")
             } catch {
                 throw NSError(
                     domain: "com." + AppSettings.appName + ".ModelContainer",
@@ -264,17 +264,17 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            let savedVersion = SchemaVersionStore.load() ?? Schema.Version(0, 0, 0)
 //            let currentVersion = CurrentModelSchema.versionIdentifier
 //            
-//            LogEvent.print(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
+//            LogManager.event(module: "ModelContainerProvider", message: "📦 Current database schema: \(currentVersion), Saved schema: \(savedVersion)")
 //            
 //            if savedVersion == Schema.Version(0, 0, 0) {
 //                SchemaVersionStore.save(currentVersion)
-//                LogEvent.print(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
+//                LogManager.event(module: "ModelContainerProvider", message: "🆕 First-time setup. Stored database schema version set to \(currentVersion)")
 //            } else if savedVersion == currentVersion {
-//                LogEvent.print(module: "ModelContainerProvider", message: "✅ Database is up-to-date at schema version \(currentVersion)")
+//                LogManager.event(module: "ModelContainerProvider", message: "✅ Database is up-to-date at schema version \(currentVersion)")
 //            } else if savedVersion < currentVersion {
-//                LogEvent.print(module: "ModelContainerProvider", message: "🔄 Database migration needed: from schema version \(savedVersion) ➡️ \(currentVersion)")
+//                LogManager.event(module: "ModelContainerProvider", message: "🔄 Database migration needed: from schema version \(savedVersion) ➡️ \(currentVersion)")
 //            } else {
-//                LogEvent.print(module: "ModelContainerProvider", message: "⚠️ Warning: Saved schema version \(savedVersion) is NEWER than current \(currentVersion). Possible rollback or version mismatch.")
+//                LogManager.event(module: "ModelContainerProvider", message: "⚠️ Warning: Saved schema version \(savedVersion) is NEWER than current \(currentVersion). Possible rollback or version mismatch.")
 //            }
 //            
 //            let container = try ModelContainer(
@@ -322,11 +322,11 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //            fromVersion: ModelSchemaV01_00_00.self,
 //            toVersion: ModelSchemaV01_00_01.self,
 //            willMigrate: { context in
-//                LogEvent.print(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
+//                LogManager.event(module: "DataMigrationPlan", message: "Migrating from v01_00_00 to v01_00_01 ▶️ starting ...")
 //            },
 //            didMigrate: { context in
 //                SchemaVersionStore.save(Schema.Version(1, 0, 1))
-//                LogEvent.print(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
+//                LogManager.event(module: "DataMigrationPlan", message: "Migration from v01_00_00 to v01_00_01 ⏹️ ... finished")
 //            }
 //        )
 //    }
@@ -373,7 +373,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //    let fileManager = FileManager.default
 //    let storeURL = getPersistentStoreURL(container: container)
 //    
-//    LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Resetting persistent store files located at: \(storeURL.deletingLastPathComponent().path)")
+//    LogManager.event(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Resetting persistent store files located at: \(storeURL.deletingLastPathComponent().path)")
 //    
 //    let relatedFiles = [
 //        storeURL,
@@ -385,7 +385,7 @@ func resetPersistentStoreIfNeeded(startFresh: Bool, container: ModelContainer? =
 //        if fileManager.fileExists(atPath: file.path) {
 //            do {
 //                try fileManager.removeItem(at: file)
-//                LogEvent.print(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Removed persistent store file: \(file.lastPathComponent)")
+//                LogManager.event(module: "SharedModelContainer.resetPersistentStoreIfNeeded()", message: "Removed persistent store file: \(file.lastPathComponent)")
 //            } catch {
 //                throw NSError(
 //                    domain: "com." + AppSettings.appName + ".ModelContainer",

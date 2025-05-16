@@ -23,7 +23,7 @@ struct GitHubFile: Codable {
 class GitHubManager {
     /// Downloads all files from a GitHub repository directory and saves them to the app's Documents Directory.
     static func download(directory: String) async {
-        LogEvent.print(module: "GitHubManager.download", message: "▶️ starting...")
+        LogManager.event(module: "GitHubManager.download", message: "▶️ starting...")
         
         
         /// Parse the URL dynamically based on the repo name
@@ -51,8 +51,8 @@ class GitHubManager {
         let githubAPI = "https://api.github.com/repos/\(AppSettings.GitHub.owner)/\(AppSettings.GitHub.repo)/contents/\(AppSettings.GitHub.appName)/\(directory)"
         
         guard let apiURL = URL(string: githubAPI) else {
-            LogEvent.print(module: "GitHubManager", message: "❌ Invalid GitHub API URL")
-            LogEvent.print(module: "GitHubManager.download", message: "⏹️ ...finished")
+            LogManager.event(module: "GitHubManager", message: "❌ Invalid GitHub API URL")
+            LogManager.event(module: "GitHubManager.download", message: "⏹️ ...finished")
             return
         }
         
@@ -73,15 +73,15 @@ class GitHubManager {
                         do {
                             try await downloadFiles(from: fileURL, to: destinationURL, appRelativePath: directory)
                             //print("✅ Downloaded: \(file.name) → \(destinationURL.path)")
-                            LogEvent.print(module: "GitHubManager.download", message: "✅ Downloaded: \(file.name)")
+                            LogManager.event(module: "GitHubManager.download", message: "✅ Downloaded: \(file.name)")
                         } catch {
-                            LogEvent.print(module: "GitHubManager.download", message: "❌ Failed to download \(file.name): \(error.localizedDescription)")
+                            LogManager.event(module: "GitHubManager.download", message: "❌ Failed to download \(file.name): \(error.localizedDescription)")
                         }
                     }
                 }
                 
                 try await group.waitForAll() // Ensure all tasks complete
-                LogEvent.print(module: "GitHubManager.download", message: "⏹️ ...finished")
+                LogManager.event(module: "GitHubManager.download", message: "⏹️ ...finished")
                 
             }
             

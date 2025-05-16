@@ -57,7 +57,7 @@ struct LaunchView: View {
                 }
                 
                 .task {
-                    LogEvent.print(module: "LaunchView.task", message: "▶️ starting...")
+                    LogManager.event(module: "LaunchView.task", message: "▶️ starting...")
                     
                     _ = NetworkManager.shared.isConnected
                     
@@ -87,7 +87,7 @@ struct LaunchView: View {
                     ///
                     isProcessing.toggle()
                     
-                    LogEvent.print(module: "LaunchView.task", message: "⏹️ ...finished")
+                    LogManager.event(module: "LaunchView.task", message: "⏹️ ...finished")
                     
                 }
                 

@@ -30,16 +30,16 @@ class VersionManager: ObservableObject {
     
     func saveRelease() {
         UserDefaults.standard.set(Self.release, forKey: "app_release")
-        LogEvent.print(module: "VersionManager.saveRelease()", message: "release saved: \(Self.release)")
+        LogManager.event(module: "VersionManager.saveRelease()", message: "release saved: \(Self.release)")
     }
     
     func retrieveRelease() -> String {
         let savedRelease = UserDefaults.standard.string(forKey: "app_release") ?? ""
         /*
         if savedRelease.isEmpty {
-            LogEvent.print(module: "VersionManager.retrieveRelease()", message: "blank")
+            LogManager.event(module: "VersionManager.retrieveRelease()", message: "blank")
         } else {
-            LogEvent.print(module: "VersionManager.retrieveRelease()", message: "\(savedRelease)")
+            LogManager.event(module: "VersionManager.retrieveRelease()", message: "\(savedRelease)")
         }
         */
         return savedRelease
@@ -49,15 +49,15 @@ class VersionManager: ObservableObject {
         let savedRelease = retrieveRelease()
 
         if savedRelease.isEmpty {
-            LogEvent.print(module: "VersionManager.isNewRelease()", message: "Saved app release is empty. Current release: \(Self.release)")
+            LogManager.event(module: "VersionManager.isNewRelease()", message: "Saved app release is empty. Current release: \(Self.release)")
             return true
         }
 
         let isNew = Self.release.compare(savedRelease, options: .numeric) == .orderedDescending
         if isNew {
-            LogEvent.print(module: "VersionManager.isNewRelease()", message: "Newer app release detected. Old: \(savedRelease), New: \(Self.release)")
+            LogManager.event(module: "VersionManager.isNewRelease()", message: "Newer app release detected. Old: \(savedRelease), New: \(Self.release)")
         } else {
-            LogEvent.print(module: "VersionManager.isNewRelease()", message: "No new app release. Current release: \(Self.release)")
+            LogManager.event(module: "VersionManager.isNewRelease()", message: "No new app release. Current release: \(Self.release)")
         }
 
         return isNew
@@ -68,18 +68,18 @@ class VersionManager: ObservableObject {
             if result.isEmpty {
                 result = "\"\""
             }
-            LogEvent.print(module: "VersionManager.checkRelease()", message: "A newer release was detected:  Old release: \(result) New release: \(Self.release)")
+            LogManager.event(module: "VersionManager.checkRelease()", message: "A newer release was detected:  Old release: \(result) New release: \(Self.release)")
             saveRelease() // Save the current release since it's new
             return true
         } else {
-            LogEvent.print(module: "VersionManager.checkRelease()", message: "\(Self.release) is not a new release.")
+            LogManager.event(module: "VersionManager.checkRelease()", message: "\(Self.release) is not a new release.")
         }
         return false
     }
     
     func resetRelease() {
         UserDefaults.standard.removeObject(forKey: "app_release")
-        LogEvent.print(module: "VersionManager.restRelease()", message: "app_release reset")
+        LogManager.event(module: "VersionManager.restRelease()", message: "app_release reset")
 
     }
     

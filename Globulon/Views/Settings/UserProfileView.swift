@@ -52,7 +52,7 @@ struct UserProfileView: View {
                                         .clipShape(Circle())
                                         .offset(x: -20)
                                         .onChange(of: avatar) { avatar, value in
-                                            LogEvent.print(module: "UserProfileView", message: "Avatar changed")
+                                            LogManager.event(module: "UserProfileView", message: "Avatar changed")
                                         }
                                         .offset(x: 16)
                                     Text("Select image from photos")

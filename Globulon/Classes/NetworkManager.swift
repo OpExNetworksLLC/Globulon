@@ -42,7 +42,7 @@ import Combine
         guard !hasStartedNetworkUpdates else { return }
         hasStartedNetworkUpdates = true
         
-        LogEvent.print(module: "NetworkManager.startNetworkUpdates()", message: "▶️ starting...")
+        LogManager.event(module: "NetworkManager.startNetworkUpdates()", message: "▶️ starting...")
         
         monitor.pathUpdateHandler = { [weak self] path in
             guard let self = self else { return }
@@ -65,7 +65,7 @@ import Combine
         guard hasStartedNetworkUpdates else { return }
         monitor.cancel()
         hasStartedNetworkUpdates = false
-        LogEvent.print(module: "NetworkManager.stopNetworkUpdates()", message: "⏹️...stopped")
+        LogManager.event(module: "NetworkManager.stopNetworkUpdates()", message: "⏹️...stopped")
     }
     
     // Handle path updates, ensure it's called from the correct actor
@@ -89,13 +89,13 @@ import Combine
             if wasDisconnected {
                 handleConnectivityChange(isConnected: true)
                 wasDisconnected = false
-                LogEvent.print(module: "NetworkManager.updateNetworkStatus()", message: "Connected to the internet")
+                LogManager.event(module: "NetworkManager.updateNetworkStatus()", message: "Connected to the internet")
             }
         } else {
             if !wasDisconnected {
                 handleConnectivityChange(isConnected: false)
                 wasDisconnected = true
-                LogEvent.print(module: "NetworkManager.updateNetworkStatus()", message: "Disconnected from the internet")
+                LogManager.event(module: "NetworkManager.updateNetworkStatus()", message: "Disconnected from the internet")
             }
         }
     }

@@ -16,7 +16,7 @@ import Combine
     func performAsyncTask() async {
         
         guard !isProcessing else {
-            LogEvent.print(module: "AsyncProcessor.performAsyncTask()", message: "processing...")
+            LogManager.event(module: "AsyncProcessor.performAsyncTask()", message: "processing...")
             return
         }
         
@@ -25,7 +25,7 @@ import Combine
         self.description = "Pending"
         
         do {
-            LogEvent.print(module: "AsyncProcessor.performAsyncTask()", message: "▶️ starting...")
+            LogManager.event(module: "AsyncProcessor.performAsyncTask()", message: "▶️ starting...")
             self.description = "Started"
             
             // Simulate an asynchronous operation with a delay
@@ -35,11 +35,11 @@ import Combine
             self.isProcessing = false
             self.description = "Completed"
             
-            LogEvent.print(module: "AsyncProcessor.performAsyncTask()", message: "⏹️ ...finished")
+            LogManager.event(module: "AsyncProcessor.performAsyncTask()", message: "⏹️ ...finished")
         } catch {
             // Handle errors if the async task fails
             self.isProcessing = false
-            LogEvent.print(module: "⛔️ AsyncProcessor.performAsyncTask()", message: "Error: \(error.localizedDescription)")
+            LogManager.event(module: "⛔️ AsyncProcessor.performAsyncTask()", message: "Error: \(error.localizedDescription)")
         }
     }
 }

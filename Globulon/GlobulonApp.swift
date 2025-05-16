@@ -43,9 +43,9 @@ import FirebaseAnalytics
     init() {
         
         /// Save the prior logfile
-        LogEvent.ArchiveLogFile()
+        LogManager.ArchiveLogFile()
         
-        LogEvent.print(module: "GlobulonApp.init()", message: "▶️ starting...")
+        LogManager.event(module: "GlobulonApp.init()", message: "▶️ starting...")
         
         /// OPTION: Force set any settings here to start other than the app default settings
         ///
@@ -91,19 +91,19 @@ import FirebaseAnalytics
         #if FIREBASE_ENABLED
             userSettings.authMode = .firebase
             Analytics.setAnalyticsCollectionEnabled(userSettings.isGDPRConsentGranted)
-            LogEvent.print(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(userSettings.isGDPRConsentGranted)")
+            LogManager.event(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(userSettings.isGDPRConsentGranted)")
         #endif
         #if KEYCHAIN_ENABLED
             userSettings.authMode = .keychain
         #endif
         
         /// Print out the settings in the log
-        LogEvent.print(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
+        LogManager.event(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
         
         /// DEBUG:  Show the log file url
         ///`LogEvent.getLogFileURL()
         
-        LogEvent.print(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
+        LogManager.event(module: AppSettings.appName + "App.init()", message: "⏹️ ...finished")
     }
 
     
@@ -137,7 +137,7 @@ import FirebaseAnalytics
         .onChange(of: scenePhase) { scenePhase, newScenePhase in
             switch newScenePhase {
             case .background:
-                LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is in background")
+                LogManager.event(module: AppSettings.appName + ".onChangeOf", message: "Scene is in background")
                 
                 /// EXAMPLE:  In some apps you may want to save your context or other data before dropping into background mode
                 ///`persistanceController.save()
@@ -147,13 +147,13 @@ import FirebaseAnalytics
                 
                 saveSettings()
             case .inactive:
-                //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
+                //LogManager.event(module: AppSettings.appName + ".onChangeOf", message: "Scene is inactive")
                 break
             case .active:
-                //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is active")
+                //LogManager.event(module: AppSettings.appName + ".onChangeOf", message: "Scene is active")
                 break
             @unknown default:
-                //LogEvent.print(module: AppSettings.appName + ".onChangeOf", message: "Scene is unexpected")
+                //LogManager.event(module: AppSettings.appName + ".onChangeOf", message: "Scene is unexpected")
                 break
             }
         }
@@ -169,7 +169,7 @@ import FirebaseAnalytics
     ///
     private func startupSequence() async {
         
-        LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "▶️ starting...")
+        LogManager.event(module: AppSettings.appName + "App.startupSequence", message: "▶️ starting...")
         
         let versionManager = VersionManager.shared
         
@@ -195,13 +195,13 @@ import FirebaseAnalytics
         let daysSinceCheck = Calendar.current.dateComponents([.day], from: lastCheck, to: now).day ?? Int.max
 
         if isNewRelease {
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
+            LogManager.event(module: AppSettings.appName + "App.startupSequence", message: "New app release detected: \(VersionManager.release)")
             
             Articles.deleteArticles()
             userSettings.articlesDate = DateInfo.zeroDate
             userSettings.lastArticlesCheck = now
             
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
+            LogManager.event(module: AppSettings.appName + "App.startupSequence", message: "loading articles ...")
             let (success, _) = await Articles.load()
             
             if success {
@@ -211,7 +211,7 @@ import FirebaseAnalytics
             }
 
         } else if daysSinceCheck > 14 || (daysSinceCheck > 7 && userSettings.lastAuth < lastCheck) {
-            LogEvent.print(module: AppSettings.appName + "App.startupSequence", message: "🕒 Time-based article check triggered (days since last check: \(daysSinceCheck)).")
+            LogManager.event(module: AppSettings.appName + "App.startupSequence", message: "🕒 Time-based article check triggered (days since last check: \(daysSinceCheck)).")
 
             let (success, _) = await Articles.load()
             if success {
@@ -224,25 +224,25 @@ import FirebaseAnalytics
         /// Location Manager
         /// 
         LocationManager.shared.getAuthorizedWhenInUse { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.LocationManager.getAuthorizedWhenInUse()", message: "\(result)")
         }
         LocationManager.shared.getAuthorizedAlways { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedAlways()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.LocationManager.getAuthorizedAlways()", message: "\(result)")
         }
         LocationManager.shared.getAuthorizedDescription { result in
-            LogEvent.print(module: AppSettings.appName + "App.LocationManager.getAuthorizedDescription()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.LocationManager.getAuthorizedDescription()", message: "\(result)")
         }
         
         /// Activity Handler
         ActivityManager.shared.getMotionActivityAvailability { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityAvailability()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.ActivityManager.getMotionActivityAvailability()", message: "\(result)")
         }
         ActivityManager.shared.getMotionActivityPermission { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getMotionActivityPermission()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.ActivityManager.getMotionActivityPermission()", message: "\(result)")
         }
         
         ActivityManager.shared.getActivityMonitoringStatus { result in
-            LogEvent.print(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
+            LogManager.event(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
             
             /** OPTION:  Use this code to start the handle
             ```
@@ -278,17 +278,17 @@ import FirebaseAnalytics
         let processor = AsyncProcessor()
         Task(priority: .low) {
             if !processor.isProcessing {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "▶️ starting AsyncProcessor()...")
+                LogManager.event(module: AppSettings.appName + "App.startupSequence()", message: "▶️ starting AsyncProcessor()...")
                 
                 await processor.performAsyncTask()
                 
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished AsyncProcessor()")
+                LogManager.event(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished AsyncProcessor()")
             } else {
-                LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "AsyncProcessor() is processing")
+                LogManager.event(module: AppSettings.appName + "App.startupSequence()", message: "AsyncProcessor() is processing")
             }
         }
         
-        LogEvent.print(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
+        LogManager.event(module: AppSettings.appName + "App.startupSequence()", message: "⏹️ ...finished")
     }
     
     

@@ -27,12 +27,12 @@ func purgeGPSData() -> Int {
             let entries = try context.fetch(fetchDescriptor)
             
             try context.delete(model: GPSData.self)
-            LogEvent.print(module: "purgeGPSData()", message: "Purged \(entries.count) GPSData entries.")
+            LogManager.event(module: "purgeGPSData()", message: "Purged \(entries.count) GPSData entries.")
             
             return entries.count
             
         } catch {
-            LogEvent.print(module: "purgeGPSData()", message: "error purging GPSData.")
+            LogManager.event(module: "purgeGPSData()", message: "error purging GPSData.")
             return 0
         }
     }

@@ -82,9 +82,9 @@ struct LoginViewV2: View {
             if success {
                 self.password = password
             } else if let error = error {
-                LogEvent.print(module: "LoginView().loadStoredPassword()", message: "**Error retrieving password: \(error.localizedDescription)")
+                LogManager.event(module: "LoginView().loadStoredPassword()", message: "**Error retrieving password: \(error.localizedDescription)")
             } else {
-                LogEvent.print(module: "LoginView().loadStoredPassword()", message: "**Password retrieval failed for unknown reasons.")
+                LogManager.event(module: "LoginView().loadStoredPassword()", message: "**Password retrieval failed for unknown reasons.")
             }
         }
     }
@@ -124,9 +124,9 @@ struct LoginViewV2: View {
                 if success {
                     internalPassword = storedPassword
                 } else if let error = error {
-                    LogEvent.print(module: "LoginView.authenticateUser()", message: "**Error retrieving password: \(error.localizedDescription)")
+                    LogManager.event(module: "LoginView.authenticateUser()", message: "**Error retrieving password: \(error.localizedDescription)")
                 } else {
-                    LogEvent.print(module: "LoginView.authenticateUser()", message: "**Password retrieval failed for unknown reasons.")
+                    LogManager.event(module: "LoginView.authenticateUser()", message: "**Password retrieval failed for unknown reasons.")
                 }
             }
             break

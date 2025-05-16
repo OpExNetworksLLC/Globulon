@@ -43,17 +43,17 @@ class Authentication {
                 
                 do {
                     let success = try await context.evaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, localizedReason: reason)
-                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication. success: \"\(success)\".")
+                    LogManager.event(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication. success: \"\(success)\".")
                     return (success, nil)
                 } catch let evaluationError as LAError {
-                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication failed. evaluationError: \"\(evaluationError.localizedDescription)\"")
+                    LogManager.event(module: "Authentication.biometric.authenticateUser", message: "Biometric authentication failed. evaluationError: \"\(evaluationError.localizedDescription)\"")
                     return (false, evaluationError)
                 } catch {
                     return (false, error)
                 }
             } else {
                 if let error = error {
-                    LogEvent.print(module: "Authentication.biometric.authenticateUser", message: "Error code: (\(error.code)) desc: \"\(error.localizedDescription)\"")
+                    LogManager.event(module: "Authentication.biometric.authenticateUser", message: "Error code: (\(error.code)) desc: \"\(error.localizedDescription)\"")
                     return (false, error)
                 } else {
                     return (false, nil)
@@ -115,14 +115,14 @@ class Authentication {
                let passwordData = result as? Data,
                let retrievedPassword = String(data: passwordData, encoding: .utf8) {
                 if retrievedPassword == password {
-                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization succeded.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\"")
+                    LogManager.event(module: "Authentication.keychain.authUser", message: "Authorization succeded.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\"")
                     return true
                 } else {
-                    LogEvent.print(module: "Authentication.keychain.authUser", message: "Authorization failed.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\", error: \(status.localizedDescription)")
+                    LogManager.event(module: "Authentication.keychain.authUser", message: "Authorization failed.  user: \"\(maskUsername(username))\" \"\(maskPassword(password))\", error: \(status.localizedDescription)")
                     return false
                 }
             } else {
-                LogEvent.print(module: "Authentication.keychain.authUser", message: "\(status.localizedDescription)")
+                LogManager.event(module: "Authentication.keychain.authUser", message: "\(status.localizedDescription)")
                 return false
             }
         }
@@ -150,12 +150,12 @@ class Authentication {
 
             guard error == errSecSuccess else {
                 evaluateKeychainError(errorCode: error)
-                LogEvent.print(module: "Authentication.keychain.addUser", message: "\(result)")
+                LogManager.event(module: "Authentication.keychain.addUser", message: "\(result)")
                 return completion(false, "", result)
             }
                     
-            LogEvent.print(module: "Authentication.keychain.addUser", message: "\(maskUsername(username))/\(maskPassword(password)) added successfully.")
-            LogEvent.debug(module: "Authentication.keychain.addUser", message: "\(username)/\(password) added successfully.")
+            LogManager.event(module: "Authentication.keychain.addUser", message: "\(maskUsername(username))/\(maskPassword(password)) added successfully.")
+            LogManager.event(output: .debugOnly, module: "Authentication.keychain.addUser", message: "\(username)/\(password) added successfully.")
 
             completion(true, "", result)
         }
@@ -174,11 +174,11 @@ class Authentication {
             let result = convertOSStatusToNSError(error)
 
             if error != errSecSuccess {
-                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(result)")
+                LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(result)")
                 completion(false, result)
             } else {
                 
-                LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(AppSettings.appName) removed successfully.")
+                LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(AppSettings.appName) removed successfully.")
                 completion(true, result)
             }
         }
@@ -190,26 +190,26 @@ class Authentication {
                     /// Delete old account to clear it out
                     Authentication.keychain.deleteUser(username: oldUsername) { success, error in
                         if success {
-                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(maskUsername(oldUsername)) deleted successfully.")
+                            LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(maskUsername(oldUsername)) deleted successfully.")
                             /// Add the new user
                             Authentication.keychain.addUser(username: newUsername, password: password) { success, userID, error in
                                 if success {
                                     /// do stuff
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "\(maskUsername(oldUsername)) added successfully.")
+                                    LogManager.event(module: "Authentication.keychain.changeUser", message: "\(maskUsername(oldUsername)) added successfully.")
                                     completion(true, error)
                                 } else {
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error adding account \(error!)")
+                                    LogManager.event(module: "Authentication.keychain.changeUser", message: "Error adding account \(error!)")
                                     completion(false, error)
                                 }
                             }
                             
                         } else {
-                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                            LogManager.event(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
                             completion(false, error)
                         }
                     }
                 } else {
-                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error retrieving password \(error!)")
+                    LogManager.event(module: "Authentication.keychain.changeUser", message: "Error retrieving password \(error!)")
                     completion(false, error)
                 }
             }
@@ -233,14 +233,14 @@ class Authentication {
             let status = convertOSStatusToNSError(error)
             
             if error == errSecSuccess, let passwordData = result as? Data, let password = String(data: passwordData, encoding: .utf8) {
-                LogEvent.print(module: "Authentication.keychain.retrievePassword", message: "Password \"\(maskPassword(password))\" retrieved successfully.")
+                LogManager.event(module: "Authentication.keychain.retrievePassword", message: "Password \"\(maskPassword(password))\" retrieved successfully.")
                 completion(true, password, status)
             } else if error == errSecItemNotFound {
                 evaluateKeychainError(errorCode: error)
-                LogEvent.print(module: "Authentication.keychain.retrievePassword", message: "Error \(status) Password not found in Keychain")
+                LogManager.event(module: "Authentication.keychain.retrievePassword", message: "Error \(status) Password not found in Keychain")
             } else {
                 evaluateKeychainError(errorCode: error)
-                LogEvent.print(module: "Authentication.keychain.retrievePassword", message: "Error \(status) Password retreival failed.")
+                LogManager.event(module: "Authentication.keychain.retrievePassword", message: "Error \(status) Password retreival failed.")
             }
         }
                 
@@ -269,11 +269,11 @@ class Authentication {
             let result = convertOSStatusToNSError(error)
             
             if error == errSecSuccess {
-                LogEvent.print(module: "Authentication.keychain.updatePassword", message: "Password \"\(maskPassword(passwordOld))\"  changed to \"\(maskPassword(passwordNew))\" successfully")
+                LogManager.event(module: "Authentication.keychain.updatePassword", message: "Password \"\(maskPassword(passwordOld))\"  changed to \"\(maskPassword(passwordNew))\" successfully")
                 completion(true, result)
             } else {
                 evaluateKeychainError(errorCode: error)
-                LogEvent.print(module: "Authentication.keychain.updatePassword", message: "Error \(result)")
+                LogManager.event(module: "Authentication.keychain.updatePassword", message: "Error \(result)")
                 completion(false, result)
             }
         }
@@ -283,11 +283,11 @@ class Authentication {
         }
 
         private class func evaluateKeychainError(errorCode: OSStatus) {
-            LogEvent.print(module: "Authentication.evaluateKeychainError", message: "Error code: \(errorCode)")
+            LogManager.event(module: "Authentication.evaluateKeychainError", message: "Error code: \(errorCode)")
             if let errorMessage = SecCopyErrorMessageString(errorCode, nil) {
-                LogEvent.print(module: "Authentication.evaluateKeychainError", message: "Error message: \(errorMessage)")
+                LogManager.event(module: "Authentication.evaluateKeychainError", message: "Error message: \(errorMessage)")
             } else {
-                LogEvent.print(module: "Authentication.evaluateKeychainError", message: "Unexpcted Error (\(errorCode))")
+                LogManager.event(module: "Authentication.evaluateKeychainError", message: "Unexpcted Error (\(errorCode))")
             }
         }
     }
@@ -307,14 +307,14 @@ class Authentication {
                 
                 if let error = error {
                     
-                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization failed.  user: \"\(maskEmail(email))\" \"\(maskPassword(password))\", error: \(error.localizedDescription)")
+                    LogManager.event(module: "Authentication.firebase.authUser", message: "Authorization failed.  user: \"\(maskEmail(email))\" \"\(maskPassword(password))\", error: \(error.localizedDescription)")
 
                     completion(false, "", error)
                     
                 } else {
                     /// User was authorized
-                    LogEvent.print(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut = \(maskString(authResult?.user.uid ?? ""))")
-                    LogEvent.debug(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(email)\", password: \"\(password)\", authResut = \(authResult?.user.uid ?? "")")
+                    LogManager.event(module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut = \(maskString(authResult?.user.uid ?? ""))")
+                    LogManager.event(output: .debugOnly, module: "Authentication.firebase.authUser", message: "Authorization was successful.  user: \"\(email)\", password: \"\(password)\", authResut = \(authResult?.user.uid ?? "")")
                     
                     /// Save results
                     firebaseUID = authResult?.user.uid ?? ""
@@ -337,12 +337,12 @@ class Authentication {
                 
                 if let error = error {
                     
-                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
+                    LogManager.event(module: "Authentication.firebase.addUser", message: "Adding user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, "", error)
                 } else {
                     /// User was created
                     ///
-                    LogEvent.print(module: "Authentication.firebase.addUser", message: "Adding user was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut: = \(authResult?.user.uid ?? "")")
+                    LogManager.event(module: "Authentication.firebase.addUser", message: "Adding user was successful.  user: \"\(maskEmail(email))\", password: \"\(maskPassword(password))\", authResut: = \(authResult?.user.uid ?? "")")
                     
                     /// Save results
                     firebaseUID = authResult?.user.uid ?? ""
@@ -371,10 +371,10 @@ class Authentication {
             /// Delete the current user
             user.delete { error in
                 if let error = error {
-                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
+                    LogManager.event(module: "Authentication.firebase.deleteUser", message: "Deleting user failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, error)
                 } else {
-                    LogEvent.print(module: "Authentication.firebase.deleteUser", message: "Deleting user was successful.  user: \"\(maskEmail(email))\"")
+                    LogManager.event(module: "Authentication.firebase.deleteUser", message: "Deleting user was successful.  user: \"\(maskEmail(email))\"")
 
                     completion(true, error)
                 }
@@ -385,12 +385,12 @@ class Authentication {
             Auth.auth().sendPasswordReset(withEmail: email) { error in
                 if let error = error {
                     /// Reset failed to send
-                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
+                    LogManager.event(module: "Authentication.firebase.passwordReset", message: "Password reset failed.  user: \"\(maskEmail(email))\", error: \(error.localizedDescription)")
                     completion(false, error)
 
                 } else {
                     /// Reset was sent
-                    LogEvent.print(module: "Authentication.firebase.passwordReset", message: "Password reset sent.  email: \"\(maskEmail(email))\"")
+                    LogManager.event(module: "Authentication.firebase.passwordReset", message: "Password reset sent.  email: \"\(maskEmail(email))\"")
                     completion(true, error)
                 }
             }
@@ -407,12 +407,12 @@ class Authentication {
             user.sendEmailVerification(beforeUpdatingEmail: emailNew) { error in
                 if let error = error {
                     /// Failed to send email verification
-                    LogEvent.print(module: "Authentication.firebase.changeEmail", message: "Failed to send email verification. emailOld: \"\(emailOld)\" emailNew: \"\(emailNew)\"")
-                    LogEvent.print(module: "Authentication.firebase.changeEmail", message: "This operation is sensitive and requires recent authentication. Log out then log in again before retrying this request.")
+                    LogManager.event(module: "Authentication.firebase.changeEmail", message: "Failed to send email verification. emailOld: \"\(emailOld)\" emailNew: \"\(emailNew)\"")
+                    LogManager.event(module: "Authentication.firebase.changeEmail", message: "This operation is sensitive and requires recent authentication. Log out then log in again before retrying this request.")
                     completion(false, error)
                 } else {
                     /// Email verification sent, remind user to check their email
-                    LogEvent.print(module: "Authentication.firebase.changeEmail", message: "Verification email sent. Please verify your new email: \"\(emailNew)\" before it is updated.")
+                    LogManager.event(module: "Authentication.firebase.changeEmail", message: "Verification email sent. Please verify your new email: \"\(emailNew)\" before it is updated.")
                     /// You can't update userEmail here directly because the email is not yet confirmed.
                     /// Consider updating userEmail after the user confirms their new email.
                     completion(true, nil)
@@ -436,11 +436,11 @@ class Authentication {
                     userEmail = user.email ?? ""
                     
                     // Log success and notify the user
-                    LogEvent.print(module: "Authentication", message: "Email verification confirmed and updated successfully.")
+                    LogManager.event(module: "Authentication", message: "Email verification confirmed and updated successfully.")
                     // Optionally, notify the user within the app that their email has been updated successfully.
                 } else {
                     // If the email isn't verified yet, prompt the user or handle accordingly
-                    LogEvent.print(module: "Authentication", message: "Email verification not confirmed yet. Please check your email and verify.")
+                    LogManager.event(module: "Authentication", message: "Email verification not confirmed yet. Please check your email and verify.")
                 }
             }
         }
@@ -485,13 +485,13 @@ class Authentication {
             user.updateEmail(to: emailNew) { error in
                 if let error = error {
                     /// Reset failed to send
-                    LogEvent.print(module: "Authentication.firebase.changeReset", message: "Email change failed.  emailOld: \"\(emailOld)\" emailNew: \"\(emailOld)\"")
-                    LogEvent.print(module: "Authentication.firebase.changeReset", message: "This operation is sensitive and requires recent authentication. Log out then log in again before retrying this request.")
+                    LogManager.event(module: "Authentication.firebase.changeReset", message: "Email change failed.  emailOld: \"\(emailOld)\" emailNew: \"\(emailOld)\"")
+                    LogManager.event(module: "Authentication.firebase.changeReset", message: "This operation is sensitive and requires recent authentication. Log out then log in again before retrying this request.")
                     completion(false, error)
                 } else {
                     /// save the email address
                     userEmail = emailNew
-                    LogEvent.print(module: "Authentication.firebase.changeEmail", message: "Email changed.  emailOld: \"\(emailOld)\" emailNew: \"\(emailOld)\"")
+                    LogManager.event(module: "Authentication.firebase.changeEmail", message: "Email changed.  emailOld: \"\(emailOld)\" emailNew: \"\(emailOld)\"")
                     completion(true, error)
                 }
             }

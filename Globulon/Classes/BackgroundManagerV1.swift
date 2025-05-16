@@ -268,7 +268,7 @@ import SwiftUI
         DispatchQueue.main.async {
             self.taskState = newState
             if let message = logMessage {
-                LogEvent.print(module: "BackgroundManager", message: message)
+                LogManager.event(module: "BackgroundManager", message: message)
             }
         }
     }

@@ -179,7 +179,7 @@ struct UserSettingsView: View {
                 .onChange(of: isGDPRConsentGranted) {
                     UserSettings.init().isGDPRConsentGranted = isGDPRConsentGranted
                     Analytics.setAnalyticsCollectionEnabled(isGDPRConsentGranted)
-                    LogEvent.print(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(UserSettings.init().isGDPRConsentGranted)")
+                    LogManager.event(module: "\(AppSettings.appName).init()", message: "firebase analytics enabled: \(UserSettings.init().isGDPRConsentGranted)")
 
                 }
                 /// NOTE:  Had to do some overlays to hide the chevron

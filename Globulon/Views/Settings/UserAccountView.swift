@@ -555,7 +555,7 @@ struct UserAccountView: View {
                                 /// receive from
                                 UserSettings.init().isTerms = isTermsAccepted
                                 if isTermsAccepted == false {
-                                    LogEvent.print(module: "UserAccountView", message: "User declined Terms")
+                                    LogManager.event(module: "UserAccountView", message: "User declined Terms")
                                     
                                     UserSettings.init().isTerms = false
                                     /// TODO:  bail here if the user declines.   confirm they want to bail?  An alert pop up maybe

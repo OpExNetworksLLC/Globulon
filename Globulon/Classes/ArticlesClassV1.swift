@@ -26,7 +26,7 @@ class ArticlesV1 {
         isLoading = true
         defer { isLoading = false }
         
-        LogEvent.print(module: "Articles.load()", message: "▶️ starting...")
+        LogManager.event(module: "Articles.load()", message: "▶️ starting...")
 
         let articlesLocation = UserSettings().articlesLocation
         
@@ -39,11 +39,11 @@ class ArticlesV1 {
             completion(false, "Invalid articles location")
         }
         
-        LogEvent.print(module: "Articles.load()", message: "⏹️ ...finished")
+        LogManager.event(module: "Articles.load()", message: "⏹️ ...finished")
     }
     
     @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) async {
-        LogEvent.print(module: "Articles.load()", message: "source (.remote)")
+        LogManager.event(module: "Articles.load()", message: "source (.remote)")
 
         guard NetworkManager.shared.isConnected else {
             completion(false, "No internet connection. Connect to the internet and try again.")
@@ -75,7 +75,7 @@ class ArticlesV1 {
     }
     
 //    @MainActor private class func handleRemoteLoading(completion: @escaping @Sendable (Bool, String) -> Void) async {
-//        LogEvent.print(module: "Articles.load()", message: "source (.remote)")
+//        LogManager.event(module: "Articles.load()", message: "source (.remote)")
 //        
 //        guard NetworkManager.shared.isConnected else {
 //            completion(false, "No internet connection. Connect to the internet and try again.")
@@ -114,7 +114,7 @@ class ArticlesV1 {
 //    }
     
     private class func handleLocalLoading(completion: @escaping @Sendable (Bool, String) -> Void) {
-        LogEvent.print(module: "Articles.load()", message: "source (.local)")
+        LogManager.event(module: "Articles.load()", message: "source (.local)")
 
         isUpdateRequired { updateRequired in
             Task { @MainActor in
@@ -150,7 +150,7 @@ class ArticlesV1 {
             
             return sectionsCount > 0 && articlesCount > 0
         } catch {
-            LogEvent.print(module: "Articles.fetchArticles", message: "Error: \(error)")
+            LogManager.event(module: "Articles.fetchArticles", message: "Error: \(error)")
             return false
         }
     }
@@ -188,7 +188,7 @@ class ArticlesV1 {
             try context.save()
             return decoded.sections.count
         } catch {
-            LogEvent.print(module: "Articles.decodeSections", message: "Error: \(error)")
+            LogManager.event(module: "Articles.decodeSections", message: "Error: \(error)")
             return 0
         }
     }
@@ -221,7 +221,7 @@ class ArticlesV1 {
             try context.save()
             return articleCount
         } catch {
-            LogEvent.print(module: "Articles.decodeArticles", message: "Error: \(error)")
+            LogManager.event(module: "Articles.decodeArticles", message: "Error: \(error)")
             return 0
         }
     }
@@ -233,14 +233,14 @@ class ArticlesV1 {
             let currentArticlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
             
             if currentArticlesDate < articlesDate {
-                LogEvent.print(module: "Articles.isUpdateRequired()", message: "Yes \(currentArticlesDate) = \(articlesDate)")
+                LogManager.event(module: "Articles.isUpdateRequired()", message: "Yes \(currentArticlesDate) = \(articlesDate)")
                 completion(true)
             } else {
-                LogEvent.print(module: "Articles.isUpdateRequired()", message: "No \(currentArticlesDate) > \(articlesDate)")
+                LogManager.event(module: "Articles.isUpdateRequired()", message: "No \(currentArticlesDate) > \(articlesDate)")
                 completion(false)
             }
         } catch {
-            LogEvent.print(module: "Articles.isUpdateRequired", message: "Error: \(error)")
+            LogManager.event(module: "Articles.isUpdateRequired", message: "Error: \(error)")
             completion(false)
         }
     }
@@ -250,7 +250,7 @@ class ArticlesV1 {
             let decoded = try JSONDecoder().decode(ArticlesJSON.self, from: data)
             return DateInfo.convertToDate(date: decoded.updated_at)
         } catch {
-            LogEvent.print(module: "Articles.decodeArticlesDate", message: "Error: \(error)")
+            LogManager.event(module: "Articles.decodeArticlesDate", message: "Error: \(error)")
             return DateInfo.zeroDate
         }
     }
@@ -269,10 +269,10 @@ class ArticlesV1 {
     }
     
     class func deleteArticles() {
-        LogEvent.print(module: "Articles.deleteArticles()", message: "▶️ starting...")
+        LogManager.event(module: "Articles.deleteArticles()", message: "▶️ starting...")
         deleteEntity(named: "HelpArticle")
         deleteEntity(named: "HelpSection")
-        LogEvent.print(module: "Articles.deleteArticles()", message: "⏹️ ...finished")
+        LogManager.event(module: "Articles.deleteArticles()", message: "⏹️ ...finished")
 
     }
     
@@ -283,22 +283,22 @@ class ArticlesV1 {
             if entityName == "HelpArticle" {
                 let articles = try context.fetch(FetchDescriptor<HelpArticle>())
                 guard !articles.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No articles data to delete")
+                    LogManager.event(module: "Articles.deleteEntity()", message: "No articles data to delete")
                     return
                 }
                 try context.delete(model: HelpArticle.self)
             } else if entityName == "HelpSection" {
                 let sections = try context.fetch(FetchDescriptor<HelpSection>())
                 guard !sections.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No sections data to delete")
+                    LogManager.event(module: "Articles.deleteEntity()", message: "No sections data to delete")
                     return
                 }
                 try context.delete(model: HelpSection.self)
             }
             
-            LogEvent.print(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
+            LogManager.event(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
         } catch {
-            LogEvent.print(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName) data: \(error)")
+            LogManager.event(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName) data: \(error)")
         }
     }
     
@@ -307,7 +307,7 @@ class ArticlesV1 {
             let data = try loadData(from: UserSettings().articlesLocation)
             return decodeArticlesDate(from: data)
         } catch {
-            LogEvent.print(module: "Articles.articlesDate", message: "Error: \(error)")
+            LogManager.event(module: "Articles.articlesDate", message: "Error: \(error)")
             return UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
         }
     }
@@ -333,7 +333,7 @@ class ArticlesV1 {
                 }
             }
         } catch {
-            LogEvent.print(module: "Articles.printSectionsAndArticles", message: "Error: \(error)")
+            LogManager.event(module: "Articles.printSectionsAndArticles", message: "Error: \(error)")
         }
     }
 
@@ -359,14 +359,14 @@ class ArticlesV1 {
             let currentArticlesDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
 
             if currentArticlesDate < articlesDate {
-                LogEvent.print(module: "Articles.isUpdateRequired()", message: "Yes \(currentArticlesDate) = \(articlesDate)")
+                LogManager.event(module: "Articles.isUpdateRequired()", message: "Yes \(currentArticlesDate) = \(articlesDate)")
                 return true
             } else {
-                LogEvent.print(module: "Articles.isUpdateRequired()", message: "No \(currentArticlesDate) > \(articlesDate)")
+                LogManager.event(module: "Articles.isUpdateRequired()", message: "No \(currentArticlesDate) > \(articlesDate)")
                 return false
             }
         } catch {
-            LogEvent.print(module: "Articles.isUpdateRequired", message: "Error: \(error)")
+            LogManager.event(module: "Articles.isUpdateRequired", message: "Error: \(error)")
             return false
         }
     }

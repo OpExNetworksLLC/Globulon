@@ -22,7 +22,7 @@ final class ArticlesV2 {
         }
         defer { Task { await loadingState.end() } }
 
-        LogEvent.print(module: "Articles.load()", message: "▶️ starting...")
+        LogManager.event(module: "Articles.load()", message: "▶️ starting...")
 
         let location = UserSettings().articlesLocation
         let result: (Bool, String)
@@ -54,7 +54,7 @@ final class ArticlesV2 {
             emoji = "❗"
         }
 
-        LogEvent.print(module: "Articles.handleLoading()", message: "\(emoji) Source: \(location.description)")
+        LogManager.event(module: "Articles.handleLoading()", message: "\(emoji) Source: \(location.description)")
 
         if location == .remote {
             guard NetworkManager.shared.isConnected else {
@@ -67,16 +67,16 @@ final class ArticlesV2 {
         }
 
         if try await isUpdateRequired(for: location) {
-            LogEvent.print(module: "Articles.handleLoading()", message: "🔁 Update is required for \(location.description)")
+            LogManager.event(module: "Articles.handleLoading()", message: "🔁 Update is required for \(location.description)")
             
             deleteArticles()
-            //LogEvent.print(module: "Articles.handleLoading()", message: "🗑️ Old data deleted")
+            //LogManager.event(module: "Articles.handleLoading()", message: "🗑️ Old data deleted")
 
             let fetched = try fetchAndStoreArticles(from: location)
             if fetched {
                 let newDate = try articlesDate(for: location)
                 UserSettings.init().articlesDate = newDate
-                LogEvent.print(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
+                LogManager.event(module: "Articles.handleLoading()", message: "✅ Articles date updated: \(newDate)")
 
                 printSectionsAndArticles()
                 return (true, "\(location.description.capitalized) sections and articles loaded")
@@ -84,7 +84,7 @@ final class ArticlesV2 {
                 return (false, "Failed to load sections and articles from \(location.description)")
             }
         } else {
-            LogEvent.print(module: "Articles.handleLoading()", message: "🔄 Update not required for \(location.description)")
+            LogManager.event(module: "Articles.handleLoading()", message: "🔄 Update not required for \(location.description)")
             return (true, "⚪ \(location.description.capitalized) articles update not required")
         }
     }
@@ -94,10 +94,10 @@ final class ArticlesV2 {
         
         // Validate data before deletion
         _ = try decodeArticlesDate(from: data)
-        LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "✅ Validated articles JSON format")
+        LogManager.event(module: "Articles.fetchAndStoreArticles", message: "✅ Validated articles JSON format")
 
         //deleteArticles()
-        //LogEvent.print(module: "Articles.fetchAndStoreArticles", message: "🧼 Old data deleted after validation")
+        //LogManager.event(module: "Articles.fetchAndStoreArticles", message: "🧼 Old data deleted after validation")
 
         let sectionsCount = try decodeSections(from: data)
         let articlesCount = try decodeArticles(from: data)
@@ -117,7 +117,7 @@ final class ArticlesV2 {
                 throw NSError(domain: "Invalid URL", code: 0, userInfo: nil)
             }
             let data = try Data(contentsOf: url, options: .alwaysMapped)
-            //LogEvent.print(module: "Articles.loadData()", message: "📡 Fetched data from remote")
+            //LogManager.event(module: "Articles.loadData()", message: "📡 Fetched data from remote")
             return data
         }
     }
@@ -168,7 +168,7 @@ final class ArticlesV2 {
         let fileDate = try decodeArticlesDate(from: data)
         //let currentDate = UserDefaults.standard.object(forKey: "articlesDate") as? Date ?? DateInfo.zeroDate
         let currentDate = UserSettings.init().articlesDate
-        LogEvent.print(module: "Articles.isUpdateRequired()", message: "🧪 \(currentDate) < \(fileDate)")
+        LogManager.event(module: "Articles.isUpdateRequired()", message: "🧪 \(currentDate) < \(fileDate)")
         return currentDate < fileDate
     }
 
@@ -193,10 +193,10 @@ final class ArticlesV2 {
     }
 
     static func deleteArticles() {
-        LogEvent.print(module: "Articles.deleteArticles()", message: "▶️ starting...")
+        LogManager.event(module: "Articles.deleteArticles()", message: "▶️ starting...")
         deleteEntity(named: "HelpArticle")
         deleteEntity(named: "HelpSection")
-        LogEvent.print(module: "Articles.deleteArticles()", message: "⏹️ ...finished")
+        LogManager.event(module: "Articles.deleteArticles()", message: "⏹️ ...finished")
     }
 
     private static func deleteEntity(named entityName: String) {
@@ -207,14 +207,14 @@ final class ArticlesV2 {
             case "HelpArticle":
                 let articles = try context.fetch(FetchDescriptor<HelpArticle>())
                 guard !articles.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No articles to delete")
+                    LogManager.event(module: "Articles.deleteEntity()", message: "No articles to delete")
                     return
                 }
                 try context.delete(model: HelpArticle.self)
             case "HelpSection":
                 let sections = try context.fetch(FetchDescriptor<HelpSection>())
                 guard !sections.isEmpty else {
-                    LogEvent.print(module: "Articles.deleteEntity()", message: "No sections to delete")
+                    LogManager.event(module: "Articles.deleteEntity()", message: "No sections to delete")
                     return
                 }
                 try context.delete(model: HelpSection.self)
@@ -223,9 +223,9 @@ final class ArticlesV2 {
             }
 
             try context.save()
-            LogEvent.print(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
+            LogManager.event(module: "Articles.deleteEntity()", message: "\(entityName) entity deleted")
         } catch {
-            LogEvent.print(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName): \(error)")
+            LogManager.event(module: "Articles.deleteEntity()", message: "Failed to delete \(entityName): \(error)")
         }
     }
 
@@ -237,18 +237,18 @@ final class ArticlesV2 {
                 $0.rank.localizedStandardCompare($1.rank) == .orderedAscending
             }
 
-            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "🧾 Sections fetched: \(sortedSections.count)")
+            LogManager.event(module: "Articles.printSectionsAndArticles()", message: "🧾 Sections fetched: \(sortedSections.count)")
 
             for section in sortedSections {
-                LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "Section: [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
+                LogManager.event(module: "Articles.printSectionsAndArticles()", message: "Section: [\(section.rank)] \(section.section) (\(section.toArticles?.count ?? 0))")
                 for article in section.toArticles ?? [] {
-                    LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "- \(article.title)")
+                    LogManager.event(module: "Articles.printSectionsAndArticles()", message: "- \(article.title)")
                 }
             }
 
-            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "✅ Finished printing all sections and articles.")
+            LogManager.event(module: "Articles.printSectionsAndArticles()", message: "✅ Finished printing all sections and articles.")
         } catch {
-            LogEvent.print(module: "Articles.printSectionsAndArticles()", message: "❌ Error: \(error)")
+            LogManager.event(module: "Articles.printSectionsAndArticles()", message: "❌ Error: \(error)")
         }
     }
 }

@@ -22,7 +22,7 @@ func countGPSDataAll() -> Int {
         entriesCount = allEntries.count
         
     } catch {
-        LogEvent.print(module: "countGPSDataAll()", message: "Error counting all GPSData entries: \(error)")
+        LogManager.event(module: "countGPSDataAll()", message: "Error counting all GPSData entries: \(error)")
     }
     return entriesCount // Return the count of entries
 }

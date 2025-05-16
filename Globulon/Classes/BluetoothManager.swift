@@ -38,7 +38,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
     @Published var updatesLive: Bool = UserDefaults.standard.bool(forKey: "bluetoothUpdatesLive") {
         didSet {
             UserDefaults.standard.set(updatesLive, forKey: "bluetoothUpdatesLive")
-            LogEvent.print(module: "BluetoothManager.updatesLive", message: "\(updatesLive ? "Bluetooth updates started ..." : "... stopped activity updates")")
+            LogManager.event(module: "BluetoothManager.updatesLive", message: "\(updatesLive ? "Bluetooth updates started ..." : "... stopped activity updates")")
         }
     }
     
@@ -78,7 +78,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
     }
     
     func handleBluetoothPermissionDeclined() {
-        LogEvent.print(module: "BluetoothManager.Permission", message: "Permission was denied")
+        LogManager.event(module: "BluetoothManager.Permission", message: "Permission was denied")
 
         // Optionally notify the UI with another @Published var
         self.isPermission = false
@@ -177,26 +177,26 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
         self.updatesLive = true
 
         guard let manager = centralManager else {
-            LogEvent.print(module: "BluetoothManager.startBluetoothUpdates()", message: "Central manager is unavailable.")
+            LogManager.event(module: "BluetoothManager.startBluetoothUpdates()", message: "Central manager is unavailable.")
             self.updatesLive = false
             return
         }
 
-        LogEvent.print(module: "BluetoothManager.startBluetoothUpdates()", message: "Checking ...")
+        LogManager.event(module: "BluetoothManager.startBluetoothUpdates()", message: "Checking ...")
 
         switch manager.state {
         case .unknown:
-            LogEvent.print(module: "BluetoothManager.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
+            LogManager.event(module: "BluetoothManager.startBluetoothUpdates()", message: "State is unknown, attempting to start scanning...")
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                 if self.centralManager?.state == .poweredOn {
                     //self.startScanning()
                 }
             }
         case .poweredOn:
-            LogEvent.print(module: "BluetoothManager.startBluetoothUpdates()", message: "Bluetooth powered on.")
+            LogManager.event(module: "BluetoothManager.startBluetoothUpdates()", message: "Bluetooth powered on.")
             self.startScanning()
         default:
-            LogEvent.print(module: "BluetoothManager.startBluetoothUpdates()", message: "Bluetooth not powered on.")
+            LogManager.event(module: "BluetoothManager.startBluetoothUpdates()", message: "Bluetooth not powered on.")
             stopScanning()
             self.updatesLive = false
             shouldStartScanning = false
@@ -222,7 +222,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
             self.connectedDevices.removeAll()
             self.updatesLive = false
             self.centralManager = nil
-            LogEvent.print(module: "BluetoothManager.stopScanning()", message: "... finished")
+            LogManager.event(module: "BluetoothManager.stopScanning()", message: "... finished")
         }
     }
     
@@ -254,7 +254,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
     
     func startScanning() {
         guard centralManager?.state == .poweredOn, shouldStartScanning else { return }
-        LogEvent.print(module: "BluetoothManager.startScanning()", message: "started ...")
+        LogManager.event(module: "BluetoothManager.startScanning()", message: "started ...")
         let connected = centralManager?.retrieveConnectedPeripherals(withServices: []) ?? []
         connectedDevices = connected
         centralManager?.scanForPeripherals(withServices: nil, options: [CBCentralManagerScanOptionAllowDuplicatesKey: false])
@@ -274,14 +274,14 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
 
             guard let state = centralManager?.state else {
                 self.isAvailable = false
-                LogEvent.print(module: "BluetoothManager.getBluetoothAvailability()", message: "Central manager unavailable.")
+                LogManager.event(module: "BluetoothManager.getBluetoothAvailability()", message: "Central manager unavailable.")
                 completion(false)
                 return
             }
 
             let isPoweredOn = state == .poweredOn
             self.isAvailable = isPoweredOn
-            LogEvent.print(module: "BluetoothManager.getBluetoothAvailability()", message: "\(isPoweredOn)")
+            LogManager.event(module: "BluetoothManager.getBluetoothAvailability()", message: "\(isPoweredOn)")
             completion(isPoweredOn)
         }
     }
@@ -323,7 +323,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
         }
         
         /// Log the final result
-        LogEvent.print(module: "BluetoothManager.getBluetoothAuthorized()", message: "\(result)")
+        LogManager.event(module: "BluetoothManager.getBluetoothAuthorized()", message: "\(result)")
     }
     
     /// Get the permission status without invoking the bluetooth permission request
@@ -344,7 +344,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
             self.isPermission = false
             completion(false)
         }
-        LogEvent.print(module: "BluetoothManager.getBluetoothPermission()", message: "\(result)")
+        LogManager.event(module: "BluetoothManager.getBluetoothPermission()", message: "\(result)")
         completion(result)
     }
     
@@ -365,7 +365,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
             self.isConnected = !self.connectedDevices.isEmpty
 
             if previousState != newState {
-                LogEvent.print(module: "BluetoothManager.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
+                LogManager.event(module: "BluetoothManager.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
             }
 
             if newState == .poweredOn {
@@ -374,7 +374,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
                     self.poweredOnContinuation = nil
                 }
                 if self.updatesLive {
-                    LogEvent.print(module: "BluetoothManager.centralManagerDidUpdateState()", message: "Bluetooth powered on.")
+                    LogManager.event(module: "BluetoothManager.centralManagerDidUpdateState()", message: "Bluetooth powered on.")
                     self.startScanning()
                 }
             }
@@ -486,7 +486,7 @@ final class BluetoothManager: NSObject, ObservableObject, @preconcurrency CBCent
 //
 //            /*
 //            if previousState != newState {
-//                LogEvent.print(module: "BluetoothManager.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
+//                LogManager.event(module: "BluetoothManager.centralManagerDidUpdateState()", message: "State changed from \(bluetoothStateString(from: previousState)) to \(bluetoothStateString(from: newState))")
 //            }
 //            */
 //

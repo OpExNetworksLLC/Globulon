@@ -24,7 +24,7 @@ class AppEnvironment: ObservableObject {
 //    @AppStorage("activeTourID") var activeTourID: String = "" {
 //        didSet {
 //            userSettings.activeTourID = activeTourID
-//            LogEvent.print(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
+//            LogManager.event(module: "AppEnvironment.activeTourID", message: "changed to \(activeTourID)")
 //            LocationManager.shared.loadTourData(for: activeTourID)
 //        }
 //    }
@@ -40,7 +40,7 @@ class AppEnvironment: ObservableObject {
 
     func getValue<T>(_ key: String, as type: T.Type) -> T? {
         guard let value = storage[key] as? T else {
-            LogEvent.print(module: "AppEnvironment", message: "Type mismatch for key: \(key)")
+            LogManager.event(module: "AppEnvironment", message: "Type mismatch for key: \(key)")
             return nil
         }
         return value

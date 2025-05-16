@@ -548,7 +548,7 @@ struct DeveloperSettingsView: View {
             UserSettings.init().alias = ""
             UserSettings.init().phoneCell = ""
             
-            LogEvent.print(module: "DeveloperSettingsView:peformDeleteUserSettings", message: "Deleting all user settings...")
+            LogManager.event(module: "DeveloperSettingsView:peformDeleteUserSettings", message: "Deleting all user settings...")
 
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 NotificationCenter.default.post(name: Notification.Name("isLoggedOut"), object: nil)
@@ -574,7 +574,7 @@ struct DeveloperSettingsView: View {
             
             UserSettings.init().articlesDate = DateInfo.zeroDate
             
-            LogEvent.print(module: "DeveloperSettingsView:peformDeleteAllSettings", message: "Deleting all settings...")
+            LogManager.event(module: "DeveloperSettingsView:peformDeleteAllSettings", message: "Deleting all settings...")
 
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {

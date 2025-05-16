@@ -286,10 +286,10 @@ struct OnboardPasswordView: View {
                             // Delete user for clean up
                             Authentication.keychain.deleteUser(username: email) { success, error in
                                 if success {
-                                    LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
+                                    LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
                                     
                                 } else {
-                                    LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                                    LogManager.event(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
                                 }
                             }
                             
@@ -297,7 +297,7 @@ struct OnboardPasswordView: View {
                             Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
                                 if success {
                                     /// do stuff
-                                    LogEvent.print(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
+                                    LogManager.event(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
                                     /// On to the next view
                                     appStatus.currentOnboardPageView = .onboardCompleteView
 
@@ -316,7 +316,7 @@ struct OnboardPasswordView: View {
                             Authentication.firebase.addUser(email: email, password: passwordVerify) {
                                 success, userID, error in
                                 if success {
-                                    LogEvent.print(module: "LoginView.Authentication.firebase.addUser", message: "\(email) added toKeychain")
+                                    LogManager.event(module: "LoginView.Authentication.firebase.addUser", message: "\(email) added toKeychain")
                                     
                                     /// Do additional stuff
                                     
@@ -326,10 +326,10 @@ struct OnboardPasswordView: View {
                                     /// Delete user for clean up
                                     Authentication.keychain.deleteUser(username: email) { success, error in
                                         if success {
-                                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
+                                            LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
                                             
                                         } else {
-                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                                            LogManager.event(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
                                         }
                                     }
                                     
@@ -337,7 +337,7 @@ struct OnboardPasswordView: View {
                                     Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
                                         if success {
                                             /// do stuff
-                                            LogEvent.print(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
+                                            LogManager.event(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
                                             /// On to the next view
                                             appStatus.currentOnboardPageView = .onboardCompleteView
 
@@ -361,10 +361,10 @@ struct OnboardPasswordView: View {
                                     /// Delete user for clean up
                                     Authentication.keychain.deleteUser(username: email) { success, error in
                                         if success {
-                                            LogEvent.print(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
+                                            LogManager.event(module: "Authentication.keychain.deleteUser", message: "\(email) deleted successfully.")
                                             
                                         } else {
-                                            LogEvent.print(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
+                                            LogManager.event(module: "Authentication.keychain.changeUser", message: "Error deleting old account \(error!)")
                                         }
                                     }
                                     
@@ -372,7 +372,7 @@ struct OnboardPasswordView: View {
                                     Authentication.keychain.addUser(username: email, password: passwordVerify) { success, userID, error in
                                         if success {
                                             /// do stuff
-                                            LogEvent.print(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
+                                            LogManager.event(module: "LoginView.Authentication.keychain.addUser", message: "\(email) added toKeychain")
                                             /// On to the next view
                                             appStatus.currentOnboardPageView = .onboardCompleteView
 

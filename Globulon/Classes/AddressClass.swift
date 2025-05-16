@@ -32,7 +32,7 @@ class Address {
             }
             return addressString
         } catch {
-            LogEvent.print(module: "Address.getShortAddressFromLatLong", message: "Reverse geocoding failed: \(error)")
+            LogManager.event(module: "Address.getShortAddressFromLatLong", message: "Reverse geocoding failed: \(error)")
             return "n/a"
         }
     }
@@ -69,7 +69,7 @@ class Address {
             
             return addressString
         } catch {
-            LogEvent.print(module: "Address.getFullAddressFromLatLong", message: "Reverse geocoding failed: \(error)")
+            LogManager.event(module: "Address.getFullAddressFromLatLong", message: "Reverse geocoding failed: \(error)")
             return "n/a"
         }
     }
