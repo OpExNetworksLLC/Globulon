@@ -49,24 +49,7 @@ class Biometrics: @unchecked Sendable {
             return .none
         }
     }
-//    // TODO: Deal with .opticID
-//    func biometricType() -> BiometricTypes {
-//        let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
-//        switch context.biometryType {
-//        case .none:
-//            return .none
-//        case .touchID:
-//            return .touchID
-//        case .faceID:
-//            return .faceID
-//        case .opticID:
-//            return .none
-//        @unknown default:
-//            fatalError("Unknown BiometricType encountered")
-//        }
-//    }
-    
-    // TODO: Deal with .opticID
+
     func isBiometric() -> Bool {
         let _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         switch context.biometryType {

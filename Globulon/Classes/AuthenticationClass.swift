@@ -365,8 +365,8 @@ class Authentication {
                 return
             }
             
-            // TODO:  Delete the user's data from the database (optional)
-            // deletion code here...
+            /// OPTION:  Delete the user's data from the database (optional)
+            /// deletion code here...
             
             /// Delete the current user
             user.delete { error in

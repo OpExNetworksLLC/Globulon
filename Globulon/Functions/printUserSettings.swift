@@ -61,14 +61,19 @@ func printUserSettings(description: String, indent: String) -> String {
         settingsString = settingsString + appDescription + indent + "lastAuth --------> \(storedDate)" + "\n"
     }
     
-    // TODO: This is looking for the enum
-    //let trackingSampleRate = TrackingSampleRateEnum(rawValue: UserDefaults.standard.integer(forKey: "trackingSampleRate")) ?? .five
-    //settingsString = settingsString + appDescription + indent + "sampleRate ------> " + "\(trackingSampleRate.rawValue)" + "\n"
-    //settingsString = settingsString + appDescription + indent + "minSamples ------> " + String(Int(UserDefaults.standard.object(forKey: "trackingTripEntriesMin") as? Int ?? 0)) + "\n"
-    //settingsString = settingsString + appDescription + indent + "tipSeparator-----> " + String(Int(UserDefaults.standard.object(forKey: "trackingTripSeparator") as? Int ?? 0)) + "\n"
-    // TODO: This is looking for the enum
-    //let trackingSpeedThreshold = TrackingSpeedThresholdEnum(rawValue: UserDefaults.standard.double(forKey: "trackingSpeedThreshold")) ?? .mph05
-    //settingsString = settingsString + appDescription + indent + "speedThreshold --> " + "\(trackingSpeedThreshold.rawValue)" + "\n"
+    /// OPTION: This is looking for the enum
+    /*
+    let trackingSampleRate = TrackingSampleRateEnum(rawValue: UserDefaults.standard.integer(forKey: "trackingSampleRate")) ?? .five
+    settingsString = settingsString + appDescription + indent + "sampleRate ------> " + "\(trackingSampleRate.rawValue)" + "\n"
+    settingsString = settingsString + appDescription + indent + "minSamples ------> " + String(Int(UserDefaults.standard.object(forKey: "trackingTripEntriesMin") as? Int ?? 0)) + "\n"
+    settingsString = settingsString + appDescription + indent + "tipSeparator-----> " + String(Int(UserDefaults.standard.object(forKey: "trackingTripSeparator") as? Int ?? 0)) + "\n"
+    */
+    
+    /// OPTION: This is looking for the enum
+    /*
+    let trackingSpeedThreshold = TrackingSpeedThresholdEnum(rawValue: UserDefaults.standard.double(forKey: "trackingSpeedThreshold")) ?? .mph05
+    settingsString = settingsString + appDescription + indent + "speedThreshold --> " + "\(trackingSpeedThreshold.rawValue)" + "\n"
+    */
     
     
     settingsString = settingsString + appDescription

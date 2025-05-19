@@ -66,7 +66,6 @@ struct AccelerationData: Identifiable {
         var z: Double
     }
 
-    //TODO: Build_84
     struct AttitudeData: Equatable {
         var pitch: Double
         var yaw: Double
@@ -92,11 +91,6 @@ struct AccelerationData: Identifiable {
     @Published var accelerometerData: AccelerometerData
     @Published var gyroscopeData: GyroscopeData
     @Published var attitudeData: AttitudeData
-    //TODO: build_84
-//    var yawDegrees: Double {
-//        let degrees = attitudeData.yaw * 180 / .pi - 90
-//        return degrees < 0 ? degrees + 360 : degrees
-//    }
     
     var yawDegrees: Double {
         // Invert yaw to correct rotation direction and align with map's forward

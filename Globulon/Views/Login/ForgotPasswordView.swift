@@ -201,10 +201,11 @@ struct ForgotPasswordView: View {
             
         }
         
-        // TODO:  Uncomment if you want to use a color or gradient background
-        //
-        //.background(AppSettings.backgroundGradient.forgotPassword)
-        //.edgesIgnoringSafeArea(.bottom)
+        /// OPTION:  Uncomment if you want to use a color or gradient background
+        /*
+        .background(AppSettings.backgroundGradient.forgotPassword)
+        .edgesIgnoringSafeArea(.bottom)
+        */
                 
     }
     

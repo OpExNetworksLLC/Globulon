@@ -29,7 +29,6 @@ struct TravelViewV4: View {
     private let cameraPitch2D: Double = 0
     private let cameraPitch3D: Double = 60
 
-    //TODO: Build_84
     @State private var lastYaw: Double = 0.0
     
     var body: some View {
@@ -177,8 +176,6 @@ struct TravelViewV4: View {
                 MapCamera(
                     centerCoordinate: location.coordinate,
                     distance: cameraSpan,
-                    //heading: motionManager.yawDegrees, // Use smoothed yaw from CoreMotion
-                    //TODO: Build_84
                     heading: locationManager.compassHeading,
                     pitch: cameraPitch
                 )

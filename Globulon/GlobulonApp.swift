@@ -182,11 +182,6 @@ import FirebaseAnalytics
         //userSettings.articlesDate = DateInfo.zeroDate
         //userSettings.lastAuth = DateInfo.zeroDate
         
-        //TODO:
-        // - should be this `return userSettings.lastAuth < oneWeekAgo
-        // - change to MasterView.task from MainView.task
-        // - do I want to have articles load in sequence?  right now they load later because they are async.
-        
         /// ARTICLES
         ///
         let now = Date()

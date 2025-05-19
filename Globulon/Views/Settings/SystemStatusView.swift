@@ -99,8 +99,9 @@ struct SystemStatusView: View {
                 /// Exit view
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button(action: {
-                        // TODO:  Reset anything that was changed before exit if that is the desired behavior
-                        //
+                        /// OPTION: Reset anything that was changed before exit if that is the desired behavior
+                        ///
+                        /// Do stuff...
                         
                         self.presentationMode.wrappedValue.dismiss()
                     }) {

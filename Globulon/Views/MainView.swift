@@ -297,11 +297,6 @@ struct MainView: View {
                                 .clipShape(Circle())
                                 .frame(width: 64, height: 64, alignment: .center)
                                 .padding(.bottom, 0)
-                            /* TODO: Not used
-                             .onAppear {
-                             let avatar = UserSettings.init().alias
-                             }
-                             */
                             
                             Text(aliasDisplayed)
                                 .font(.system(size: 18, weight: .regular, design: .default))
