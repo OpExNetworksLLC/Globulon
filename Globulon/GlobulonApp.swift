@@ -98,8 +98,8 @@ import FirebaseAnalytics
         #endif
         
         /// Print out the settings in the log
-        LogManager.event(module: "\(AppSettings.appName).init()", message: "Settings..." + printUserSettings(description: "Settings", indent: "  "))
-        
+        LogManager.event(module: "\(AppSettings.appName).init()", message: "Settings..." + userSettings.returnAllSettings())
+
         /// DEBUG:  Show the log file url
         ///`LogEvent.getLogFileURL()
         

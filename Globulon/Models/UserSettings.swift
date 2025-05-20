@@ -413,4 +413,61 @@ class UserSettings: ObservableObject {
     static let appLogoWhite = "appLogoWhite"
     static let appLogoDarkMode = "appLogoDarkMode"
     static let appLogoTransparent = "appLogoTransparent"
+    
+    func returnAllSettings() -> String {
+        let appDefaults = AppDefaults.self
+
+        var output = "\n\nUser Settings Dump...\n"
+
+        func formatLine(_ name: String, _ current: Any, _ defaultValue: Any?) -> String {
+            let paddedName = "  " + (name + " ------------------------------").prefix(30) + ">"
+            let defaultDisplay = defaultValue != nil ? " (default: \(defaultValue!))" : ""
+            return "\(paddedName) \(current)\(defaultDisplay)\n"
+        }
+        /*
+        func printLine(_ name: String, _ current: Any, _ defaultValue: Any?) {
+            let defaultDisplay = defaultValue != nil ? " (default: \(defaultValue!))" : ""
+            print("\(name): \(current)\(defaultDisplay)")
+        }
+        */
+
+        output += formatLine("username", username, nil)
+        output += formatLine("isOnboarded", isOnboarded, false)
+        output += formatLine("isTerms", isTerms, false)
+        output += formatLine("isWelcomed", isWelcomed, false)
+        output += formatLine("isAccount", isAccount, false)
+        output += formatLine("isPrivacy", isPrivacy, false)
+        output += formatLine("isLicensed", isLicensed, false)
+        output += formatLine("isIntroduced", isIntroduced, false)
+        output += formatLine("isPermissions", isPermissions, false)
+        output += formatLine("isGDPRConsent", isGDPRConsent, false)
+        output += formatLine("isGDPRConsentGranted", isGDPRConsentGranted, false)
+        output += formatLine("trackingSampleRate", trackingSampleRate, appDefaults.gps.sampleRate)
+        output += formatLine("gpsSampleRate", gpsSampleRate, appDefaults.gps.sampleRate)
+        output += formatLine("trackingTripSeparator", trackingTripSeparator, appDefaults.gps.tripSeparator)
+        output += formatLine("trackingSpeedThreshold", trackingSpeedThreshold, appDefaults.gps.speedThreshold)
+        output += formatLine("trackingTripEntriesMin", trackingTripEntriesMin, appDefaults.gps.tripEntriesMin)
+        output += formatLine("tripGPSHistoryLimit", tripGPSHistoryLimit, appDefaults.gps.tripGPSHistoryLimit)
+        output += formatLine("tripHistoryLimit", tripHistoryLimit, appDefaults.gps.tripHistoryLimit)
+        output += formatLine("isTripReprocessingAllowed", isTripReprocessingAllowed, true)
+        output += formatLine("regionRadius", regionRadius, appDefaults.region.radius)
+        output += formatLine("poiRadius", poiRadius, appDefaults.tour.poiRadius)
+        //output += formatLine("debounceInterval", debounceInterval, appDefaults.tour.debounceInterval)
+        output += formatLine("alias", alias, nil)
+        output += formatLine("email", email, nil)
+        output += formatLine("firstname", firstname, nil)
+        output += formatLine("lastname", lastname, nil)
+        //output += formatLine("phoneCell", phoneCell, nil)
+        output += formatLine("articlesDate", articlesDate, DateInfo.zeroDate)
+        output += formatLine("lastArticlesCheck", lastArticlesCheck, DateInfo.zeroDate)
+        output += formatLine("articlesLocation", articlesLocation, ArticleLocations.local)
+        output += formatLine("activeTourID", activeTourID, "")
+        output += formatLine("landingPage", landingPage, LandingPageEnum.home)
+        output += formatLine("userMode", userMode, UserModeEnum.development)
+        output += formatLine("authMode", authMode, AuthModeEnum.none)
+        //output += formatLine("firebaseInstallationID", firebaseInstallationID, "")
+        output += formatLine("lastAuth", lastAuth, DateInfo.zeroDate)
+
+        return output
+    }
 }
