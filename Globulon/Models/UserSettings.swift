@@ -431,7 +431,9 @@ class UserSettings: ObservableObject {
         }
         */
 
-        output += formatLine("username", username, nil)
+        output += formatLine("isAutoLogin", isAutoLogin, false)
+        output += formatLine("isAutoBiometricLogin", isAutoBiometricLogin, false)
+        output += formatLine("isBiometricID", isBiometricID, false)
         output += formatLine("isOnboarded", isOnboarded, false)
         output += formatLine("isTerms", isTerms, false)
         output += formatLine("isWelcomed", isWelcomed, false)
@@ -453,6 +455,7 @@ class UserSettings: ObservableObject {
         output += formatLine("regionRadius", regionRadius, appDefaults.region.radius)
         output += formatLine("poiRadius", poiRadius, appDefaults.tour.poiRadius)
         //output += formatLine("debounceInterval", debounceInterval, appDefaults.tour.debounceInterval)
+        output += formatLine("username", username, nil)
         output += formatLine("alias", alias, nil)
         output += formatLine("email", email, nil)
         output += formatLine("firstname", firstname, nil)
