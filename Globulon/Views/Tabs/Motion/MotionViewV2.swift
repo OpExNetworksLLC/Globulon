@@ -12,7 +12,7 @@ import MapKit
 import SceneKit
 import Charts
 
-struct MotionViewV1: View {
+struct MotionViewV2: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
@@ -22,10 +22,6 @@ struct MotionViewV1: View {
     
     @State var isShowHelp = false
     @State private var isRecording = false
-
-//    @State private var mapSpan: Double = 0.0025
-//    private let mapSpanMinimum: Double = 0.002
-//    private let mapSpanIncrement: Double = 0.004
     
     @State private var mapSpan: Double = 0.0001
     private let mapSpanMinimum: Double = 0.00005
@@ -85,9 +81,25 @@ struct MotionViewV1: View {
                 .padding(.trailing, 16)
                 .padding(.bottom, 2)
      
-    
+                /// ATTITUDE
+                ///
                 VStack {
                     HStack {
+                        Attitude3DBoxView(
+                            rotation: SCNVector3(motionManager.attitudeData.pitch,
+                                                 motionManager.attitudeData.yaw,
+                                                 motionManager.attitudeData.roll),
+                            faceColors: [
+                                .blue,    // Front
+                                .green,   // Right
+                                .red,     // Back
+                                .yellow,  // Left
+                                .orange,  // Top
+                                .purple   // Bottom
+                            ]
+                        )
+                        .frame(width: 100, height: 100)
+                        /*
                         Rectangle()
                             .fill(Color.blue)
                             .frame(width: 50, height: 100)
@@ -95,6 +107,7 @@ struct MotionViewV1: View {
                             .rotation3DEffect(Angle(radians: motionManager.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
                             .rotation3DEffect(Angle(radians: motionManager.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
+                        */
                         Spacer().frame(width: 50)
                         SceneView(
                             scene: motionManager.scene,
@@ -105,6 +118,8 @@ struct MotionViewV1: View {
                 }
                 .padding(.bottom, 2)
                 
+                /// ACCELERATION
+                ///
                 VStack {
                     Chart {
                         ForEach(motionManager.accelerationHistory) { dataPoint in
@@ -164,5 +179,62 @@ struct MotionViewV1: View {
 
 
 #Preview {
-    MotionViewV1(isShowSideMenu: .constant(false))
+    MotionViewV2(isShowSideMenu: .constant(false))
+}
+
+struct Gyroscope3DView: UIViewRepresentable {
+    @Binding var rotation: SCNVector3
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        sceneView.scene = SCNScene()
+        sceneView.allowsCameraControl = true
+        sceneView.autoenablesDefaultLighting = true
+
+        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
+        let boxNode = SCNNode(geometry: box)
+        boxNode.name = "gyroscopeBox"
+        sceneView.scene?.rootNode.addChildNode(boxNode)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        if let boxNode = uiView.scene?.rootNode.childNode(withName: "gyroscopeBox", recursively: false) {
+            boxNode.eulerAngles = rotation
+        }
+    }
+}
+
+struct Attitude3DBoxView: UIViewRepresentable {
+    var rotation: SCNVector3
+    var faceColors: [UIColor] // Array of 6 UIColors
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        let scene = SCNScene()
+        sceneView.scene = scene
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.allowsCameraControl = false
+
+        let box = SCNBox(width: 50, height: 100, length: 10, chamferRadius: 0)
+        box.materials = faceColors.map {
+            let material = SCNMaterial()
+            material.diffuse.contents = $0
+            return material
+        }
+
+        let boxNode = SCNNode(geometry: box)
+        boxNode.name = "attitudeBox"
+        boxNode.eulerAngles = rotation
+
+        scene.rootNode.addChildNode(boxNode)
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+            boxNode.eulerAngles = rotation
+        }
+    }
 }
