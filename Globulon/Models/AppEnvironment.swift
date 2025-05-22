@@ -12,6 +12,9 @@ import Combine
 /**
  - Version: 1.0.0 (2025.02.25)
  - Note:
+ 
+    - Version: 1.0.0 (2025.02.25)
+        - Created
  */
 
 @MainActor

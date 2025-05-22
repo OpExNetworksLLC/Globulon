@@ -8,16 +8,6 @@
 
 import SwiftUI
 
-//
-//  UIView+asImage.swift
-//  Globulon
-//
-//  Created by David Holeman on 5/19/25.
-//  Copyright © 2025 OpEx Networks, LLC. All rights reserved.
-//
-
-import SwiftUI
-
 // MARK: - SwiftUI Rect Getter
 
 /// A utility SwiftUI view that reads and reports its size and position in global coordinates.
@@ -25,7 +15,7 @@ import SwiftUI
 /// Use `RectGetter` to dynamically capture the global frame of any SwiftUI view by embedding it
 /// and binding it to a `CGRect` state variable. This is particularly useful when you need layout
 /// information for animation or coordinate conversion.
-
+///
 struct RectGetter: View {
     @Binding var rect: CGRect
 

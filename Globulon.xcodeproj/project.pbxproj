@@ -528,16 +528,18 @@
 		6E94F7062B7C56BC00AFA97F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				6ECF92842D6E69A4007B8F1F /* AsyncProcessor.swift */,
 				6EC603C42C6AE745001BB460 /* ActivityManager.swift */,
 				6E5928822BA1FFCF00CE0B8F /* AddressClass.swift */,
 				6E88DC1F2B846E6E00BBB4DD /* AppInfoClass.swift */,
 				6E63150B2DC3BEC800F92589 /* ArticlesClassV2.swift */,
 				6EB56D1F2B855BA800C106F0 /* ArticlesClassV1.swift */,
+				6ECF92842D6E69A4007B8F1F /* AsyncProcessor.swift */,
 				6EB56D2A2B855EA400C106F0 /* AuthenticationClass.swift */,
 				6ECF92742D6E6418007B8F1F /* BackgroundManagerV1.swift */,
 				6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */,
 				6EB56D152B8559AA00C106F0 /* BiometricsClass.swift */,
+				6E27FC052DB3154600C91FFF /* BluetoothManager.swift */,
+				6ECF92862D6E6A03007B8F1F /* CarPlayManager.swift */,
 				6E94F7312B7C944100AFA97F /* DateInfoClass.swift */,
 				6ECF92DC2D6EA68B007B8F1F /* GitHubManager.swift */,
 				6E97DC2D2DA9B7FF00468F43 /* LocationManager.swift */,
@@ -546,8 +548,6 @@
 				6E08F52E2BA905B7004E6329 /* NetworkManager.swift */,
 				6ECF92A22D6E9CBD007B8F1F /* NotificationManager.swift */,
 				6E88DC1D2B846E3C00BBB4DD /* SystemInfoClass.swift */,
-				6E27FC052DB3154600C91FFF /* BluetoothManager.swift */,
-				6ECF92862D6E6A03007B8F1F /* CarPlayManager.swift */,
 				6ECF92882D6E6A30007B8F1F /* SceneDelegateClass.swift */,
 				6E69CC502DC1326200852E76 /* VersionManager.swift */,
 			);
