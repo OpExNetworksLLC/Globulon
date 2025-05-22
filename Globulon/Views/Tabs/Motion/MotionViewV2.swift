@@ -11,6 +11,7 @@ import SwiftUI
 import MapKit
 import SceneKit
 import Charts
+import CoreMotion
 
 struct MotionViewV2: View {
     @Binding var isShowSideMenu: Bool
@@ -32,8 +33,9 @@ struct MotionViewV2: View {
         span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
     ))
 
-    @State private var attitudeRotation = SCNVector3(x: 0, y: 0, z: 0)
-    let timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
+    //@State private var rotation = SCNVector3(0, 0, 0)
+    
+    @State private var deviceQuaternion: CMQuaternion = CMQuaternion(x: 0, y: 0, z: 0, w: 1)
     
     var body: some View {
         // Top menu
@@ -88,18 +90,13 @@ struct MotionViewV2: View {
                 ///
                 VStack {
                     HStack {
-                        Attitude3DBoxView(
-                            rotation: $attitudeRotation,
-                            faceColors: [
-                                .red, .green, .blue,
-                                .yellow, .orange, .purple
-                            ]
-                        )
-                        .frame(width: 124, height: 124)
-                        .onReceive(timer) { _ in
-                            let att = motionManager.attitudeData
-                            attitudeRotation = SCNVector3(att.pitch, att.yaw, att.roll)
-                        }
+                        SceneKitBoxView(quaternion: $deviceQuaternion)
+                            .frame(width: 200, height: 200)
+                            .onReceive(motionManager.$attitudeData) { _ in
+                                if let q = motionManager.deviceQuaternion {
+                                    deviceQuaternion = q
+                                }
+                            }
                         
                         /*
                         Rectangle()
@@ -210,12 +207,8 @@ struct Gyroscope3DView: UIViewRepresentable {
     }
 }
 
-import SwiftUI
-import SceneKit
-
-struct Attitude3DBoxView: UIViewRepresentable {
-    @Binding var rotation: SCNVector3
-    var faceColors: [UIColor]
+struct SceneKitBoxView: UIViewRepresentable {
+    @Binding var quaternion: CMQuaternion
 
     func makeUIView(context: Context) -> SCNView {
         let sceneView = SCNView()
@@ -223,62 +216,114 @@ struct Attitude3DBoxView: UIViewRepresentable {
         sceneView.scene = scene
         sceneView.autoenablesDefaultLighting = true
         sceneView.allowsCameraControl = true
-        sceneView.backgroundColor = .white //TODO: toggle based on dark mode?
+        sceneView.backgroundColor = .gray
 
         // Camera
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(0, 0, 10)
+        cameraNode.position = SCNVector3(0, 0, 15)
         scene.rootNode.addChildNode(cameraNode)
 
-        // Box with 6 labeled materials
-        let box = SCNBox(width: 6, height: 9, length: 1, chamferRadius: 0)
-        let labels = ["Front", "Right", "Back", "Left", "Top", "Bottom"]
+        // Axes
+        addAxis(to: scene, axis: .x)
+        addAxis(to: scene, axis: .y)
+        addAxis(to: scene, axis: .z)
 
-        box.materials = zip(faceColors, labels).map { color, label in
-            let mat = SCNMaterial()
-            mat.diffuse.contents = labeledFaceImage(text: label, background: color)
-            mat.isDoubleSided = true
-            return mat
+        // Box with labeled faces
+        let box = SCNBox(width: 5, height: 9, length: 1, chamferRadius: 0)
+        let faceLabels = ["Front", "Right", "Back", "Left", "Top", "Bottom"]
+        let faceColors: [UIColor] = [.blue, .green, .red, .yellow, .orange, .purple]
+
+        box.materials = zip(faceColors, faceLabels).map { color, label in
+            let material = SCNMaterial()
+            material.diffuse.contents = labeledFaceImage(text: label, background: color)
+            material.isDoubleSided = true
+            return material
         }
 
         let boxNode = SCNNode(geometry: box)
         boxNode.name = "attitudeBox"
-        boxNode.eulerAngles = rotation
         scene.rootNode.addChildNode(boxNode)
 
         return sceneView
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
-        if let node = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
-            node.eulerAngles = rotation
+        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+            boxNode.orientation = SCNQuaternion(
+                x: Float(quaternion.x),
+                y: Float(quaternion.y),
+                z: Float(quaternion.z),
+                w: Float(quaternion.w)
+            )
         }
     }
 
     private func labeledFaceImage(text: String, background: UIColor) -> UIImage {
-        let size = CGSize(width: 256, height: 256)
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { ctx in
-            background.setFill()
-            ctx.fill(CGRect(origin: .zero, size: size))
+        let size = CGSize(width: 128, height: 128)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        defer { UIGraphicsEndImageContext() }
 
-            let style = NSMutableParagraphStyle()
-            style.alignment = .center
+        let context = UIGraphicsGetCurrentContext()!
+        context.setFillColor(background.cgColor)
+        context.fill(CGRect(origin: .zero, size: size))
 
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.boldSystemFont(ofSize: 36),
-                .foregroundColor: UIColor.white,
-                .paragraphStyle: style
-            ]
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.alignment = .center
 
-            let textSize = text.size(withAttributes: attributes)
-            let rect = CGRect(x: (size.width - textSize.width)/2,
-                              y: (size.height - textSize.height)/2,
-                              width: textSize.width,
-                              height: textSize.height)
+        let attributes: [NSAttributedString.Key: Any] = [
+            .font: UIFont.boldSystemFont(ofSize: 24),
+            .foregroundColor: UIColor.white,
+            .paragraphStyle: paragraphStyle
+        ]
 
-            text.draw(in: rect, withAttributes: attributes)
-        }
+        let textSize = text.size(withAttributes: attributes)
+        let textRect = CGRect(
+            x: (size.width - textSize.width) / 2,
+            y: (size.height - textSize.height) / 2,
+            width: textSize.width,
+            height: textSize.height
+        )
+        text.draw(in: textRect, withAttributes: attributes)
+
+        return UIGraphicsGetImageFromCurrentImageContext()!
     }
+
+    private enum Axis {
+        case x, y, z
+    }
+
+    private func addAxis(to scene: SCNScene, axis: Axis) {
+        let axisNode = SCNNode()
+        let cylinder = SCNCylinder(radius: 0.1, height: 20)
+        let material = SCNMaterial()
+        switch axis {
+        case .x:
+            material.diffuse.contents = UIColor.red
+            axisNode.eulerAngles = SCNVector3(0, 0, Float.pi / 2)
+        case .y:
+            material.diffuse.contents = UIColor.green
+        case .z:
+            material.diffuse.contents = UIColor.blue
+            axisNode.eulerAngles = SCNVector3(Float.pi / 2, 0, 0)
+        }
+        cylinder.materials = [material]
+        axisNode.geometry = cylinder
+        scene.rootNode.addChildNode(axisNode)
+    }
+}
+
+
+
+func SCNVector3FromQuaternion(_ q: CMQuaternion) -> SCNVector3 {
+    let qx = Float(q.x)
+    let qy = Float(q.y)
+    let qz = Float(q.z)
+    let qw = Float(q.w)
+
+    let pitch = asin(-2.0 * (qx * qz - qw * qy))
+    let yaw = atan2(2.0 * (qw * qx + qy * qz), 1.0 - 2.0 * (qx * qx + qy * qy))
+    let roll = atan2(2.0 * (qw * qz + qx * qy), 1.0 - 2.0 * (qy * qy + qz * qz))
+
+    return SCNVector3(pitch, yaw, roll)
 }
