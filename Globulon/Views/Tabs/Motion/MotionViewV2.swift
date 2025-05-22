@@ -32,6 +32,9 @@ struct MotionViewV2: View {
         span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
     ))
 
+    @State private var attitudeRotation = SCNVector3(x: 0, y: 0, z: 0)
+    let timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
+    
     var body: some View {
         // Top menu
         NavigationStack {
@@ -86,19 +89,18 @@ struct MotionViewV2: View {
                 VStack {
                     HStack {
                         Attitude3DBoxView(
-                            rotation: SCNVector3(motionManager.attitudeData.pitch,
-                                                 motionManager.attitudeData.yaw,
-                                                 motionManager.attitudeData.roll),
+                            rotation: $attitudeRotation,
                             faceColors: [
-                                .blue,    // Front
-                                .green,   // Right
-                                .red,     // Back
-                                .yellow,  // Left
-                                .orange,  // Top
-                                .purple   // Bottom
+                                .red, .green, .blue,
+                                .yellow, .orange, .purple
                             ]
                         )
-                        .frame(width: 100, height: 100)
+                        .frame(width: 124, height: 124)
+                        .onReceive(timer) { _ in
+                            let att = motionManager.attitudeData
+                            attitudeRotation = SCNVector3(att.pitch, att.yaw, att.roll)
+                        }
+                        
                         /*
                         Rectangle()
                             .fill(Color.blue)
@@ -116,6 +118,8 @@ struct MotionViewV2: View {
                         .frame(width: 100, height: 100)
                     }
                 }
+
+
                 .padding(.bottom, 2)
                 
                 /// ACCELERATION
@@ -206,35 +210,213 @@ struct Gyroscope3DView: UIViewRepresentable {
     }
 }
 
+import SwiftUI
+import SceneKit
+
 struct Attitude3DBoxView: UIViewRepresentable {
-    var rotation: SCNVector3
-    var faceColors: [UIColor] // Array of 6 UIColors
+    @Binding var rotation: SCNVector3
+    var faceColors: [UIColor]
 
     func makeUIView(context: Context) -> SCNView {
         let sceneView = SCNView()
         let scene = SCNScene()
         sceneView.scene = scene
         sceneView.autoenablesDefaultLighting = true
-        sceneView.allowsCameraControl = false
+        sceneView.allowsCameraControl = true
+        sceneView.backgroundColor = .white //TODO: toggle based on dark mode?
 
-        let box = SCNBox(width: 50, height: 100, length: 10, chamferRadius: 0)
-        box.materials = faceColors.map {
-            let material = SCNMaterial()
-            material.diffuse.contents = $0
-            return material
+        // Camera
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 10)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // Box with 6 labeled materials
+        let box = SCNBox(width: 6, height: 9, length: 1, chamferRadius: 0)
+        let labels = ["Front", "Right", "Back", "Left", "Top", "Bottom"]
+
+        box.materials = zip(faceColors, labels).map { color, label in
+            let mat = SCNMaterial()
+            mat.diffuse.contents = labeledFaceImage(text: label, background: color)
+            mat.isDoubleSided = true
+            return mat
         }
 
         let boxNode = SCNNode(geometry: box)
         boxNode.name = "attitudeBox"
         boxNode.eulerAngles = rotation
-
         scene.rootNode.addChildNode(boxNode)
+
         return sceneView
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
-        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
-            boxNode.eulerAngles = rotation
+        if let node = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+            node.eulerAngles = rotation
+        }
+    }
+
+    private func labeledFaceImage(text: String, background: UIColor) -> UIImage {
+        let size = CGSize(width: 256, height: 256)
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { ctx in
+            background.setFill()
+            ctx.fill(CGRect(origin: .zero, size: size))
+
+            let style = NSMutableParagraphStyle()
+            style.alignment = .center
+
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: UIFont.boldSystemFont(ofSize: 36),
+                .foregroundColor: UIColor.white,
+                .paragraphStyle: style
+            ]
+
+            let textSize = text.size(withAttributes: attributes)
+            let rect = CGRect(x: (size.width - textSize.width)/2,
+                              y: (size.height - textSize.height)/2,
+                              width: textSize.width,
+                              height: textSize.height)
+
+            text.draw(in: rect, withAttributes: attributes)
         }
     }
 }
+
+//struct Attitude3DBoxView: UIViewRepresentable {
+//    @Binding var rotation: SCNVector3
+//    var faceColors: [UIColor]
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        sceneView.scene = SCNScene()
+//        sceneView.autoenablesDefaultLighting = true
+//        sceneView.allowsCameraControl = true
+//        sceneView.backgroundColor = .black
+//
+//        let box = SCNBox(width: 2, height: 3, length: 1, chamferRadius: 0)
+//        box.materials = faceColors.map {
+//            let material = SCNMaterial()
+//            material.diffuse.contents = $0
+//            return material
+//        }
+//
+//        let boxNode = SCNNode(geometry: box)
+//        boxNode.name = "attitudeBox"
+//        boxNode.eulerAngles = rotation
+//        sceneView.scene?.rootNode.addChildNode(boxNode)
+//
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        cameraNode.position = SCNVector3(x: 0, y: 0, z: 10)
+//        sceneView.scene?.rootNode.addChildNode(cameraNode)
+//
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        if let node = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+//            node.eulerAngles = rotation
+//        }
+//    }
+//}
+
+//struct Attitude3DBoxView: UIViewRepresentable {
+//    var rotation: SCNVector3
+//    var faceColors: [UIColor]
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        sceneView.scene = SCNScene()
+//        sceneView.autoenablesDefaultLighting = true
+//        sceneView.allowsCameraControl = true
+//        sceneView.backgroundColor = .black
+//
+//        let box = SCNBox(width: 2, height: 3, length: 1, chamferRadius: 0)
+//        box.materials = faceColors.map {
+//            let material = SCNMaterial()
+//            material.diffuse.contents = $0
+//            return material
+//        }
+//
+//        let boxNode = SCNNode(geometry: box)
+//        boxNode.name = "attitudeBox"
+//        boxNode.eulerAngles = rotation
+//        sceneView.scene?.rootNode.addChildNode(boxNode)
+//
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        cameraNode.position = SCNVector3(x: 0, y: 0, z: 10)
+//        sceneView.scene?.rootNode.addChildNode(cameraNode)
+//
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        if let node = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+//            node.eulerAngles = rotation
+//        }
+//    }
+//}
+
+//struct Attitude3DBoxView: UIViewRepresentable {
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        sceneView.backgroundColor = .gray
+//
+//        // Create Scene
+//        let scene = SCNScene()
+//        sceneView.scene = scene
+//        sceneView.autoenablesDefaultLighting = true
+//        sceneView.allowsCameraControl = true
+//
+//        // Add camera
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        cameraNode.position = SCNVector3(0, 0, 10)
+//        scene.rootNode.addChildNode(cameraNode)
+//
+//        // Create simple red box
+//        let box = SCNBox(width: 1, height: 1, length: 1, chamferRadius: 0)
+//        box.firstMaterial?.diffuse.contents = UIColor.red
+//        let boxNode = SCNNode(geometry: box)
+//        scene.rootNode.addChildNode(boxNode)
+//
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {}
+//}
+
+//struct Attitude3DBoxView: UIViewRepresentable {
+//    var rotation: SCNVector3
+//    var faceColors: [UIColor] // Array of 6 UIColors
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        let scene = SCNScene()
+//        sceneView.scene = scene
+//        sceneView.autoenablesDefaultLighting = true
+//        sceneView.allowsCameraControl = false
+//
+//        let box = SCNBox(width: 50, height: 100, length: 10, chamferRadius: 0)
+//        box.materials = faceColors.map {
+//            let material = SCNMaterial()
+//            material.diffuse.contents = $0
+//            return material
+//        }
+//
+//        let boxNode = SCNNode(geometry: box)
+//        boxNode.name = "attitudeBox"
+//        boxNode.eulerAngles = rotation
+//
+//        scene.rootNode.addChildNode(boxNode)
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+//            boxNode.eulerAngles = rotation
+//        }
+//    }
+//}
