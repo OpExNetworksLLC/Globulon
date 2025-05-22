@@ -228,13 +228,6 @@ struct AccelerationData: Identifiable {
                     self.attitudeData.pitch = result.pitch
                     self.attitudeData.yaw = result.yaw
                     self.attitudeData.roll = result.roll
-                    
-                    self.rotation = SCNVector3(
-                        Float(self.attitudeData.pitch),
-                        Float(self.attitudeData.yaw),
-                        Float(self.attitudeData.roll)
-                    )
-                    
                 }
                 self.checkAndUpdateMotionDataBuffer()
             }
