@@ -109,6 +109,9 @@ struct MasterView: View {
             LogManager.event(module: "MasterView.onReceive", message: "User successfully LOGGED OUT, appVariables.isLoggedIn = \(userStatus.isLoggedIn)")
         })
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("isReset")), perform: { _ in
+            
+            //TODO: make into a separate function.  Also create a broader function for a wider reset and one for a full reset of settings.
+            //
             userSettings.isIntroduced = false
             userSettings.isOnboarded = false
             userSettings.isPermissions = false

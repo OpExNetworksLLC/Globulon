@@ -424,6 +424,9 @@ class UserSettings: ObservableObject {
             let defaultDisplay = defaultValue != nil ? " (default: \(defaultValue!))" : ""
             return "\(paddedName) \(current)\(defaultDisplay)\n"
         }
+        
+        /// OPTION:  No padding of the current value
+        /// 
         /*
         func printLine(_ name: String, _ current: Any, _ defaultValue: Any?) {
             let defaultDisplay = defaultValue != nil ? " (default: \(defaultValue!))" : ""
