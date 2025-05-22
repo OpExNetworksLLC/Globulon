@@ -312,18 +312,3 @@ struct SceneKitBoxView: UIViewRepresentable {
         scene.rootNode.addChildNode(axisNode)
     }
 }
-
-
-
-func SCNVector3FromQuaternion(_ q: CMQuaternion) -> SCNVector3 {
-    let qx = Float(q.x)
-    let qy = Float(q.y)
-    let qz = Float(q.z)
-    let qw = Float(q.w)
-
-    let pitch = asin(-2.0 * (qx * qz - qw * qy))
-    let yaw = atan2(2.0 * (qw * qx + qy * qz), 1.0 - 2.0 * (qx * qx + qy * qy))
-    let roll = atan2(2.0 * (qw * qz + qx * qy), 1.0 - 2.0 * (qy * qy + qz * qz))
-
-    return SCNVector3(pitch, yaw, roll)
-}
