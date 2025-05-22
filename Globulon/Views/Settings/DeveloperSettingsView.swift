@@ -93,7 +93,7 @@ struct DeveloperSettingsView: View {
     }
 
     struct ModeSettingsView: View {
-        //@State var userMode: UserModeEnum = .development
+        @EnvironmentObject var userSettings: UserSettings
         @State var userMode = UserModeEnum(rawValue: UserDefaults.standard.integer(forKey: "userMode")) ?? .development
         var body: some View {
             Section(header: Text("Mode").offset(x: -16)) {
@@ -106,7 +106,7 @@ struct DeveloperSettingsView: View {
                 }
                 .padding(.trailing, -8)
                 .onChange(of: userMode) {
-                    UserSettings.init().userMode = userMode
+                    userSettings.userMode = userMode
                 }
                 
             }
@@ -138,6 +138,8 @@ struct DeveloperSettingsView: View {
                 }
             }
         }
+        
+        @EnvironmentObject var userSettings: UserSettings
         
         @State var gpsSampleRate = GPSSampleRateEnum(rawValue: UserDefaults.standard.integer(forKey: "gpsSampleRate")) ?? .five
 
@@ -171,7 +173,7 @@ struct DeveloperSettingsView: View {
                             }
                         }
                         .onChange(of: gpsSampleRate) {
-                            UserSettings.init().gpsSampleRate = gpsSampleRate.rawValue
+                            userSettings.gpsSampleRate = gpsSampleRate.rawValue
                         }
                         .pickerStyle(MenuPickerStyle())
                         .padding(.trailing, -8)
@@ -225,6 +227,7 @@ struct DeveloperSettingsView: View {
             }
         }
         
+        @EnvironmentObject var userSettings: UserSettings
         
         @State var regionRadius = RegionRadiusEnum(rawValue: UserDefaults.standard.double(forKey: "regionRadius")) ?? .meters15
         
@@ -238,7 +241,7 @@ struct DeveloperSettingsView: View {
                     }
                 }
                 .onChange(of: regionRadius) {
-                    UserSettings.init().regionRadius = regionRadius.rawValue
+                    userSettings.regionRadius = regionRadius.rawValue
                 }
                 .pickerStyle(MenuPickerStyle())
                 .padding(.trailing, -8)
@@ -250,7 +253,7 @@ struct DeveloperSettingsView: View {
                     }
                 }
                 .onChange(of: poiRadius) {
-                    UserSettings.init().poiRadius = poiRadius.rawValue
+                    userSettings.poiRadius = poiRadius.rawValue
                 }
                 .pickerStyle(MenuPickerStyle())
                 .padding(.trailing, -8)
@@ -261,6 +264,9 @@ struct DeveloperSettingsView: View {
     }
     
     struct AppSettingsView: View {
+        
+        @EnvironmentObject var userSettings: UserSettings
+        
         @State var isIntroduced:    Bool = false
         @State var isPermissions:   Bool = false
         @State var isOnboarded:     Bool = false
@@ -280,10 +286,10 @@ struct DeveloperSettingsView: View {
                         .foregroundColor(.primary)
                 }
                 .onAppear {
-                    isIntroduced = UserSettings.init().isIntroduced
+                    isIntroduced = userSettings.isIntroduced
                 }
                 .onChange(of: isIntroduced) {
-                    UserSettings.init().isIntroduced = isIntroduced
+                    userSettings.isIntroduced = isIntroduced
                 }
                 .padding(.trailing, -8)
                 
@@ -294,10 +300,10 @@ struct DeveloperSettingsView: View {
                         .foregroundColor(.primary)
                 }
                 .onAppear {
-                    isPermissions = UserSettings.init().isPermissions
+                    isPermissions = userSettings.isPermissions
                 }
                 .onChange(of: isPermissions) {
-                    UserSettings.init().isPermissions = isPermissions
+                    userSettings.isPermissions = isPermissions
                 }
                 .padding(.trailing, -8)
                 
@@ -307,10 +313,10 @@ struct DeveloperSettingsView: View {
                     Text("Onboarded")
                 }
                 .onAppear {
-                    isOnboarded = UserSettings.init().isOnboarded
+                    isOnboarded = userSettings.isOnboarded
                 }
                 .onChange(of: isOnboarded) {
-                    UserSettings.init().isOnboarded = isOnboarded
+                    userSettings.isOnboarded = isOnboarded
                 }
                 .padding(.trailing, -8)
                 
@@ -320,10 +326,10 @@ struct DeveloperSettingsView: View {
                     Text("Terms")
                 }
                 .onAppear {
-                    isTerms = UserSettings.init().isTerms
+                    isTerms = userSettings.isTerms
                 }
                 .onChange(of: isTerms) {
-                    UserSettings.init().isTerms = isTerms
+                    userSettings.isTerms = isTerms
                 }
                 .padding(.trailing, -8)
                 
@@ -333,10 +339,10 @@ struct DeveloperSettingsView: View {
                     Text("Welcomed")
                 }
                 .onAppear {
-                    isWelcomed = UserSettings.init().isWelcomed
+                    isWelcomed = userSettings.isWelcomed
                 }
                 .onChange(of: isWelcomed) {
-                    UserSettings.init().isWelcomed = isWelcomed
+                    userSettings.isWelcomed = isWelcomed
                 }
                 .padding(.trailing, -8)
                 
@@ -346,10 +352,10 @@ struct DeveloperSettingsView: View {
                     Text("Account")
                 }
                 .onAppear {
-                    isAccount = UserSettings.init().isAccount
+                    isAccount = userSettings.isAccount
                 }
                 .onChange(of: isAccount) {
-                    UserSettings.init().isAccount = isAccount
+                    userSettings.isAccount = isAccount
                 }
                 .padding(.trailing, -8)
                 
@@ -359,10 +365,10 @@ struct DeveloperSettingsView: View {
                         .foregroundColor(.primary)
                 }
                 .onAppear {
-                    isPrivacy = UserSettings.init().isPrivacy
+                    isPrivacy = userSettings.isPrivacy
                 }
                 .onChange(of: isPrivacy) {
-                    UserSettings.init().isPrivacy = isPrivacy
+                    userSettings.isPrivacy = isPrivacy
                 }
                 .padding(.trailing, -8)
                 
@@ -371,10 +377,10 @@ struct DeveloperSettingsView: View {
                     Text("License")
                 }
                 .onAppear {
-                    isLicensed = UserSettings.init().isLicensed
+                    isLicensed = userSettings.isLicensed
                 }
                 .onChange(of: isLicensed) {
-                    UserSettings.init().isLicensed = isLicensed
+                    userSettings.isLicensed = isLicensed
                 }
                 .padding(.trailing, -8)
                 
@@ -384,10 +390,10 @@ struct DeveloperSettingsView: View {
                         .foregroundColor(.primary)
                 }
                 .onAppear {
-                    isGDPRConsent = UserSettings.init().isGDPRConsent
+                    isGDPRConsent = userSettings.isGDPRConsent
                 }
                 .onChange(of: isGDPRConsent) {
-                    UserSettings.init().isGDPRConsent = isGDPRConsent
+                    userSettings.isGDPRConsent = isGDPRConsent
                 }
                 .padding(.trailing, -8)
                 
@@ -398,10 +404,14 @@ struct DeveloperSettingsView: View {
     }
     
     struct ArticlesView: View {
+        
+        @EnvironmentObject var userSettings: UserSettings
+        
         @State var articlesLocation = ArticleLocations(rawValue: UserDefaults.standard.integer(forKey: "articlesLocation")) ?? .local
         @State var showAlertDeleteAllArticles: Bool = false
         @State var showAlertLoadArticlesSuccess: Bool = false
         @State var showAlertLoadArticlesMessage: String = ""
+        
         var body: some View {
             Section(header: Text("Articles").offset(x: -16)) {
                 /// Delete all articles
@@ -435,7 +445,7 @@ struct DeveloperSettingsView: View {
                 }
                 .padding(.trailing, -8)
                 .onChange(of: articlesLocation) {
-                    UserSettings.init().articlesLocation = articlesLocation
+                    userSettings.articlesLocation = articlesLocation
                 }
                 
                 /// Load articles
@@ -473,7 +483,7 @@ struct DeveloperSettingsView: View {
         }
         func performDeleteAllArticles() {
             Articles.deleteArticles()
-            UserSettings.init().articlesDate = DateInfo.zeroDate
+            userSettings.articlesDate = DateInfo.zeroDate
         }
     }
     
@@ -540,13 +550,15 @@ struct DeveloperSettingsView: View {
             
         }
         func performDeleteUserSettings() {
+            
+            @EnvironmentObject var userSettings: UserSettings
       
-            UserSettings.init().firstname = ""
-            UserSettings.init().lastname = ""
-            //UserSettings.init().email = ""
-            UserSettings.init().avatar = AppDefaults.avatar
-            UserSettings.init().alias = ""
-            UserSettings.init().phoneCell = ""
+            userSettings.firstname = ""
+            userSettings.lastname = ""
+            //userSettings.email = ""
+            userSettings.avatar = AppDefaults.avatar
+            userSettings.alias = ""
+            userSettings.phoneCell = ""
             
             LogManager.event(module: "DeveloperSettingsView:peformDeleteUserSettings", message: "Deleting all user settings...")
 
@@ -557,22 +569,24 @@ struct DeveloperSettingsView: View {
         }
         
         func performDeleteAllSettings() {
+
+            @EnvironmentObject var userSettings: UserSettings
             
-            UserSettings.init().firstname = ""
-            UserSettings.init().lastname = ""
-            UserSettings.init().email = ""
-            UserSettings.init().avatar = AppDefaults.avatar
-            UserSettings.init().alias = ""
-            UserSettings.init().phoneCell = ""
+            userSettings.firstname = ""
+            userSettings.lastname = ""
+            userSettings.email = ""
+            userSettings.avatar = AppDefaults.avatar
+            userSettings.alias = ""
+            userSettings.phoneCell = ""
             
-            UserSettings.init().isOnboarded = false
-            UserSettings.init().isTerms = false
-            UserSettings.init().isWelcomed = false
-            UserSettings.init().isAccount = false
-            UserSettings.init().isPrivacy = false
-            UserSettings.init().isLicensed = false
+            userSettings.isOnboarded = false
+            userSettings.isTerms = false
+            userSettings.isWelcomed = false
+            userSettings.isAccount = false
+            userSettings.isPrivacy = false
+            userSettings.isLicensed = false
             
-            UserSettings.init().articlesDate = DateInfo.zeroDate
+            userSettings.articlesDate = DateInfo.zeroDate
             
             LogManager.event(module: "DeveloperSettingsView:peformDeleteAllSettings", message: "Deleting all settings...")
 
