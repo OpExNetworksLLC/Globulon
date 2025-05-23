@@ -32,8 +32,6 @@ struct MotionViewV2: View {
         center: CLLocationCoordinate2D(latitude: 0, longitude: 0),
         span: MKCoordinateSpan(latitudeDelta: 0.0, longitudeDelta: 0.0)
     ))
-
-    //@State private var rotation = SCNVector3(0, 0, 0)
     
     @State private var deviceQuaternion: CMQuaternion = CMQuaternion(x: 0, y: 0, z: 0, w: 1)
     
@@ -92,9 +90,10 @@ struct MotionViewV2: View {
                     HStack {
                         SceneKitBoxView(quaternion: $deviceQuaternion)
                             .frame(width: 200, height: 200)
-                            .onReceive(motionManager.$attitudeData) { _ in
+                            .onReceive(motionManager.$attitudeData) { attitude in
                                 if let q = motionManager.deviceQuaternion {
-                                    deviceQuaternion = q
+                                    let qNoYaw = removeYaw(from: q, pitch: attitude.pitch, roll: attitude.roll)
+                                    deviceQuaternion = qNoYaw
                                 }
                             }
                         
@@ -311,4 +310,22 @@ struct SceneKitBoxView: UIViewRepresentable {
         axisNode.geometry = cylinder
         scene.rootNode.addChildNode(axisNode)
     }
+}
+
+func removeYaw(from q: CMQuaternion, pitch: Double, roll: Double) -> CMQuaternion {
+    // Pitch (forward/back) = X axis
+    // Roll (left/right tilt) = Y axis — corrected from previous Z
+
+    let qPitch = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0)) // SceneKit X
+    let qRoll = simd_quatf(angle: Float(roll), axis: simd_float3(0, 1, 0))  // SceneKit Y
+
+    // Correct rotation order: first roll, then pitch
+    let combined = qPitch * qRoll
+
+    return CMQuaternion(
+        x: Double(combined.imag.x),
+        y: Double(combined.imag.y),
+        z: Double(combined.imag.z),
+        w: Double(combined.real)
+    )
 }
