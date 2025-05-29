@@ -127,6 +127,10 @@ struct AccelerationData: Identifiable {
     }
 
     @Published var accelerationHistory: [AccelerationData] = []
+    
+    //TODO: added for 3dGyro
+    //
+    @Published var gyroscopeRotation: SCNVector3 = SCNVector3Zero
 
     private init() {
         
@@ -186,6 +190,13 @@ struct AccelerationData: Identifiable {
                     self.gyroscopeData.x = result.x
                     self.gyroscopeData.y = result.y
                     self.gyroscopeData.z = result.z
+                    
+                    //TODO: 3dGyro
+                    //
+                    let dt: Float = 0.1 // match your gyroUpdateInterval
+                    self.gyroscopeRotation.x += Float(result.x) * dt
+                    self.gyroscopeRotation.y += Float(result.y) * dt
+                    self.gyroscopeRotation.z += Float(result.z) * dt
 
                     let rotation4 = SCNVector4(
                         x: Float(self.gyroscopeData.x),

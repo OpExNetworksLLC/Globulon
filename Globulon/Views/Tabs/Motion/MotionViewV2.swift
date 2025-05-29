@@ -17,7 +17,7 @@ struct MotionViewV2: View {
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
-    @StateObject var motionManager = MotionManager.shared
+    //@StateObject var motionManager = MotionManager.shared
     @StateObject var activityManager = ActivityManager.shared
     @StateObject var networkManager = NetworkManager.shared
     
@@ -34,6 +34,9 @@ struct MotionViewV2: View {
     ))
     
     @State private var deviceQuaternion: CMQuaternion = CMQuaternion(x: 0, y: 0, z: 0, w: 1)
+    
+    //@State private var gyroscopeRotation = SCNVector3Zero
+    @ObservedObject var motionManager = MotionManager.shared
     
     var body: some View {
         // Top menu
@@ -107,11 +110,14 @@ struct MotionViewV2: View {
                         .padding()
                         */
                         Spacer().frame(width: 50)
-                        SceneView(
-                            scene: motionManager.scene,
-                            options: [.allowsCameraControl]
-                        )
-                        .frame(width: 100, height: 100)
+                        Gyroscope3DView(rotation: $motionManager.gyroscopeRotation)
+                            .frame(width: 100, height: 100)
+//                            .onReceive(motionManager.$gyroscopeData) { gyro in
+//                                let dt: Float = 1.0 / 60.0 // assuming ~60 Hz update rate
+//                                gyroscopeRotation.x += gyro.x * dt
+//                                gyroscopeRotation.y += gyro.y * dt
+//                                gyroscopeRotation.z += gyro.z * dt
+//                            }
                     }
                 }
 
