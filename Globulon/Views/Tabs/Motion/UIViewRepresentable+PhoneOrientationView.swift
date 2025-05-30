@@ -11,6 +11,8 @@ import SceneKit
 import CoreMotion
 
 struct PhoneOrientationView: UIViewRepresentable {
+    @Environment(\.colorScheme) var colorScheme
+    
     @Binding var quaternion: CMQuaternion
     var scale: CGFloat = 1.0
 
@@ -20,7 +22,7 @@ struct PhoneOrientationView: UIViewRepresentable {
         sceneView.scene = scene
         sceneView.autoenablesDefaultLighting = true
         sceneView.allowsCameraControl = true
-        sceneView.backgroundColor = .black
+        sceneView.backgroundColor = (colorScheme == .dark) ? .black : .white
 
         // Camera
         let cameraNode = SCNNode()

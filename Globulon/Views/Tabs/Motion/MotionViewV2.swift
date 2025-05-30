@@ -14,6 +14,7 @@ import Charts
 import CoreMotion
 
 struct MotionViewV2: View {
+    @Environment(\.colorScheme) var colorScheme
     @Binding var isShowSideMenu: Bool
     
     @StateObject var locationManager = LocationManager.shared
@@ -96,6 +97,7 @@ struct MotionViewV2: View {
                         HStack {
                             PhoneOrientationView(quaternion: $deviceQuaternion, scale: 1.0)
                                 .frame(width: 150, height: 150)
+                                .border(Color.gray, width: 1)
                                 .onReceive(motionManager.$attitudeData) { attitude in
                                     if let q = motionManager.deviceQuaternion {
                                         let qNoYaw = removeYaw(from: q, pitch: attitude.pitch, roll: attitude.roll)
@@ -105,6 +107,7 @@ struct MotionViewV2: View {
                             Spacer().frame(width: 24)
                             GyroView(deviceQuaternion: $deviceQuaternion, scale: 1)
                                 .frame(width: 150, height: 150)
+                                .border(Color.gray, width: 1)
 //                            GyroFixedView(rotation: $motionManager.gyroscopeRotation)
 //                                .frame(width: 150, height: 150)
                             
@@ -164,6 +167,7 @@ struct MotionViewV2: View {
 
         }
     }
+    
     func updateCameraPosition() {
         let location = CLLocationCoordinate2D(latitude: locationManager.lastLocation.coordinate.latitude,
                                               longitude: locationManager.lastLocation.coordinate.longitude)
@@ -188,21 +192,3 @@ struct MotionViewV2: View {
 #Preview {
     MotionViewV2(isShowSideMenu: .constant(false))
 }
-
-//func removeYaw(from q: CMQuaternion, pitch: Double, roll: Double) -> CMQuaternion {
-//    // Pitch (forward/back) = X axis
-//    // Roll (left/right tilt) = Y axis — corrected from previous Z
-//
-//    let qPitch = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0)) // SceneKit X
-//    let qRoll = simd_quatf(angle: Float(roll), axis: simd_float3(0, 1, 0))  // SceneKit Y
-//
-//    // Correct rotation order: first roll, then pitch
-//    let combined = qPitch * qRoll
-//
-//    return CMQuaternion(
-//        x: Double(combined.imag.x),
-//        y: Double(combined.imag.y),
-//        z: Double(combined.imag.z),
-//        w: Double(combined.real)
-//    )
-//}

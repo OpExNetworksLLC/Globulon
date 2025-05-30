@@ -12,6 +12,8 @@ import CoreMotion
 import SceneKit.ModelIO
 
 struct GyroView: UIViewRepresentable {
+    @Environment(\.colorScheme) var colorScheme
+
     @Binding var deviceQuaternion: CMQuaternion
     var scale: CGFloat = 1.0
 
@@ -27,7 +29,7 @@ struct GyroView: UIViewRepresentable {
         let sceneView = SCNView()
         sceneView.allowsCameraControl = false
         sceneView.autoenablesDefaultLighting = false
-        sceneView.backgroundColor = .black
+        sceneView.backgroundColor = (colorScheme == .dark) ? .black : .white
 
         /// DEBUG:  Optional debug view
         //sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
