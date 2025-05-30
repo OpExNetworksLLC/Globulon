@@ -98,6 +98,9 @@
 		6EA2424D2B86E42000C02D88 /* ForgotPasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EA2424C2B86E42000C02D88 /* ForgotPasswordView.swift */; };
 		6EAA35912BAE5E6800CA3C30 /* DataStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */; };
 		6EAAD1D22DE91554003EE469 /* spinning_top.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 6EAAD1D12DE91554003EE469 /* spinning_top.usdz */; };
+		6EAAD1D62DEA4D61003EE469 /* UIViewRepresentable+PhoneOrientationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAAD1D52DEA4D61003EE469 /* UIViewRepresentable+PhoneOrientationView.swift */; };
+		6EAAD1D82DEA4E94003EE469 /* UIViewRepresentable+GyroFixedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAAD1D72DEA4E94003EE469 /* UIViewRepresentable+GyroFixedView.swift */; };
+		6EAAD1DA2DEA4FB6003EE469 /* UIViewRepresentable+GyroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EAAD1D92DEA4FB6003EE469 /* UIViewRepresentable+GyroView.swift */; };
 		6EABA1EF2DA71B0E00A76A6B /* isImageEmpty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E42DA71B0E00A76A6B /* isImageEmpty.swift */; };
 		6EABA1F02DA71B0E00A76A6B /* isURLReachable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E52DA71B0E00A76A6B /* isURLReachable.swift */; };
 		6EABA1F12DA71B0E00A76A6B /* isValidEmail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EABA1E62DA71B0E00A76A6B /* isValidEmail.swift */; };
@@ -241,6 +244,9 @@
 		6EA2424C2B86E42000C02D88 /* ForgotPasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForgotPasswordView.swift; sourceTree = "<group>"; };
 		6EAA35902BAE5E6800CA3C30 /* DataStructures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataStructures.swift; sourceTree = "<group>"; };
 		6EAAD1D12DE91554003EE469 /* spinning_top.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = spinning_top.usdz; sourceTree = "<group>"; };
+		6EAAD1D52DEA4D61003EE469 /* UIViewRepresentable+PhoneOrientationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewRepresentable+PhoneOrientationView.swift"; sourceTree = "<group>"; };
+		6EAAD1D72DEA4E94003EE469 /* UIViewRepresentable+GyroFixedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewRepresentable+GyroFixedView.swift"; sourceTree = "<group>"; };
+		6EAAD1D92DEA4FB6003EE469 /* UIViewRepresentable+GyroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewRepresentable+GyroView.swift"; sourceTree = "<group>"; };
 		6EABA1DE2DA71B0E00A76A6B /* articlesLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = articlesLocation.swift; sourceTree = "<group>"; };
 		6EABA1DF2DA71B0E00A76A6B /* Conversions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Conversions.swift; sourceTree = "<group>"; };
 		6EABA1E02DA71B0E00A76A6B /* countGPSDataAll.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = countGPSDataAll.swift; sourceTree = "<group>"; };
@@ -387,6 +393,9 @@
 			children = (
 				6E3F449D2D77B2A20020229A /* MotionView.swift */,
 				6E7A9DC82DDFD27200E374E1 /* MotionViewV2.swift */,
+				6EAAD1D72DEA4E94003EE469 /* UIViewRepresentable+GyroFixedView.swift */,
+				6EAAD1D92DEA4FB6003EE469 /* UIViewRepresentable+GyroView.swift */,
+				6EAAD1D52DEA4D61003EE469 /* UIViewRepresentable+PhoneOrientationView.swift */,
 			);
 			path = Motion;
 			sourceTree = "<group>";
@@ -851,6 +860,7 @@
 				6E88DC202B846E6E00BBB4DD /* AppInfoClass.swift in Sources */,
 				6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */,
 				6E54AD982BA7A03500A502DC /* Notification+name.swift in Sources */,
+				6EAAD1D62DEA4D61003EE469 /* UIViewRepresentable+PhoneOrientationView.swift in Sources */,
 				6EB56D682B8568D400C106F0 /* OnboardLaunchView.swift in Sources */,
 				6ECF929F2D6E9C4F007B8F1F /* OtherView.swift in Sources */,
 				6EB56D6A2B8568E200C106F0 /* OnboardStartView.swift in Sources */,
@@ -880,6 +890,7 @@
 				6E97DC2E2DA9B7FF00468F43 /* LocationManager.swift in Sources */,
 				6E4FDE452DDBA64B00C5FD26 /* View+onSubmit.swift in Sources */,
 				6E4FDE472DDBA69F00C5FD26 /* View+hideKeyboard.swift in Sources */,
+				6EAAD1D82DEA4E94003EE469 /* UIViewRepresentable+GyroFixedView.swift in Sources */,
 				6ECF92872D6E6A03007B8F1F /* CarPlayManager.swift in Sources */,
 				6EB56D0C2B85574B00C106F0 /* SystemInfoView.swift in Sources */,
 				6EB56D762B856A4100C106F0 /* Buttons.swift in Sources */,
@@ -917,6 +928,7 @@
 				6ECF92852D6E69A4007B8F1F /* AsyncProcessor.swift in Sources */,
 				6ECF92DD2D6EA68B007B8F1F /* GitHubManager.swift in Sources */,
 				6EB56D202B855BA800C106F0 /* ArticlesClassV1.swift in Sources */,
+				6EAAD1DA2DEA4FB6003EE469 /* UIViewRepresentable+GyroView.swift in Sources */,
 				6E2A22D32B89680C0030F23E /* IntroCompleteView.swift in Sources */,
 				6ECF92AB2D6EA018007B8F1F /* TourFileLocationEnum.swift in Sources */,
 				6E88DC1E2B846E3C00BBB4DD /* SystemInfoClass.swift in Sources */,

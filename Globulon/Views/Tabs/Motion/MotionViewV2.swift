@@ -93,7 +93,7 @@ struct MotionViewV2: View {
                 ///
                 VStack {
                     HStack {
-                        SceneKitBoxView(quaternion: $deviceQuaternion)
+                        PhoneOrientationView(quaternion: $deviceQuaternion, scale: 1.0)
                             .frame(width: 150, height: 150)
                             .onReceive(motionManager.$attitudeData) { attitude in
                                 if let q = motionManager.deviceQuaternion {
@@ -101,18 +101,8 @@ struct MotionViewV2: View {
                                     deviceQuaternion = qNoYaw
                                 }
                             }
-                        
-                        /*
-                        Rectangle()
-                            .fill(Color.blue)
-                            .frame(width: 50, height: 100)
-                            .rotationEffect(Angle(radians: motionManager.attitudeData.roll), anchor: .center)
-                            .rotation3DEffect(Angle(radians: motionManager.attitudeData.pitch), axis: (x: 1, y: 0, z: 0))
-                            .rotation3DEffect(Angle(radians: motionManager.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
-                        .padding()
-                        */
                         Spacer().frame(width: 24)
-                        GyroscopeTopFixedView(rotation: $motionManager.gyroscopeRotation)
+                        GyroFixedView(rotation: $motionManager.gyroscopeRotation)
                             .frame(width: 100, height: 150)
 
                     }
@@ -120,10 +110,12 @@ struct MotionViewV2: View {
                 .padding(.bottom, 2)
 
                 VStack {
-                    PhoneOrientationAroundTopView(deviceQuaternion: $deviceQuaternion)
+                    GyroView(deviceQuaternion: $deviceQuaternion, scale: 1)
                         .frame(width: 150, height: 150)
                     
-                    SpinningTopWithAttitudeBoxView(attitude: $motionManager.attitudeData, scale: 0.5)
+                    //SpinningTopWithAttitudeBoxView(attitude: $motionManager.attitudeData, scale: 0.5)
+                        .frame(width: 150, height: 150)
+                    GyroBoxViewAroundFixedTop(attitude: $motionManager.attitudeData, scale: 0.5)
                         .frame(width: 150, height: 150)
                 }
                 .padding(.bottom, 2)
@@ -197,6 +189,92 @@ import SceneKit
 import SceneKit.ModelIO
 import CoreMotion
 
+struct GyroBoxViewAroundFixedTop: UIViewRepresentable {
+    @Binding var attitude: MotionManager.AttitudeData
+    var scale: CGFloat = 1.0
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator {
+        var boxRigNode: SCNNode?
+    }
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        sceneView.allowsCameraControl = false
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.backgroundColor = .black
+        sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
+
+        let scene = SCNScene()
+        sceneView.scene = scene
+
+        // === 1. Place spinning_top directly in scene (fixed) ===
+        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+            fatalError("spinning_top.usdz not found.")
+        }
+        let asset = MDLAsset(url: url)
+        asset.loadTextures()
+        let topScene = SCNScene(mdlAsset: asset)
+
+        let topNode = SCNNode()
+        for child in topScene.rootNode.childNodes {
+            topNode.addChildNode(child)
+        }
+        topNode.scale = SCNVector3(0.001 * scale, 0.001 * scale, 0.001 * scale)
+        topNode.position = SCNVector3(0, -0.2, 0)
+        scene.rootNode.addChildNode(topNode)
+
+        // === 2. Create a rotating node for the box ===
+        let boxGeometry = SCNBox(
+            width: 0.15 * scale,
+            height: 0.25 * scale,
+            length: 0.15 * scale,
+            chamferRadius: 0.01 * scale
+        )
+        let material = SCNMaterial()
+        material.diffuse.contents = UIColor.white.withAlphaComponent(0.1)
+        material.transparency = 1.0
+        material.lightingModel = .constant
+        material.isDoubleSided = true
+        boxGeometry.materials = [material]
+
+        let boxNode = SCNNode(geometry: boxGeometry)
+        boxNode.position = SCNVector3(0, -0.2, 0)
+
+        let boxRig = SCNNode()
+        boxRig.addChildNode(boxNode)
+        scene.rootNode.addChildNode(boxRig)
+        context.coordinator.boxRigNode = boxRig
+
+        // === 3. Side-view Camera ===
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 2.5)
+        cameraNode.eulerAngles = SCNVector3(0, 0, 0)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // === 4. Lighting ===
+        let light = SCNNode()
+        light.light = SCNLight()
+        light.light?.type = .omni
+        light.position = SCNVector3(0, 3, 3)
+        scene.rootNode.addChildNode(light)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        let pitch = Float(attitude.pitch)
+        let yaw = Float(attitude.yaw)
+        let roll = Float(attitude.roll)
+
+        context.coordinator.boxRigNode?.eulerAngles = SCNVector3(pitch, yaw, roll)
+    }
+}
+//MARK: - good...
 struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
     @Binding var attitude: MotionManager.AttitudeData
     var scale: CGFloat = 1.0
@@ -284,174 +362,174 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
     }
 }
 
-struct PhoneOrientationAroundTopView: UIViewRepresentable {
-    @Binding var deviceQuaternion: CMQuaternion
+//struct PhoneOrientationAroundTopView: UIViewRepresentable {
+//    @Binding var deviceQuaternion: CMQuaternion
+//
+//    func makeCoordinator() -> Coordinator {
+//        Coordinator()
+//    }
+//
+//    class Coordinator {
+//        var cameraRig: SCNNode?
+//    }
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        sceneView.allowsCameraControl = false
+//        sceneView.autoenablesDefaultLighting = false
+//        sceneView.backgroundColor = .black
+//
+//        let scene = SCNScene()
+//        sceneView.scene = scene
+//
+//        // Load USDZ model
+//        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+//            fatalError("Failed to find spinning_top.usdz in bundle.")
+//        }
+//
+//        let asset = MDLAsset(url: url)
+//        asset.loadTextures()
+//        let topScene = SCNScene(mdlAsset: asset)
+//
+//        // Anchor node for the top
+//        let topAnchorNode = SCNNode()
+//        topAnchorNode.scale = SCNVector3(0.0015, 0.0015, 0.0015)
+//        topAnchorNode.position = SCNVector3(0, -0.2, 0)
+//        scene.rootNode.addChildNode(topAnchorNode)
+//
+//        for node in topScene.rootNode.childNodes {
+//            topAnchorNode.addChildNode(node)
+//        }
+//
+//        // Create camera rig (this node rotates with device orientation)
+//        let cameraRig = SCNNode()
+//        context.coordinator.cameraRig = cameraRig
+//        scene.rootNode.addChildNode(cameraRig)
+//
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        // side view
+//        //cameraNode.position = SCNVector3(0, 0, 6)
+//        
+//        // top view
+//        cameraNode.position = SCNVector3(0, 6, 0) // Camera is above the top
+//        cameraNode.eulerAngles = SCNVector3(-Float.pi / 2, 0, 0) // Look straight down
+//        
+//        cameraRig.addChildNode(cameraNode)
+//
+//        // Directional light
+//        let lightNode = SCNNode()
+//        lightNode.light = SCNLight()
+//        lightNode.light?.type = .directional
+//        lightNode.light?.intensity = 1000
+//        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+//        scene.rootNode.addChildNode(lightNode)
+//
+//        // Ambient light
+//        let ambientLight = SCNNode()
+//        ambientLight.light = SCNLight()
+//        ambientLight.light?.type = .ambient
+//        ambientLight.light?.intensity = 800
+//        ambientLight.light?.color = UIColor.darkGray
+//        scene.rootNode.addChildNode(ambientLight)
+//
+//        return sceneView
+//    }
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        let pitch = MotionManager.shared.attitudeData.pitch
+//        let roll = MotionManager.shared.attitudeData.roll
+//        let yaw = MotionManager.shared.attitudeData.yaw
+//
+//        // Compose quaternions: yaw * pitch * roll
+//        // Reverse the roll so the world appears stable while the camera tilts
+//        let yawQuat = simd_quatf(angle: Float(yaw), axis: simd_float3(0, 1, 0))
+//        let pitchQuat = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0))
+//        let rollQuat = simd_quatf(angle: -Float(roll), axis: simd_float3(0, 0, 1))  // Note the NEGATIVE roll
+//
+//        // Combine in the correct order: yaw → pitch → inverse roll
+//        let combined = yawQuat * pitchQuat * rollQuat
+//
+//        context.coordinator.cameraRig?.orientation = SCNQuaternion(
+//            combined.imag.x, combined.imag.y, combined.imag.z, combined.real
+//        )
+//    }
+//}
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
 
-    class Coordinator {
-        var cameraRig: SCNNode?
-    }
-
-    func makeUIView(context: Context) -> SCNView {
-        let sceneView = SCNView()
-        sceneView.allowsCameraControl = false
-        sceneView.autoenablesDefaultLighting = false
-        sceneView.backgroundColor = .black
-
-        let scene = SCNScene()
-        sceneView.scene = scene
-
-        // Load USDZ model
-        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
-            fatalError("Failed to find spinning_top.usdz in bundle.")
-        }
-
-        let asset = MDLAsset(url: url)
-        asset.loadTextures()
-        let topScene = SCNScene(mdlAsset: asset)
-
-        // Anchor node for the top
-        let topAnchorNode = SCNNode()
-        topAnchorNode.scale = SCNVector3(0.0015, 0.0015, 0.0015)
-        topAnchorNode.position = SCNVector3(0, -0.2, 0)
-        scene.rootNode.addChildNode(topAnchorNode)
-
-        for node in topScene.rootNode.childNodes {
-            topAnchorNode.addChildNode(node)
-        }
-
-        // Create camera rig (this node rotates with device orientation)
-        let cameraRig = SCNNode()
-        context.coordinator.cameraRig = cameraRig
-        scene.rootNode.addChildNode(cameraRig)
-
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        // side view
-        //cameraNode.position = SCNVector3(0, 0, 6)
-        
-        // top view
-        cameraNode.position = SCNVector3(0, 6, 0) // Camera is above the top
-        cameraNode.eulerAngles = SCNVector3(-Float.pi / 2, 0, 0) // Look straight down
-        
-        cameraRig.addChildNode(cameraNode)
-
-        // Directional light
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light?.type = .directional
-        lightNode.light?.intensity = 1000
-        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
-        scene.rootNode.addChildNode(lightNode)
-
-        // Ambient light
-        let ambientLight = SCNNode()
-        ambientLight.light = SCNLight()
-        ambientLight.light?.type = .ambient
-        ambientLight.light?.intensity = 800
-        ambientLight.light?.color = UIColor.darkGray
-        scene.rootNode.addChildNode(ambientLight)
-
-        return sceneView
-    }
-    func updateUIView(_ uiView: SCNView, context: Context) {
-        let pitch = MotionManager.shared.attitudeData.pitch
-        let roll = MotionManager.shared.attitudeData.roll
-        let yaw = MotionManager.shared.attitudeData.yaw
-
-        // Compose quaternions: yaw * pitch * roll
-        // Reverse the roll so the world appears stable while the camera tilts
-        let yawQuat = simd_quatf(angle: Float(yaw), axis: simd_float3(0, 1, 0))
-        let pitchQuat = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0))
-        let rollQuat = simd_quatf(angle: -Float(roll), axis: simd_float3(0, 0, 1))  // Note the NEGATIVE roll
-
-        // Combine in the correct order: yaw → pitch → inverse roll
-        let combined = yawQuat * pitchQuat * rollQuat
-
-        context.coordinator.cameraRig?.orientation = SCNQuaternion(
-            combined.imag.x, combined.imag.y, combined.imag.z, combined.real
-        )
-    }
-}
-
-
-struct GyroscopeTopFixedView: UIViewRepresentable {
-    @Binding var rotation: SCNVector3
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator()
-    }
-
-    class Coordinator {
-        var anchorNode: SCNNode?
-    }
-
-    func makeUIView(context: Context) -> SCNView {
-        let sceneView = SCNView()
-        sceneView.allowsCameraControl = false
-        sceneView.autoenablesDefaultLighting = false
-        sceneView.backgroundColor = .black
-
-        // Enable visual debugging (optional)
-        sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
-
-        // Load USDZ model from bundle
-        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
-            fatalError("Failed to find spinning_top.usdz in bundle.")
-        }
-
-        let asset = MDLAsset(url: url)
-        asset.loadTextures()
-        let scene = SCNScene(mdlAsset: asset)
-        sceneView.scene = scene
-
-        // Create anchor node to rotate
-        let anchorNode = SCNNode()
-        context.coordinator.anchorNode = anchorNode
-        scene.rootNode.addChildNode(anchorNode)
-
-        // Move all root children into anchorNode
-        for node in scene.rootNode.childNodes where node !== anchorNode {
-            anchorNode.addChildNode(node)
-        }
-
-        // Scale & position to ensure visibility
-        anchorNode.scale = SCNVector3(0.0009, 0.0009, 0.0009)
-        anchorNode.position = SCNVector3(0, -0.2, 0)
-
-        // Fixed camera
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(0, 0, 5)
-        scene.rootNode.addChildNode(cameraNode)
-
-        // Directional light
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light?.type = .directional
-        lightNode.light?.intensity = 1000
-        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
-        scene.rootNode.addChildNode(lightNode)
-
-        // Ambient light
-        let ambientLight = SCNNode()
-        ambientLight.light = SCNLight()
-        ambientLight.light?.type = .ambient
-        ambientLight.light?.intensity = 1000
-        ambientLight.light?.color = UIColor.darkGray
-        scene.rootNode.addChildNode(ambientLight)
-
-        return sceneView
-    }
-
-    func updateUIView(_ uiView: SCNView, context: Context) {
-        // Lock pitch & roll, rotate only around Y (yaw)
-        context.coordinator.anchorNode?.eulerAngles = SCNVector3(0, rotation.y, 0)
-    }
-}
+//struct GyroscopeTopFixedView: UIViewRepresentable {
+//    @Binding var rotation: SCNVector3
+//
+//    func makeCoordinator() -> Coordinator {
+//        Coordinator()
+//    }
+//
+//    class Coordinator {
+//        var anchorNode: SCNNode?
+//    }
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        sceneView.allowsCameraControl = false
+//        sceneView.autoenablesDefaultLighting = false
+//        sceneView.backgroundColor = .black
+//
+//        // Enable visual debugging (optional)
+//        sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
+//
+//        // Load USDZ model from bundle
+//        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+//            fatalError("Failed to find spinning_top.usdz in bundle.")
+//        }
+//
+//        let asset = MDLAsset(url: url)
+//        asset.loadTextures()
+//        let scene = SCNScene(mdlAsset: asset)
+//        sceneView.scene = scene
+//
+//        // Create anchor node to rotate
+//        let anchorNode = SCNNode()
+//        context.coordinator.anchorNode = anchorNode
+//        scene.rootNode.addChildNode(anchorNode)
+//
+//        // Move all root children into anchorNode
+//        for node in scene.rootNode.childNodes where node !== anchorNode {
+//            anchorNode.addChildNode(node)
+//        }
+//
+//        // Scale & position to ensure visibility
+//        anchorNode.scale = SCNVector3(0.0009, 0.0009, 0.0009)
+//        anchorNode.position = SCNVector3(0, -0.2, 0)
+//
+//        // Fixed camera
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        cameraNode.position = SCNVector3(0, 0, 5)
+//        scene.rootNode.addChildNode(cameraNode)
+//
+//        // Directional light
+//        let lightNode = SCNNode()
+//        lightNode.light = SCNLight()
+//        lightNode.light?.type = .directional
+//        lightNode.light?.intensity = 1000
+//        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+//        scene.rootNode.addChildNode(lightNode)
+//
+//        // Ambient light
+//        let ambientLight = SCNNode()
+//        ambientLight.light = SCNLight()
+//        ambientLight.light?.type = .ambient
+//        ambientLight.light?.intensity = 1000
+//        ambientLight.light?.color = UIColor.darkGray
+//        scene.rootNode.addChildNode(ambientLight)
+//
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        // Lock pitch & roll, rotate only around Y (yaw)
+//        context.coordinator.anchorNode?.eulerAngles = SCNVector3(0, rotation.y, 0)
+//    }
+//}
 
 struct Gyroscope3DView: UIViewRepresentable {
     @Binding var rotation: SCNVector3
@@ -496,111 +574,111 @@ struct Gyroscope3DView: UIViewRepresentable {
     }
 }
 
-struct SceneKitBoxView: UIViewRepresentable {
-    @Binding var quaternion: CMQuaternion
-
-    func makeUIView(context: Context) -> SCNView {
-        let sceneView = SCNView()
-        let scene = SCNScene()
-        sceneView.scene = scene
-        sceneView.autoenablesDefaultLighting = true
-        sceneView.allowsCameraControl = true
-        sceneView.backgroundColor = .gray
-
-        // Camera
-        let cameraNode = SCNNode()
-        cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(0, 0, 15)
-        scene.rootNode.addChildNode(cameraNode)
-
-        // Axes
-        addAxis(to: scene, axis: .x)
-        addAxis(to: scene, axis: .y)
-        addAxis(to: scene, axis: .z)
-
-        // Box with labeled faces
-        let box = SCNBox(width: 5, height: 9, length: 1, chamferRadius: 0)
-        let faceLabels = ["Front", "Right", "Back", "Left", "Top", "Bottom"]
-        let faceColors: [UIColor] = [.blue, .green, .red, .yellow, .orange, .purple]
-
-        box.materials = zip(faceColors, faceLabels).map { color, label in
-            let material = SCNMaterial()
-            material.diffuse.contents = labeledFaceImage(text: label, background: color)
-            material.isDoubleSided = true
-            return material
-        }
-
-        let boxNode = SCNNode(geometry: box)
-        boxNode.name = "attitudeBox"
-        scene.rootNode.addChildNode(boxNode)
-
-        return sceneView
-    }
-
-    func updateUIView(_ uiView: SCNView, context: Context) {
-        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
-            boxNode.orientation = SCNQuaternion(
-                x: Float(quaternion.x),
-                y: Float(quaternion.y),
-                z: Float(quaternion.z),
-                w: Float(quaternion.w)
-            )
-        }
-    }
-
-    private func labeledFaceImage(text: String, background: UIColor) -> UIImage {
-        let size = CGSize(width: 128, height: 128)
-        UIGraphicsBeginImageContextWithOptions(size, false, 0)
-        defer { UIGraphicsEndImageContext() }
-
-        let context = UIGraphicsGetCurrentContext()!
-        context.setFillColor(background.cgColor)
-        context.fill(CGRect(origin: .zero, size: size))
-
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.boldSystemFont(ofSize: 24),
-            .foregroundColor: UIColor.white,
-            .paragraphStyle: paragraphStyle
-        ]
-
-        let textSize = text.size(withAttributes: attributes)
-        let textRect = CGRect(
-            x: (size.width - textSize.width) / 2,
-            y: (size.height - textSize.height) / 2,
-            width: textSize.width,
-            height: textSize.height
-        )
-        text.draw(in: textRect, withAttributes: attributes)
-
-        return UIGraphicsGetImageFromCurrentImageContext()!
-    }
-
-    private enum Axis {
-        case x, y, z
-    }
-
-    private func addAxis(to scene: SCNScene, axis: Axis) {
-        let axisNode = SCNNode()
-        let cylinder = SCNCylinder(radius: 0.1, height: 20)
-        let material = SCNMaterial()
-        switch axis {
-        case .x:
-            material.diffuse.contents = UIColor.red
-            axisNode.eulerAngles = SCNVector3(0, 0, Float.pi / 2)
-        case .y:
-            material.diffuse.contents = UIColor.green
-        case .z:
-            material.diffuse.contents = UIColor.blue
-            axisNode.eulerAngles = SCNVector3(Float.pi / 2, 0, 0)
-        }
-        cylinder.materials = [material]
-        axisNode.geometry = cylinder
-        scene.rootNode.addChildNode(axisNode)
-    }
-}
+//struct SceneKitBoxView: UIViewRepresentable {
+//    @Binding var quaternion: CMQuaternion
+//
+//    func makeUIView(context: Context) -> SCNView {
+//        let sceneView = SCNView()
+//        let scene = SCNScene()
+//        sceneView.scene = scene
+//        sceneView.autoenablesDefaultLighting = true
+//        sceneView.allowsCameraControl = true
+//        sceneView.backgroundColor = .gray
+//
+//        // Camera
+//        let cameraNode = SCNNode()
+//        cameraNode.camera = SCNCamera()
+//        cameraNode.position = SCNVector3(0, 0, 15)
+//        scene.rootNode.addChildNode(cameraNode)
+//
+//        // Axes
+//        addAxis(to: scene, axis: .x)
+//        addAxis(to: scene, axis: .y)
+//        addAxis(to: scene, axis: .z)
+//
+//        // Box with labeled faces
+//        let box = SCNBox(width: 5, height: 9, length: 1, chamferRadius: 0)
+//        let faceLabels = ["Front", "Right", "Back", "Left", "Top", "Bottom"]
+//        let faceColors: [UIColor] = [.blue, .green, .red, .yellow, .orange, .purple]
+//
+//        box.materials = zip(faceColors, faceLabels).map { color, label in
+//            let material = SCNMaterial()
+//            material.diffuse.contents = labeledFaceImage(text: label, background: color)
+//            material.isDoubleSided = true
+//            return material
+//        }
+//
+//        let boxNode = SCNNode(geometry: box)
+//        boxNode.name = "attitudeBox"
+//        scene.rootNode.addChildNode(boxNode)
+//
+//        return sceneView
+//    }
+//
+//    func updateUIView(_ uiView: SCNView, context: Context) {
+//        if let boxNode = uiView.scene?.rootNode.childNode(withName: "attitudeBox", recursively: false) {
+//            boxNode.orientation = SCNQuaternion(
+//                x: Float(quaternion.x),
+//                y: Float(quaternion.y),
+//                z: Float(quaternion.z),
+//                w: Float(quaternion.w)
+//            )
+//        }
+//    }
+//
+//    private func labeledFaceImage(text: String, background: UIColor) -> UIImage {
+//        let size = CGSize(width: 128, height: 128)
+//        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+//        defer { UIGraphicsEndImageContext() }
+//
+//        let context = UIGraphicsGetCurrentContext()!
+//        context.setFillColor(background.cgColor)
+//        context.fill(CGRect(origin: .zero, size: size))
+//
+//        let paragraphStyle = NSMutableParagraphStyle()
+//        paragraphStyle.alignment = .center
+//
+//        let attributes: [NSAttributedString.Key: Any] = [
+//            .font: UIFont.boldSystemFont(ofSize: 24),
+//            .foregroundColor: UIColor.white,
+//            .paragraphStyle: paragraphStyle
+//        ]
+//
+//        let textSize = text.size(withAttributes: attributes)
+//        let textRect = CGRect(
+//            x: (size.width - textSize.width) / 2,
+//            y: (size.height - textSize.height) / 2,
+//            width: textSize.width,
+//            height: textSize.height
+//        )
+//        text.draw(in: textRect, withAttributes: attributes)
+//
+//        return UIGraphicsGetImageFromCurrentImageContext()!
+//    }
+//
+//    private enum Axis {
+//        case x, y, z
+//    }
+//
+//    private func addAxis(to scene: SCNScene, axis: Axis) {
+//        let axisNode = SCNNode()
+//        let cylinder = SCNCylinder(radius: 0.1, height: 20)
+//        let material = SCNMaterial()
+//        switch axis {
+//        case .x:
+//            material.diffuse.contents = UIColor.red
+//            axisNode.eulerAngles = SCNVector3(0, 0, Float.pi / 2)
+//        case .y:
+//            material.diffuse.contents = UIColor.green
+//        case .z:
+//            material.diffuse.contents = UIColor.blue
+//            axisNode.eulerAngles = SCNVector3(Float.pi / 2, 0, 0)
+//        }
+//        cylinder.materials = [material]
+//        axisNode.geometry = cylinder
+//        scene.rootNode.addChildNode(axisNode)
+//    }
+//}
 
 func removeYaw(from q: CMQuaternion, pitch: Double, roll: Double) -> CMQuaternion {
     // Pitch (forward/back) = X axis
