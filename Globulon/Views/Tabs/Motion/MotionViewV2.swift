@@ -57,10 +57,10 @@ struct MotionViewV2: View {
                 .font(.system(size: 12, design: .monospaced))
                 .padding()
                 Divider()
-                Spacer().frame(height: 16)
+                Spacer().frame(height: 8)
                 
  
-                /// MOTION
+                /// MOTION DATA FEED
                 ///
                 VStack(alignment: .leading) {
                     HStack {
@@ -86,13 +86,15 @@ struct MotionViewV2: View {
                 .padding(.leading, 16)
                 .padding(.trailing, 16)
                 .padding(.bottom, 2)
+                Divider()
+                Spacer().frame(height: 8)
      
                 /// ATTITUDE
                 ///
                 VStack {
                     HStack {
                         SceneKitBoxView(quaternion: $deviceQuaternion)
-                            .frame(width: 200, height: 200)
+                            .frame(width: 150, height: 150)
                             .onReceive(motionManager.$attitudeData) { attitude in
                                 if let q = motionManager.deviceQuaternion {
                                     let qNoYaw = removeYaw(from: q, pitch: attitude.pitch, roll: attitude.roll)
@@ -109,18 +111,18 @@ struct MotionViewV2: View {
                             .rotation3DEffect(Angle(radians: motionManager.attitudeData.yaw), axis: (x: 0, y: 1, z: 0))
                         .padding()
                         */
-                        Spacer().frame(width: 50)
+                        Spacer().frame(width: 24)
                         GyroscopeTopFixedView(rotation: $motionManager.gyroscopeRotation)
                             .frame(width: 100, height: 150)
 
                     }
                 }
+                .padding(.bottom, 2)
 
                 VStack {
                     PhoneOrientationAroundTopView(deviceQuaternion: $deviceQuaternion)
-                        .frame(width: 200, height: 200)
+                        .frame(width: 150, height: 150)
                 }
-
                 .padding(.bottom, 2)
                 
                 /// ACCELERATION
@@ -224,7 +226,7 @@ struct PhoneOrientationAroundTopView: UIViewRepresentable {
 
         // Anchor node for the top
         let topAnchorNode = SCNNode()
-        topAnchorNode.scale = SCNVector3(0.001, 0.001, 0.001)
+        topAnchorNode.scale = SCNVector3(0.0015, 0.0015, 0.0015)
         topAnchorNode.position = SCNVector3(0, -0.2, 0)
         scene.rootNode.addChildNode(topAnchorNode)
 
