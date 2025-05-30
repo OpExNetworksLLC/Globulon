@@ -215,6 +215,9 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
         sceneView.autoenablesDefaultLighting = true
         sceneView.backgroundColor = .black
 
+        // ✅ Show wireframe and bounding box
+        sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
+
         let scene = SCNScene()
         sceneView.scene = scene
 
@@ -231,13 +234,10 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
         for child in topScene.rootNode.childNodes {
             topNode.addChildNode(child)
         }
-        // Size and position of the top in the frame
-        //topNode.scale = SCNVector3(0.0005, 0.0005, 0.0005)
         topNode.scale = SCNVector3(0.001 * scale, 0.001 * scale, 0.001 * scale)
         topNode.position = SCNVector3(0, -0.2, 0)
 
-        // Box node
-        //let boxGeometry = SCNBox(width: 0.15, height: 0.25, length: 0.15, chamferRadius: 0.01)
+        // ✅ Create box geometry and visible material
         let boxGeometry = SCNBox(
             width: 0.15 * scale,
             height: 0.25 * scale,
@@ -245,23 +245,24 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
             chamferRadius: 0.01 * scale
         )
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor.clear
-        material.transparency = 0.5
+        material.diffuse.contents = UIColor.white.withAlphaComponent(0.1)
+        material.transparency = 1.0
+        material.lightingModel = .constant
         material.isDoubleSided = true
         boxGeometry.materials = [material]
 
+        // Box node and rotating parent
         let boxNode = SCNNode(geometry: boxGeometry)
         context.coordinator.boxNode = boxNode
 
-        // Parent node that rotates
         let rotatingNode = SCNNode()
         rotatingNode.addChildNode(boxNode)
 
-        // Add both to the scene
+        // Add nodes to scene
         scene.rootNode.addChildNode(rotatingNode)
         scene.rootNode.addChildNode(topNode)
 
-        // Fixed side camera
+        // Fixed side-view camera
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
         cameraNode.position = SCNVector3(0, 0, 3)
@@ -278,22 +279,14 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let pitch = attitude.pitch
-        let roll = attitude.roll
-        let yaw = attitude.yaw
+        // Use Euler angles to rotate box
+        let pitch = Float(attitude.pitch)
+        let yaw = Float(attitude.yaw)
+        let roll = Float(attitude.roll)
 
-        let qPitch = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0))
-        let qRoll = simd_quatf(angle: Float(roll), axis: simd_float3(0, 1, 0))
-        let qYaw = simd_quatf(angle: Float(yaw), axis: simd_float3(0, 0, 1))
-
-        let combined = qYaw * qPitch * qRoll
-        context.coordinator.boxNode?.orientation = SCNQuaternion(
-            combined.imag.x, combined.imag.y, combined.imag.z, combined.real
-        )
+        context.coordinator.boxNode?.eulerAngles = SCNVector3(pitch, yaw, roll)
     }
 }
-
-
 struct PhoneOrientationAroundTopView: UIViewRepresentable {
     @Binding var deviceQuaternion: CMQuaternion
 
