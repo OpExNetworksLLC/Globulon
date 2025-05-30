@@ -266,11 +266,23 @@ struct PhoneOrientationAroundTopView: UIViewRepresentable {
 
         return sceneView
     }
-
     func updateUIView(_ uiView: SCNView, context: Context) {
-        let q = deviceQuaternion
-        let orientation = SCNQuaternion(Float(q.x), Float(q.y), Float(q.z), Float(q.w))
-        context.coordinator.cameraRig?.orientation = orientation
+        let pitch = MotionManager.shared.attitudeData.pitch
+        let roll = MotionManager.shared.attitudeData.roll
+        let yaw = MotionManager.shared.attitudeData.yaw
+
+        // Compose quaternions: yaw * pitch * roll
+        // Reverse the roll so the world appears stable while the camera tilts
+        let yawQuat = simd_quatf(angle: Float(yaw), axis: simd_float3(0, 1, 0))
+        let pitchQuat = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0))
+        let rollQuat = simd_quatf(angle: -Float(roll), axis: simd_float3(0, 0, 1))  // Note the NEGATIVE roll
+
+        // Combine in the correct order: yaw → pitch → inverse roll
+        let combined = yawQuat * pitchQuat * rollQuat
+
+        context.coordinator.cameraRig?.orientation = SCNQuaternion(
+            combined.imag.x, combined.imag.y, combined.imag.z, combined.real
+        )
     }
 }
 
