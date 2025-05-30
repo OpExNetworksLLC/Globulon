@@ -123,7 +123,7 @@ struct MotionViewV2: View {
                     PhoneOrientationAroundTopView(deviceQuaternion: $deviceQuaternion)
                         .frame(width: 150, height: 150)
                     
-                    SpinningTopWithAttitudeBoxView(attitude: $motionManager.attitudeData)
+                    SpinningTopWithAttitudeBoxView(attitude: $motionManager.attitudeData, scale: 0.5)
                         .frame(width: 150, height: 150)
                 }
                 .padding(.bottom, 2)
@@ -199,6 +199,7 @@ import CoreMotion
 
 struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
     @Binding var attitude: MotionManager.AttitudeData
+    var scale: CGFloat = 1.0
 
     func makeCoordinator() -> Coordinator {
         Coordinator()
@@ -231,11 +232,18 @@ struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
             topNode.addChildNode(child)
         }
         // Size and position of the top in the frame
-        topNode.scale = SCNVector3(0.0005, 0.0005, 0.0005)
+        //topNode.scale = SCNVector3(0.0005, 0.0005, 0.0005)
+        topNode.scale = SCNVector3(0.001 * scale, 0.001 * scale, 0.001 * scale)
         topNode.position = SCNVector3(0, -0.2, 0)
 
         // Box node
-        let boxGeometry = SCNBox(width: 0.15, height: 0.25, length: 0.15, chamferRadius: 0.01)
+        //let boxGeometry = SCNBox(width: 0.15, height: 0.25, length: 0.15, chamferRadius: 0.01)
+        let boxGeometry = SCNBox(
+            width: 0.15 * scale,
+            height: 0.25 * scale,
+            length: 0.15 * scale,
+            chamferRadius: 0.01 * scale
+        )
         let material = SCNMaterial()
         material.diffuse.contents = UIColor.clear
         material.transparency = 0.5
