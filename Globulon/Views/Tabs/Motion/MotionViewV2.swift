@@ -122,6 +122,9 @@ struct MotionViewV2: View {
                 VStack {
                     PhoneOrientationAroundTopView(deviceQuaternion: $deviceQuaternion)
                         .frame(width: 150, height: 150)
+                    
+                    SpinningTopWithAttitudeBoxView(attitude: $motionManager.attitudeData)
+                        .frame(width: 150, height: 150)
                 }
                 .padding(.bottom, 2)
                 
@@ -193,6 +196,94 @@ import SwiftUI
 import SceneKit
 import SceneKit.ModelIO
 import CoreMotion
+
+struct SpinningTopWithAttitudeBoxView: UIViewRepresentable {
+    @Binding var attitude: MotionManager.AttitudeData
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator {
+        var boxNode: SCNNode?
+    }
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        sceneView.allowsCameraControl = false
+        sceneView.autoenablesDefaultLighting = true
+        sceneView.backgroundColor = .black
+
+        let scene = SCNScene()
+        sceneView.scene = scene
+
+        // Load spinning_top model
+        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+            fatalError("spinning_top.usdz not found.")
+        }
+        let asset = MDLAsset(url: url)
+        asset.loadTextures()
+        let topScene = SCNScene(mdlAsset: asset)
+
+        // Fixed spinning top node
+        let topNode = SCNNode()
+        for child in topScene.rootNode.childNodes {
+            topNode.addChildNode(child)
+        }
+        // Size and position of the top in the frame
+        topNode.scale = SCNVector3(0.0005, 0.0005, 0.0005)
+        topNode.position = SCNVector3(0, -0.2, 0)
+
+        // Box node
+        let boxGeometry = SCNBox(width: 0.15, height: 0.25, length: 0.15, chamferRadius: 0.01)
+        let material = SCNMaterial()
+        material.diffuse.contents = UIColor.clear
+        material.transparency = 0.5
+        material.isDoubleSided = true
+        boxGeometry.materials = [material]
+
+        let boxNode = SCNNode(geometry: boxGeometry)
+        context.coordinator.boxNode = boxNode
+
+        // Parent node that rotates
+        let rotatingNode = SCNNode()
+        rotatingNode.addChildNode(boxNode)
+
+        // Add both to the scene
+        scene.rootNode.addChildNode(rotatingNode)
+        scene.rootNode.addChildNode(topNode)
+
+        // Fixed side camera
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 3)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // Lighting
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .omni
+        lightNode.position = SCNVector3(0, 5, 5)
+        scene.rootNode.addChildNode(lightNode)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        let pitch = attitude.pitch
+        let roll = attitude.roll
+        let yaw = attitude.yaw
+
+        let qPitch = simd_quatf(angle: Float(pitch), axis: simd_float3(1, 0, 0))
+        let qRoll = simd_quatf(angle: Float(roll), axis: simd_float3(0, 1, 0))
+        let qYaw = simd_quatf(angle: Float(yaw), axis: simd_float3(0, 0, 1))
+
+        let combined = qYaw * qPitch * qRoll
+        context.coordinator.boxNode?.orientation = SCNQuaternion(
+            combined.imag.x, combined.imag.y, combined.imag.z, combined.real
+        )
+    }
+}
 
 
 struct PhoneOrientationAroundTopView: UIViewRepresentable {
