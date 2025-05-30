@@ -192,6 +192,7 @@ import SceneKit
 import SceneKit.ModelIO
 import CoreMotion
 
+
 struct PhoneOrientationAroundTopView: UIViewRepresentable {
     @Binding var deviceQuaternion: CMQuaternion
 
@@ -238,7 +239,13 @@ struct PhoneOrientationAroundTopView: UIViewRepresentable {
 
         let cameraNode = SCNNode()
         cameraNode.camera = SCNCamera()
-        cameraNode.position = SCNVector3(0, 0, 6)
+        // side view
+        //cameraNode.position = SCNVector3(0, 0, 6)
+        
+        // top view
+        cameraNode.position = SCNVector3(0, 6, 0) // Camera is above the top
+        cameraNode.eulerAngles = SCNVector3(-Float.pi / 2, 0, 0) // Look straight down
+        
         cameraRig.addChildNode(cameraNode)
 
         // Directional light
@@ -266,6 +273,7 @@ struct PhoneOrientationAroundTopView: UIViewRepresentable {
         context.coordinator.cameraRig?.orientation = orientation
     }
 }
+
 
 struct GyroscopeTopFixedView: UIViewRepresentable {
     @Binding var rotation: SCNVector3
