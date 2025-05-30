@@ -110,17 +110,16 @@ struct MotionViewV2: View {
                         .padding()
                         */
                         Spacer().frame(width: 50)
-                        Gyroscope3DView(rotation: $motionManager.gyroscopeRotation)
-                            .frame(width: 100, height: 100)
-//                            .onReceive(motionManager.$gyroscopeData) { gyro in
-//                                let dt: Float = 1.0 / 60.0 // assuming ~60 Hz update rate
-//                                gyroscopeRotation.x += gyro.x * dt
-//                                gyroscopeRotation.y += gyro.y * dt
-//                                gyroscopeRotation.z += gyro.z * dt
-//                            }
+                        GyroscopeTopFixedView(rotation: $motionManager.gyroscopeRotation)
+                            .frame(width: 100, height: 150)
+
                     }
                 }
 
+                VStack {
+                    PhoneOrientationAroundTopView(deviceQuaternion: $deviceQuaternion)
+                        .frame(width: 200, height: 200)
+                }
 
                 .padding(.bottom, 2)
                 
@@ -188,26 +187,200 @@ struct MotionViewV2: View {
     MotionViewV2(isShowSideMenu: .constant(false))
 }
 
-struct Gyroscope3DView: UIViewRepresentable {
-    @Binding var rotation: SCNVector3
+import SwiftUI
+import SceneKit
+import SceneKit.ModelIO
+import CoreMotion
+
+struct PhoneOrientationAroundTopView: UIViewRepresentable {
+    @Binding var deviceQuaternion: CMQuaternion
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator {
+        var cameraRig: SCNNode?
+    }
 
     func makeUIView(context: Context) -> SCNView {
         let sceneView = SCNView()
-        sceneView.scene = SCNScene()
-        sceneView.allowsCameraControl = true
-        sceneView.autoenablesDefaultLighting = true
+        sceneView.allowsCameraControl = false
+        sceneView.autoenablesDefaultLighting = false
+        sceneView.backgroundColor = .black
 
-        let box = SCNBox(width: 1.0, height: 1.0, length: 1.0, chamferRadius: 0.0)
-        let boxNode = SCNNode(geometry: box)
-        boxNode.name = "gyroscopeBox"
-        sceneView.scene?.rootNode.addChildNode(boxNode)
+        let scene = SCNScene()
+        sceneView.scene = scene
+
+        // Load USDZ model
+        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+            fatalError("Failed to find spinning_top.usdz in bundle.")
+        }
+
+        let asset = MDLAsset(url: url)
+        asset.loadTextures()
+        let topScene = SCNScene(mdlAsset: asset)
+
+        // Anchor node for the top
+        let topAnchorNode = SCNNode()
+        topAnchorNode.scale = SCNVector3(0.001, 0.001, 0.001)
+        topAnchorNode.position = SCNVector3(0, -0.2, 0)
+        scene.rootNode.addChildNode(topAnchorNode)
+
+        for node in topScene.rootNode.childNodes {
+            topAnchorNode.addChildNode(node)
+        }
+
+        // Create camera rig (this node rotates with device orientation)
+        let cameraRig = SCNNode()
+        context.coordinator.cameraRig = cameraRig
+        scene.rootNode.addChildNode(cameraRig)
+
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 6)
+        cameraRig.addChildNode(cameraNode)
+
+        // Directional light
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .directional
+        lightNode.light?.intensity = 1000
+        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+        scene.rootNode.addChildNode(lightNode)
+
+        // Ambient light
+        let ambientLight = SCNNode()
+        ambientLight.light = SCNLight()
+        ambientLight.light?.type = .ambient
+        ambientLight.light?.intensity = 800
+        ambientLight.light?.color = UIColor.darkGray
+        scene.rootNode.addChildNode(ambientLight)
 
         return sceneView
     }
 
     func updateUIView(_ uiView: SCNView, context: Context) {
-        if let boxNode = uiView.scene?.rootNode.childNode(withName: "gyroscopeBox", recursively: false) {
-            boxNode.eulerAngles = rotation
+        let q = deviceQuaternion
+        let orientation = SCNQuaternion(Float(q.x), Float(q.y), Float(q.z), Float(q.w))
+        context.coordinator.cameraRig?.orientation = orientation
+    }
+}
+
+struct GyroscopeTopFixedView: UIViewRepresentable {
+    @Binding var rotation: SCNVector3
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator {
+        var anchorNode: SCNNode?
+    }
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        sceneView.allowsCameraControl = false
+        sceneView.autoenablesDefaultLighting = false
+        sceneView.backgroundColor = .black
+
+        // Enable visual debugging (optional)
+        sceneView.debugOptions = [.showBoundingBoxes, .showWireframe]
+
+        // Load USDZ model from bundle
+        guard let url = Bundle.main.url(forResource: "spinning_top", withExtension: "usdz") else {
+            fatalError("Failed to find spinning_top.usdz in bundle.")
+        }
+
+        let asset = MDLAsset(url: url)
+        asset.loadTextures()
+        let scene = SCNScene(mdlAsset: asset)
+        sceneView.scene = scene
+
+        // Create anchor node to rotate
+        let anchorNode = SCNNode()
+        context.coordinator.anchorNode = anchorNode
+        scene.rootNode.addChildNode(anchorNode)
+
+        // Move all root children into anchorNode
+        for node in scene.rootNode.childNodes where node !== anchorNode {
+            anchorNode.addChildNode(node)
+        }
+
+        // Scale & position to ensure visibility
+        anchorNode.scale = SCNVector3(0.0009, 0.0009, 0.0009)
+        anchorNode.position = SCNVector3(0, -0.2, 0)
+
+        // Fixed camera
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(0, 0, 5)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // Directional light
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .directional
+        lightNode.light?.intensity = 1000
+        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+        scene.rootNode.addChildNode(lightNode)
+
+        // Ambient light
+        let ambientLight = SCNNode()
+        ambientLight.light = SCNLight()
+        ambientLight.light?.type = .ambient
+        ambientLight.light?.intensity = 1000
+        ambientLight.light?.color = UIColor.darkGray
+        scene.rootNode.addChildNode(ambientLight)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        // Lock pitch & roll, rotate only around Y (yaw)
+        context.coordinator.anchorNode?.eulerAngles = SCNVector3(0, rotation.y, 0)
+    }
+}
+
+struct Gyroscope3DView: UIViewRepresentable {
+    @Binding var rotation: SCNVector3
+
+    func makeUIView(context: Context) -> SCNView {
+        let sceneView = SCNView()
+        let scene = SCNScene()
+        sceneView.scene = scene
+        sceneView.allowsCameraControl = false
+        sceneView.autoenablesDefaultLighting = false
+        sceneView.backgroundColor = .black
+
+        // Create a stylized spinning top shape using a cone
+        let topGeometry = SCNCone(topRadius: 0.0, bottomRadius: 0.5, height: 1.2)
+        topGeometry.materials.first?.diffuse.contents = UIColor.systemPink
+
+        let topNode = SCNNode(geometry: topGeometry)
+        topNode.name = "gyroscopeTop"
+        topNode.scale = SCNVector3(0.5, 0.5, 0.5)
+        scene.rootNode.addChildNode(topNode)
+
+        // Add a fixed camera to simulate a stable frame of reference
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 3)
+        scene.rootNode.addChildNode(cameraNode)
+
+        // Add directional light for depth
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light?.type = .directional
+        lightNode.eulerAngles = SCNVector3(-Float.pi / 3, Float.pi / 4, 0)
+        scene.rootNode.addChildNode(lightNode)
+
+        return sceneView
+    }
+
+    func updateUIView(_ uiView: SCNView, context: Context) {
+        if let topNode = uiView.scene?.rootNode.childNode(withName: "gyroscopeTop", recursively: false) {
+            topNode.eulerAngles = rotation
         }
     }
 }
