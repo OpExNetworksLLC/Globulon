@@ -59,7 +59,9 @@ struct MotionViewV2: View {
                     .font(.system(size: 12, design: .monospaced))
                     .padding()
                     Divider()
-                    Spacer().frame(height: 8)
+                        .padding(.leading, 16)
+                        .padding(.trailing, 16)
+                    Spacer().frame(height: 16)
                     
                     
                     /// MOTION DATA FEED
@@ -87,9 +89,12 @@ struct MotionViewV2: View {
                     .font(.system(size: 10, design: .monospaced))
                     .padding(.leading, 16)
                     .padding(.trailing, 16)
-                    .padding(.bottom, 2)
+                    .padding(.bottom, 16)
+                    
                     Divider()
-                    Spacer().frame(height: 8)
+                        .padding(.leading, 16)
+                        .padding(.trailing, 16)
+                        .padding(.bottom, 16)
                     
                     /// ATTITUDE
                     ///
@@ -113,7 +118,7 @@ struct MotionViewV2: View {
                             
                         }
                     }
-                    .padding(.bottom, 2)
+                    .padding(.bottom, 16)
                     
                     /// ACCELERATION
                     ///
