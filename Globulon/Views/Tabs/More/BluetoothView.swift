@@ -36,8 +36,12 @@ struct BluetoothView: View {
                         }
                         
                         Section(header: Text("Discovered Devices")) {
-                            ForEach(bluetoothManager.discoveredDevices, id: \.identifier) { device in
-                                Text(device.name ?? "Unknown Device")
+                            ForEach(bluetoothManager.discoveredDevices
+                                .filter { !($0.name?.isEmpty ?? true) } // Filter out devices with no name
+                                .sorted(by: {
+                                    ($0.name ?? "").localizedCaseInsensitiveCompare($1.name ?? "") == .orderedAscending
+                                }), id: \.identifier) { device in
+                                    Text(device.name!)
                             }
                         }
                     }
