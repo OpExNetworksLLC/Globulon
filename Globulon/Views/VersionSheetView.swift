@@ -24,7 +24,7 @@ struct VersionSheetView: View {
                 VStack(alignment: .leading) {
                     Text("Version Details:")
                         .padding(.bottom, 8)
-                    Text("Version : \(VersionManager.releaseDesc))")
+                    Text(verbatim: "Version : \(VersionManager.releaseDesc)")
                         .font(.system(size: 14, design: .monospaced))
                     #if FIREBASE_ENABLED
                         Text("AuthMode: remote (firebase)")
@@ -33,15 +33,15 @@ struct VersionSheetView: View {
                         Text("AuthMode: local (keychain)")
                         .font(.system(size: 14, design: .monospaced))
                     #endif
-                    Text("UserMode: \(userSettings.userMode.description)")
+                    Text(verbatim: "UserMode: \(userSettings.userMode.description)")
                         .font(.system(size: 14, design: .monospaced))
-                    Text("Articles: \(articlesLocation())")
+                    Text(verbatim: "Articles: \(articlesLocation())")
                         .font(.system(size: 14, design: .monospaced))
-                    Text("Schema  : \(CurrentModelSchema.versionIdentifier)")
+                    Text(verbatim: "Schema  : \(CurrentModelSchema.versionIdentifier)")
                         .font(.system(size: 14, design: .monospaced))
                         .padding(.bottom, 8)
                     
-                    Text("LoggedIn: \(userStatus.isLoggedIn)")
+                    Text(verbatim: "LoggedIn: \(userStatus.isLoggedIn)")
                         .font(.system(size: 14, design: .monospaced))
                     Text("lastAuth: \(formatDateShortUS(userSettings.lastAuth))")
                         .font(.system(size: 14, design: .monospaced))
@@ -49,7 +49,7 @@ struct VersionSheetView: View {
                     
                     #if FIREBASE_ENABLED
                     /// This setting was dione directly for testing purposes so not part of userSettings.
-                    Text("firebaseInstallationID: \(userSettings.firebaseInstallationID)")
+                    Text(verbatim: "firebaseInstallationID: \(userSettings.firebaseInstallationID)")
                         .font(.system(size: 14, design: .monospaced))
                     #endif
 
