@@ -21,7 +21,7 @@ struct SystemStatusView: View {
     @ObservedObject var backgroundManager = BackgroundManager.shared
     
     @StateObject var networkManager         = NetworkManager.shared
-    @StateObject var notificationManager   = NotificationManager.shared
+    @StateObject var notificationManager    = NotificationManager.shared
     @StateObject var activityManager        = ActivityManager.shared
     @StateObject var locationManager        = LocationManager.shared
     @StateObject var bluetoothManager       = BluetoothManager.shared
@@ -508,166 +508,158 @@ struct SystemStatusView: View {
     }
 
     struct BackgroundSectionView: View {
+        @AppStorage("AutoStartAppRefresh") private var autoStartAppRefresh: Bool = false
+        @AppStorage("AutoStartBackground") private var autoStartBackground: Bool = false
+        @AppStorage("AppRefreshIntervalMinutes") private var appRefreshIntervalMinutes: Int = 60
+        @AppStorage("BackgroundTaskIntervalMinutes") private var backgroundTaskIntervalMinutes: Int = 60
+        
         @ObservedObject var backgroundManager: BackgroundManager
         
         var body: some View {
-            Section(header: Text("BACKGROUND")) {
-                /// Show current status based on the taskState enum
-                HStack {
-                    Text("Current State:")
-                    Spacer()
-                    Text("\(backgroundManager.taskState.statusDescription)")
+            
+            // TASK: Control
+            Section {
+                
+                Toggle("Auto-start App Refresh", isOn: $autoStartAppRefresh)
+                Toggle("Auto-start Processing Task", isOn: $autoStartBackground)
+
+                Stepper(value: $appRefreshIntervalMinutes, in: 15...24*60, step: 15) {
+                    HStack {
+                        Text("App Refresh Interval")
+                        Spacer()
+                        Text("\(appRefreshIntervalMinutes) min")
+                            .foregroundStyle(.secondary)
+                    }
                 }
+                .accessibilityLabel("App Refresh Interval in minutes")
+
+                Stepper(value: $backgroundTaskIntervalMinutes, in: 15...24*60, step: 15) {
+                    HStack {
+                        Text("Processing Task Interval")
+                        Spacer()
+                        Text("\(backgroundTaskIntervalMinutes) min")
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityLabel("Processing Task Interval in minutes")
+                
                 HStack {
-                    Button(role: .destructive) {
-                        print("stop all")
+                    Text("Cancel All")
+                    Spacer()
+                    Button(action: {
                         BackgroundManager.shared.cancelAllBackgroundTasks()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("Stop All")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
+                    }) {
+                        Image(systemName: "stop.fill")
+                            //.foregroundStyle(.red)
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 1)
-                    Spacer()
+                    .buttonStyle(.bordered)
+                    //.tint(.red)
                 }
                 HStack {
-                    Text("Last Background:")
+                    Text("App Refresh")
                     Spacer()
-                    Text("\((UserDefaults.standard.object(forKey: "LastBackgroundTaskCompletionDate") as? Date)?.formatted() ?? "Never")")
-                }
-                
-                HStack {
-                    Button(role: .destructive) {
-                        print("play background")
-                        BackgroundManager.shared.scheduleProcessingTask()
-                    } label: {
-                        HStack{
-                            Image(systemName: "play")
-                                .resizable()
-                                .frame(width: 16, height: 16)
-                                .padding(.leading, 8)
-                            Text("Start")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 4)
-                    
-                    Button(role: .destructive) {
-                        print("stop background")
-                        BackgroundManager.shared.cancelBackgroundTask()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("Stop")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    Spacer()
-                }
-                
-                HStack {
-                    Text("Last App Refresh:")
-                    Spacer()
-                    Text("\((UserDefaults.standard.object(forKey: "LastAppRefreshTaskCompletionDate") as? Date)?.formatted() ?? "Never")")
-                }
-                
-                HStack {
-                    Button(role: .destructive) {
-                        print("play refresh")
+                    Button(action: {
                         BackgroundManager.shared.scheduleAppRefresh()
-                    } label: {
-                        HStack{
-                            Image(systemName: "play")
-                                .resizable()
-                                .frame(width: 16, height: 16)
-                                .padding(.leading, 8)
-                            Text("Start")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
+                    }) {
+                        Image(systemName: "play.fill")
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 4)
-                    
-                    Button(role: .destructive) {
-                        print("stop refresh")
+                    .buttonStyle(.bordered)
+                    Spacer().frame(width: 16)
+                    Button(action: {
                         BackgroundManager.shared.cancelAppRefreshTask()
-                    } label: {
-                        HStack{
-                            Image(systemName: "stop")
-                                .resizable()
-                                .frame(width: 16,height: 16)
-                                .padding(.leading, 8)
-                            Text("Stop")
-                            Spacer()
-                        }
-                        .foregroundColor(/*@START_MENU_TOKEN@*/.blue/*@END_MENU_TOKEN@*/)
-                        .frame(width: 100, height: 32)
-                        .background(
-                            RoundedRectangle(
-                                cornerRadius: 5,
-                                style: .continuous
-                            )
-                            .stroke(.blue, lineWidth: 1)
-                        )
+                    }) {
+                        Image(systemName: "stop.fill")
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .padding(.trailing, 4)
-    
+                    .buttonStyle(.bordered)
                 }
+                HStack {
+                    Text("Processing Task")
+                    Spacer()
+                    Button(action: {
+                        BackgroundManager.shared.scheduleProcessingTask()
+                    }) {
+                        Image(systemName: "play.fill")
+                    }
+                    .buttonStyle(.bordered)
+                    Spacer().frame(width: 16)
+                    Button(action: {
+                        BackgroundManager.shared.cancelBackgroundTask()
+                    }) {
+                        Image(systemName: "stop.fill")
+                    }
+                    .buttonStyle(.bordered)
+                }
+            } header: {
+                Text("TASK: Control")
+                    //.foregroundStyle(.red)
             }
             .offset(x: -8)
             .padding(.trailing, -16)
+            
+            // TASK: Background Status
+            Section{
+                HStack {
+                    Text("Processing Task")
+                    Spacer()
+                    Text("\(backgroundManager.backgroundProcessingTaskState.statusDescription)")
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Last Processing")
+                    Spacer()
+                    let lastProcessing = UserDefaults.standard.object(forKey: "LastBackgroundTaskCompletionDate") as? Date
+                    Text((lastProcessing != nil ? managerDate(lastProcessing!) : "N/A"))
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Next Processing")
+                    Spacer()
+                    let nextProcessing = BackgroundManager.shared.nextProcessingDate()
+                    Text((nextProcessing != nil ? managerDate(nextProcessing!) : "N/A"))
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("TASK: Background Status")
+            }
+            .offset(x: -8)
+            .padding(.trailing, -16)
+            
+            // TASK: App Refresh Status
+            Section {
+                HStack {
+                    Text("App Refresh")
+                    Spacer()
+                    Text("\(backgroundManager.appRefreshTaskState.statusDescription)")
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Last App Refresh")
+                    Spacer()
+                    let lastRefresh = UserDefaults.standard.object(forKey: "LastAppRefreshTaskCompletionDate") as? Date
+                    Text((lastRefresh != nil ? managerDate(lastRefresh!) : "N/A"))
+                        .foregroundStyle(.secondary)
+                }
+                HStack {
+                    Text("Next App Refresh")
+                    Spacer()
+                    let nextRefresh = BackgroundManager.shared.nextAppRefreshDate()
+                    Text((nextRefresh != nil ? managerDate(nextRefresh!) : "N/A"))
+                        .foregroundStyle(.secondary)
+                }
+            } header: {
+                Text("TASK: App Refresh Status")
+            }
+            .offset(x: -8)
+            .padding(.trailing, -16)
+
+        }
+        
+        private func managerDate(_ date: Date) -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd h:mm:ss a"
+            return formatter.string(from: date)
         }
     }
-
 }
 
 #Preview {

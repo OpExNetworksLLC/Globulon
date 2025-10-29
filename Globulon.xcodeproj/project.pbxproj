@@ -17,6 +17,7 @@
 		6E2A22CF2B8964C40030F23E /* IntroLaunchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */; };
 		6E2A22D12B8967260030F23E /* IntroPageEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22D02B8967260030F23E /* IntroPageEnum.swift */; };
 		6E2A22D32B89680C0030F23E /* IntroCompleteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E2A22D22B89680C0030F23E /* IntroCompleteView.swift */; };
+		6E38DECA2EB19396005BE577 /* BackgroundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E38DEC92EB19396005BE577 /* BackgroundManager.swift */; };
 		6E3F449C2D77B2460020229A /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3F449B2D77B2460020229A /* MotionManager.swift */; };
 		6E3F449E2D77B2A20020229A /* MotionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3F449D2D77B2A20020229A /* MotionView.swift */; };
 		6E3F44AF2D77BE710020229A /* ActivityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E3F44AE2D77BE710020229A /* ActivityView.swift */; };
@@ -189,6 +190,7 @@
 		6E2A22CE2B8964C40030F23E /* IntroLaunchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroLaunchView.swift; sourceTree = "<group>"; };
 		6E2A22D02B8967260030F23E /* IntroPageEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroPageEnum.swift; sourceTree = "<group>"; };
 		6E2A22D22B89680C0030F23E /* IntroCompleteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroCompleteView.swift; sourceTree = "<group>"; };
+		6E38DEC92EB19396005BE577 /* BackgroundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundManager.swift; sourceTree = "<group>"; };
 		6E3F449B2D77B2460020229A /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		6E3F449D2D77B2A20020229A /* MotionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionView.swift; sourceTree = "<group>"; };
 		6E3F44AE2D77BE710020229A /* ActivityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityView.swift; sourceTree = "<group>"; };
@@ -556,6 +558,7 @@
 				6EB56D1F2B855BA800C106F0 /* ArticlesClassV1.swift */,
 				6ECF92842D6E69A4007B8F1F /* AsyncProcessor.swift */,
 				6EB56D2A2B855EA400C106F0 /* AuthenticationClass.swift */,
+				6E38DEC92EB19396005BE577 /* BackgroundManager.swift */,
 				6ECF92742D6E6418007B8F1F /* BackgroundManagerV1.swift */,
 				6E2220B62DB1911200A93F62 /* BackgroundManagerV2.swift */,
 				6EB56D152B8559AA00C106F0 /* BiometricsClass.swift */,
@@ -885,6 +888,7 @@
 				6ECF92A32D6E9CBD007B8F1F /* NotificationManager.swift in Sources */,
 				6EA242462B86E07800C02D88 /* UserStatus.swift in Sources */,
 				6E4E1D062DCFD29A00AFA8E5 /* TravelViewV4.swift in Sources */,
+				6E38DECA2EB19396005BE577 /* BackgroundManager.swift in Sources */,
 				6E9AEEBA2C2D1EA700522E71 /* LocationView.swift in Sources */,
 				6EB56CF82B8531A800C106F0 /* ButtonModifiers.swift in Sources */,
 				6E94F72E2B7C93E200AFA97F /* UserModeEnum.swift in Sources */,

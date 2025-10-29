@@ -15,6 +15,6 @@ typealias LoginView = LoginViewV2
 typealias TravelView = TravelViewV4
 typealias MotionView = MotionViewV2
 
-typealias BackgroundManager = BackgroundManagerV2
+//typealias BackgroundManager = BackgroundManagerV2
 
 typealias Articles = ArticlesV2

@@ -21,6 +21,9 @@ import FirebaseAnalytics
 */
 @main struct GlobulonApp: App {
     
+    @AppStorage("AutoStartAppRefresh") private var autoStartAppRefresh: Bool = false
+    @AppStorage("AutoStartBackground") private var autoStartBackground: Bool = false
+    
     /// Register app delegate
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
@@ -181,6 +184,17 @@ import FirebaseAnalytics
         //Articles.deleteArticles()
         //userSettings.articlesDate = DateInfo.zeroDate
         //userSettings.lastAuth = DateInfo.zeroDate
+        
+        
+        /// Background processing
+        ///
+        if autoStartAppRefresh {
+            BackgroundManager.shared.scheduleAppRefresh()
+        }
+        if autoStartBackground {
+            BackgroundManager.shared.scheduleProcessingTask()
+        }
+        
         
         /// ARTICLES
         ///
