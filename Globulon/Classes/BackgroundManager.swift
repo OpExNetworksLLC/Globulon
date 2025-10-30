@@ -18,8 +18,8 @@
 
  # Force background execution in simulator
  This command can be executed when the app is paused at 11db prompt to force the background task to execute:
-    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.ViDrive.backgroundTask"]
-    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.ViDrive.appRefreshTask"]
+    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.Globulon.backgroundTask"]
+    - `e -l objc -- (void)[[BGTaskScheduler sharedScheduler] _simulateLaunchForTaskWithIdentifier:@"com.opexnetworks.Globulon.appRefreshTask"]
  - Ensure the pinfo.list is updated:
     - `Permitted background task scheduler identifiers = "com.opexnetworks.Globulon.backgroundTask"
  */
@@ -68,8 +68,10 @@ import os.log
     }
     
     /// Task identifiers
-    let backgroundAppRefreshTask = "com.opexnetworks." + AppSettings.appName + ".appRefreshTask"
-    let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
+//    let backgroundAppRefreshTask = "com.opexnetworks." + AppSettings.appName + ".appRefreshTask"
+//    let backgroundTaskIdentifier = "com.opexnetworks." + AppSettings.appName + ".backgroundTask"
+    let backgroundAppRefreshTask = "com.opexnetworks.Globulon.appRefreshTask"
+    let backgroundTaskIdentifier = "com.opexnetworks.Globulon.backgroundTask"
     
     ///  Keys used to store if background tasks and processes have been scheduled.
     let backgroundAppRefreshTaskScheduledKey = "backgroundAppRefreshTaskScheduledKey"

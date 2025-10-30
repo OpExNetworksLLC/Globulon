@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import UIKit
 import UserNotifications
 
 #if FIREBASE_ENABLED
@@ -45,6 +46,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         /// Register background activities
         ///
         BackgroundManager.shared.registerBackgroundTask()
+        BackgroundManager.shared.ensureSchedulingOnLaunch()
         
         /// setup
         setupLocationServices()
@@ -87,6 +89,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         }
     }
     #endif
+    
+    // If you need to handle background task registration or other app-level events,
+    // you can add them here. For example, forwarding registration to BackgroundManager
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        // Optionally re-register background tasks when app becomes active
+        BackgroundManager.shared.registerBackgroundTask()
+        BackgroundManager.shared.ensureSchedulingOnLaunch()
+    }
     
     private func setupLocationServices() {
         /// Start location monitoring...
@@ -187,6 +197,19 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        // Handle failure to register for remote notifications
+        // Example: NotificationManager.shared.handleRegistrationError(error)
+    }
+
+    func application(_ application: UIApplication,
+                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // Handle silent push (content-available:1) or background updates here
+        // Do your background fetch/update and call completionHandler when done
+        completionHandler(.noData)
     }
     
     #if FIREBASE_ENABLED

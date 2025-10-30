@@ -129,6 +129,7 @@ import FirebaseAnalytics
                             await startupSequence()
                             isStartupSequenceComplete = true
                         }
+                        
                     }
             }
         }
