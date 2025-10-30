@@ -254,13 +254,10 @@ import FirebaseAnalytics
         ActivityManager.shared.getActivityMonitoringStatus { result in
             LogManager.event(module: AppSettings.appName + "App.ActivityManager.getActivityMonitoringStatus()", message: "\(result)")
             
-            /** OPTION:  Use this code to start the handle
-            ```
-            if !result {
-            ActivityManager.shared.startActivityUpdates()
-            }
-            ```
-            */
+            // OPTION:  Use this code to start the handle
+            //
+            // if !result { ActivityManager.shared.startActivityUpdates() }
+
         }
         
         /// If any of the prior actions trigger a change that completes as a result of detecting a new version then save the new release version
